@@ -22,7 +22,9 @@ C.Helpers.CoordinatesHelper.Transform = function (point, to) {
  */
 C.Helpers.CoordinatesHelper.CheckProj = function (item) {
     "use strict";
-    if (item instanceof proj4.Proj) {
+    if (item === undefined) {
+        return (item);
+    } else if (item instanceof proj4.Proj) {
         return (item);
     } else if (item.oProj) {
         return (item.oProj);
