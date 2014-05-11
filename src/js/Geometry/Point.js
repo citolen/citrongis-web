@@ -12,6 +12,7 @@ C.Geometry = C.Geometry || {};
 /*
  * Constructor
  */
+/*jslint nomen: true*/
 C.Geometry.Point = function (x, y, z, crs) {
     "use strict";
 
@@ -25,8 +26,9 @@ C.Geometry.Point = function (x, y, z, crs) {
     this.Z = z || 0;
 
     /* Coordinate Reference System */
-    this.CRS = C.Helpers.CoordinatesHelper.CheckProj(crs);
+    this.CRS = C.Helpers.CoordinatesHelper._checkProj(crs);
 };
+/*jslint nomen: false*/
 
 /*
  * Pretty print
