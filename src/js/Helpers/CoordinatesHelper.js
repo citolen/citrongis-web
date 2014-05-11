@@ -5,7 +5,6 @@
 
 var C = C || {};
 var proj4 = proj4 || {};
-var Proj4 = Proj4 || {};
 
 C.Helpers = C.Helpers || {};
 

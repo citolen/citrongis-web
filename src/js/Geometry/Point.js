@@ -9,6 +9,9 @@ var C = C || {};
 
 C.Geometry = C.Geometry || {};
 
+/*
+ * Constructor
+ */
 C.Geometry.Point = function (x, y, z, crs) {
     "use strict";
 
