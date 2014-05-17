@@ -10,22 +10,22 @@ C.Helpers = C.Helpers || {};
 
 C.Helpers.CoordinatesHelper = {};
 
-/*
- *  Transform
- *
- *  Transform point to the projection 'to' and return a new point with the result
- */
+///////////////////////////////////////////////////////////////////////////////////
+// TransformTo                                                                   //
+// Transform @point to the projection @to and return a new point with the result //
+///////////////////////////////////////////////////////////////////////////////////
 /*jslint nomen: true*/
-C.Helpers.CoordinatesHelper.Transform = function (point, to) {
+C.Helpers.CoordinatesHelper.TransformTo = function (point, to) {
     "use strict";
     var tmp = proj4(point.CRS, to, [point.X, point.Y]);
     return (new C.Geometry.Point(tmp[0], tmp[1], point.Z, C.Helpers.CoordinatesHelper._checkProj(to)));
 };
 /*jslint nomen: false*/
 
-/*
- * Return a valid projection
- */
+///////////////////////////////
+// _checkProj                //
+// Return a valid projection //
+///////////////////////////////
 /*jslint nomen: true*/
 C.Helpers.CoordinatesHelper._checkProj = function (item) {
     "use strict";
@@ -36,6 +36,6 @@ C.Helpers.CoordinatesHelper._checkProj = function (item) {
     } else if (item.oProj) {
         return (item.oProj);
     }
-    return (proj4.Proj(item));
+    return (new proj4.Proj(item));
 };
 /*jslint nomen: false*/

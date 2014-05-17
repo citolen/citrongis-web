@@ -17,13 +17,13 @@ C.Geometry.Point = function (x, y, z, crs) {
     "use strict";
 
     /* X */
-    this.X = x || 0;
+    this.X = x || 0.0;
 
     /* Y */
-    this.Y = y || 0;
+    this.Y = y || 0.0;
 
     /* Z */
-    this.Z = z || 0;
+    this.Z = z || 0.0;
 
     /* Coordinate Reference System */
     this.CRS = C.Helpers.CoordinatesHelper._checkProj(crs);
@@ -41,9 +41,9 @@ C.Geometry.Point.prototype.toString = function () {
 /*
  * Transform this point to the projection to
  */
-C.Geometry.Point.prototype.Transform = function (to) {
+C.Geometry.Point.prototype.TransformTo = function (to) {
     "use strict";
-    var tmp = C.Helpers.CoordinatesHelper.Transform(this, to);
+    var tmp = C.Helpers.CoordinatesHelper.TransformTo(this, to);
     this.X = tmp.X;
     this.Y = tmp.Y;
     this.Z = tmp.Z;
