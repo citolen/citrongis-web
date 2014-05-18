@@ -21,6 +21,12 @@ test("Equals", function () {
     ok(a.Equals(a), "should be equlas");
 });
 
+test("Center", function () {
+    "use strict";
+    var center = new C.Geometry.Vector2(5, 5);
+    ok(a.Center().Equals(center), "Should be equals");
+});
+
 test("Intersection", function () {
     "use strict";
     ok(!a.Intersect(b), "Shouldn't intersect");

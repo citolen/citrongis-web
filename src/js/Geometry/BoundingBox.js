@@ -50,7 +50,9 @@ C.Geometry.BoundingBox.prototype.Equals = function (b) {
 //////////////////////////////////////////
 C.Geometry.BoundingBox.prototype.Center = function () {
     "use strict";
-    return (new C.Geometry.Vector2());
+    var x = (this.BottomLeft.X + this.BottomRight.X + this.TopLeft.X + this.TopRight.X) / 4.0,
+        y = (this.BottomLeft.Y + this.BottomRight.Y + this.TopLeft.Y + this.TopRight.Y) / 4.0;
+    return (new C.Geometry.Vector2(x, y));
 };
 
 //////////////////////////////////////////////////////////////
