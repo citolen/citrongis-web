@@ -54,6 +54,19 @@ C.Geometry.Vector3.prototype.DotProduct = function (vb) {
     return (this.X * vb.X + this.Y * vb.Y + this.Z * vb.Z);
 };
 
+//////////////////////////////////////////////////
+// Cross                                        //
+// Cross product between a Vector3 and this one //
+//////////////////////////////////////////////////
+C.Geometry.Vector3.prototype.Cross = function (vb) {
+    "use strict";
+    return (new C.Geometry.Vector3(
+        (this.Y * vb.Z) - (this.Z * vb.Y),
+        (this.Z * vb.X) - (this.X * vb.Z),
+        (this.X * vb.Y) - (this.Y * vb.X)
+    ));
+};
+
 //////////////////
 // toString     //
 // Pretty print //
@@ -88,4 +101,17 @@ C.Geometry.Vector3.Equals = function (va, vb) {
 C.Geometry.Vector3.DotProduct = function (va, vb) {
     "use strict";
     return (va.DotProduct(vb));
+};
+
+//////////////////////////////////////////////////
+// Static Cross                                 //
+// Cross product between a Vector3 and this one //
+//////////////////////////////////////////////////
+C.Geometry.Vector3.prototype.Cross = function (va, vb) {
+    "use strict";
+    return (new C.Geometry.Vector3(
+        (va.Y * vb.Z) - (va.Z * vb.Y),
+        (va.Z * vb.X) - (va.X * vb.Z),
+        (va.X * vb.Y) - (va.Y * vb.X)
+    ));
 };
