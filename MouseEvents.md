@@ -31,3 +31,10 @@ return false in event handler to prevent the browser to do default behavior
 
 To attach an event:
     addEventListener / attachEvent
+    
+    
+pixi.js
+    mousedown = touchstart
+    mouseup = touchend
+    mouseupoutside = touchendoutside
+    mousemove = touchmove
