@@ -4,7 +4,7 @@
  * Copyright (c) 2012-2014, Mat Groves
  * http://goodboydigital.com/
  *
- * Compiled: 2014-04-24
+ * Compiled: 2014-06-15
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license.php
@@ -3397,10 +3397,29 @@ PIXI.InteractionManager.prototype.update = function()
         // OPTIMISATION - only calculate every time if the mousemove function exists..
         // OK so.. does the object have any other interactive functions?
         // hit-test the clip!
-       // if(item.mouseover || item.mouseout || item.buttonMode)
-       // {
+        // if(item.mouseover || item.mouseout || item.buttonMode)
+        // {
         // ok so there are some functions so lets hit test it..
-        item.__hit = this.hitTest(item, this.mouse);
+        if (!over || (item.__isOver && item.mouseout)) {
+            item.__hit = this.hitTest(item, this.mouse);
+            this.mouse.target = item;
+
+            if (item.__isOver && (!item.__hit || over)) {
+                if (item.mouseout) item.mouseout(this.mouse);
+                item.__isOver = false;
+            }
+            if (item.__hit && !over) {
+                if(item.buttonMode) cursor = item.defaultCursor;
+                if(!item.interactiveChildren)over = true;
+                if (!item.__isOver) {
+                    if (item.mouseover) item.mouseover(this.mouse);
+                    item.__isOver = true;
+                }
+            }
+        }
+
+        // OLD
+        /*item.__hit = this.hitTest(item, this.mouse);
         this.mouse.target = item;
         // ok so deal with interactions..
         // looks like there was a hit!
@@ -3424,7 +3443,7 @@ PIXI.InteractionManager.prototype.update = function()
                 if(item.mouseout)item.mouseout(this.mouse);
                 item.__isOver = false;
             }
-        }
+        }*/
     }
 
     if( this.currentCursorStyle !== cursor )
@@ -3477,7 +3496,28 @@ PIXI.InteractionManager.prototype.onMouseDown = function(event)
 
     if(PIXI.AUTO_PREVENT_DEFAULT)this.mouse.originalEvent.preventDefault();
 
-    // loop through interaction tree...
+    var scope = this;
+    (function bubble(event, objects) {
+        for (var i = objects.length - 1; i >= 0; --i)
+        {
+            var obj = objects[i];
+            if (!obj._interactive) continue;
+            if (obj.children)
+                bubble(event, obj.children);
+            if (event.continue && (obj.mousedown || obj.mouseup)) {
+                obj.__hit = scope.hitTest(obj, scope.mouse);
+                if (obj.__hit)
+                {
+                    if (obj.mousedown) obj.mousedown(event, scope.mouse);
+                    obj.__isDown = true;
+                }
+            }
+            obj.__mouseIsDown = false;
+        }
+    })({continue: true}, this.stage.children);
+
+
+    /*// loop through interaction tree...
     // hit test each item! ->
     // get interactive items under point??
     //stage.__i
@@ -3504,7 +3544,7 @@ PIXI.InteractionManager.prototype.onMouseDown = function(event)
                 if(!item.interactiveChildren)break;
             }
         }
-    }
+    }*/
 };
 
 /**
@@ -3549,8 +3589,28 @@ PIXI.InteractionManager.prototype.onMouseUp = function(event)
 {
 
     this.mouse.originalEvent = event || window.event; //IE uses window.event
+    var scope = this;
+    (function bubble(event, objects) {
+        for (var i = objects.length - 1; i >= 0; --i)
+        {
+            var obj = objects[i];
+            if (!obj._interactive) continue;
+            if (obj.children)
+                bubble(event, obj.children);
+            if (event.continue) {
+                obj.__hit = scope.hitTest(obj, scope.mouse);
+                if (obj.__hit)
+                {
+                    if (obj.mouseup) obj.mouseup(event, scope.mouse);
+                    if (obj.__isDown && obj.click) obj.click(event, scope.mouse);
+                }
+            }
+            obj.__isDown = false;
+        }
+    })({continue: true}, this.stage.children);
 
-    var length = this.interactiveItems.length;
+
+    /*var length = this.interactiveItems.length;
     var up = false;
 
     for (var i = 0; i < length; i++)
@@ -3583,7 +3643,7 @@ PIXI.InteractionManager.prototype.onMouseUp = function(event)
 
         item.__isDown = false;
         //}
-    }
+    }*/
 };
 
 /**
@@ -3889,6 +3949,8 @@ PIXI.Stage = function(backgroundColor)
     this.stage.hitArea = new PIXI.Rectangle(0,0,100000, 100000);
 
     this.setBackgroundColor(backgroundColor);
+
+    this.stage.quadTree = new PIXI.Quadtree(0, 0, 800, 600);
 };
 
 // constructor
@@ -4511,6 +4573,83 @@ PIXI.PolyK._convex = function(ax, ay, bx, by, cx, cy, sign)
 {
     return ((ay-by)*(cx-bx) + (bx-ax)*(cy-by) >= 0) === sign;
 };
+
+PIXI.Quadtree = function(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+
+    this._halfEdgeWidth = x + width / 2;
+    this._halfEdgeHeight = y + height / 2;
+    this._edgeWidth = x + width;
+    this._edgeHeight = y + height;
+
+    this.objects = [];
+    this.nodes = undefined;
+    this.parent = undefined;
+};
+
+PIXI.Quadtree.prototype._getIndex = function (bounds) {
+    if (bounds.x < this.x || bounds.y < this.y ||
+        bounds.edgeW > this._edgeWidth || bounds.edgeH > this._edgeHeight)
+        return (-1);
+    if (bounds.x >= this.x && bounds.edgeW < this._halfEdgeWidth &&
+        bounds.y >= this.y && bounds.edgeH < this._halfEdgeHeight)
+        return (0); // Top Left
+    if (bounds.x >= this._halfEdgeWidth && bounds.edgeW < this._edgeWidth &&
+        bounds.y >= this.y && bounds.edgeH < this._halfEdgeHeight)
+        return (1); // Top Right
+    if (bounds.x >= this.x && bounds.edgeW < this._halfEdgeWidth &&
+        bounds.y >= this._halfEdgeHeight && bounds.edgeH < this._edgeHeight)
+        return (2); // Bottom Left
+    if (bounds.x >= this._halfEdgeWidth && bounds.edgeW < this._edgeWidth &&
+        bounds.y >= this._halfEdgeHeight && bounds.edgeH < this._edgeHeight)
+        return (3); // Bottom right;
+    return (-1);
+};
+
+PIXI.Quadtree.prototype.insert = function (object, bounds) {
+    if (this.objects.length < 2/*max element per node*/) {
+        this.objects.push(object);
+        object.node = this;
+        return;
+    }
+    var idx = this._getIndex(bounds);
+    if (idx === -1) {
+        this.objects.push(object);
+        object.node = this;
+        return;
+    }
+    if (this.nodes === undefined)
+    {
+        var w2 = this.width / 2,
+            h2 = this.height / 2,
+            x2 = this.x + w2,
+            y2 = this.y + h2;
+        this.nodes = [new PIXI.Quadtree(this.x, this.y, w2, h2), new PIXI.Quadtree(x2, this.y, w2, h2),
+                      new PIXI.Quadtree(this.x, y2, w2, h2), new PIXI.Quadtree(x2, y2, w2, h2)];
+    }
+    this.nodes[idx].insert(object, bounds);
+};
+
+PIXI.Quadtree.prototype.debug = function (context) {
+    context.stroke();
+    context.beginPath();
+    context.moveTo(this.x, this.y);
+    context.lineTo(this.x + this.width, this.y);
+    context.lineTo(this.x + this.width, this.y + this.height);
+    context.lineTo(this.x, this.y + this.height);
+    context.lineTo(this.x, this.y);
+    context.closePath();
+    if (this.nodes !== undefined) {
+        this.nodes[0].debug(context);
+        this.nodes[1].debug(context);
+        this.nodes[2].debug(context);
+        this.nodes[3].debug(context);
+    }
+};
+
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
@@ -8512,6 +8651,8 @@ PIXI.CanvasRenderer.prototype.render = function(stage)
         }
     }
 
+    stage.quadTree.debug(this.context);
+
     // remove frame updates..
     if(PIXI.Texture.frameUpdates.length > 0)
     {
@@ -10774,9 +10915,9 @@ spine.ColorTimeline = function (frameCount) {
 spine.ColorTimeline.prototype = {
     slotIndex: 0,
     getFrameCount: function () {
-        return this.frames.length / 2;
+        return this.frames.length / 5;
     },
-    setFrame: function (frameIndex, time, x, y) {
+    setFrame: function (frameIndex, time, r, g, b, a) {
         frameIndex *= 5;
         this.frames[frameIndex] = time;
         this.frames[frameIndex + 1] = r;
@@ -11473,7 +11614,7 @@ spine.SkeletonJson.readCurve = function (timeline, frameIndex, valueMap) {
 };
 spine.SkeletonJson.toColor = function (hexString, colorIndex) {
     if (hexString.length != 8) throw "Color hexidecimal length must be 8, recieved: " + hexString;
-    return parseInt(hexString.substring(colorIndex * 2, 2), 16) / 255;
+    return parseInt(hexString.substr(colorIndex * 2, 2), 16) / 255;
 };
 
 spine.Atlas = function (atlasText, textureLoader) {
@@ -11814,6 +11955,9 @@ PIXI.Spine.prototype.updateTransform = function () {
         slotContainer.scale.y = bone.worldScaleY;
 
         slotContainer.rotation = -(slot.bone.worldRotation * Math.PI / 180);
+
+        slotContainer.alpha = slot.a;
+        slot.currentSprite.tint = PIXI.rgb2hex([slot.r,slot.g,slot.b]);
     }
 
     PIXI.DisplayObjectContainer.prototype.updateTransform.call(this);
