@@ -13,7 +13,7 @@ Extension ZIP compression
 
 
 package.json:
-
+```
 {
     "uid": "unique application id", - *requiered*
     "version": "0.123", - *requiered*
@@ -27,8 +27,10 @@ package.json:
         ...
     }
 }
+```
 
 strings.json:
+```
 {
     "fr":
     {
@@ -40,6 +42,7 @@ strings.json:
         "PROPERTY": "value"
     }
 }
+```
 
 code:
 
