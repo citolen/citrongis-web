@@ -12,7 +12,7 @@ Extension ZIP compression
         strings.json    -  optional
 
 
-package.json
+package.json:
 
 {
     "uid": "unique application id", - *requiered*
@@ -28,7 +28,7 @@ package.json
     }
 }
 
-strings.json
+strings.json:
 {
     "fr":
     {
