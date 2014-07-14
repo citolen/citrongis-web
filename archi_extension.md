@@ -5,9 +5,7 @@ Extension ZIP compression
             /js
             /css
             /view
-            /resources
         /src            -  optional
-        /resources      -  optional
         package.json    - *requiered*
         strings.json    -  optional
 
@@ -15,14 +13,14 @@ Extension ZIP compression
 package.json:
 ```
 {
-    "uid": "unique application id", - *requiered*
+    "name": "unique application name", - *requiered*
     "version": "0.123", - *requiered*
     "main": "/src/main.js", - optional; default: /src/main.js
     "dependencies": optional
     {
         {
-            "uid": "dependency uid",            - *requiered*
-            "version": "dependency version"     - *requiered* could be 'latest'
+            "name": "dependency name",          - *requiered*
+            "version": "dependency version"     - optional
         },
         ...
     }
