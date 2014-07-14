@@ -6,20 +6,20 @@ Extension ZIP compression
             /css
             /view
         /src            -  optional
-        package.json    - *requiered*
+        package.json    - *required*
         strings.json    -  optional
 
 
 package.json:
 ```
 {
-    "name": "unique application name", - *requiered*
-    "version": "0.123", - *requiered*
+    "name": "unique application name", - *required*
+    "version": "0.123", - *required*
     "main": "/src/main.js", - optional; default: /src/main.js
     "dependencies": optional
     {
         {
-            "name": "dependency name",          - *requiered*
+            "name": "dependency name",          - *required*
             "version": "dependency version"     - optional
         },
         ...
