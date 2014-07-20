@@ -4,7 +4,7 @@
  * Copyright (c) 2012-2014, Mat Groves
  * http://goodboydigital.com/
  *
- * Compiled: 2014-07-05
+ * Compiled: 2014-07-20
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license.php
@@ -479,14 +479,18 @@ PIXI.Matrix2 = PIXI.determineMatrixArrayType();
 * | 0 | 0 | 1 |
 *
 */
-PIXI.Matrix = function()
+PIXI.Matrix = function(from)
 {
-    this.a = 1;
-    this.b = 0;
-    this.c = 0;
-    this.d = 1;
-    this.tx = 0;
-    this.ty = 0;
+    this.a = (from && from.a) ? from.a : 1;
+    this.b = (from && from.b) ? from.b : 0;
+    this.c = (from && from.c) ? from.c : 0;
+    this.d = (from && from.d) ? from.d : 1;
+    this.tx = (from && from.tx) ? from.tx : 0;
+    this.ty = (from && from.ty) ? from.ty : 0;
+};
+
+PIXI.Matrix.prototype.equals = function (b) {
+    return (this.a === b.a && this.b === b.b && this.c === b.c && this.d === b.d && this.tx === b.tx && this.ty === b.ty);
 };
 
 /**
@@ -747,6 +751,8 @@ PIXI.DisplayObject = function()
     this._cacheAsBitmap = false;
     this._cacheIsDirty = false;
 
+    this._dirty = true;
+
 
     /*
      * MOUSE Callbacks
@@ -970,10 +976,11 @@ Object.defineProperty(PIXI.DisplayObject.prototype, 'cacheAsBitmap', {
  */
 PIXI.DisplayObject.prototype.updateTransform = function()
 {
+    if (!this._dirty && !this.parent._dirty) return (false);
+
     // TODO OPTIMIZE THIS!! with dirty
     if(this.rotation !== this.rotationCache)
     {
-
         this.rotationCache = this.rotation;
         this._sr =  Math.sin(this.rotation);
         this._cr =  Math.cos(this.rotation);
@@ -982,6 +989,7 @@ PIXI.DisplayObject.prototype.updateTransform = function()
    // var localTransform = this.localTransform//.toArray();
     var parentTransform = this.parent.worldTransform;//.toArray();
     var worldTransform = this.worldTransform;//.toArray();
+    var saveTransform = new PIXI.Matrix(worldTransform);
 
     var px = this.pivot.x;
     var py = this.pivot.y;
@@ -1004,6 +1012,18 @@ PIXI.DisplayObject.prototype.updateTransform = function()
     worldTransform.ty = b10 * a02 + b11 * a12 + parentTransform.ty;
 
     this.worldAlpha = this.alpha * this.parent.worldAlpha;
+
+    if (!saveTransform.equals(worldTransform)) {
+        if (this.node !== undefined) {
+            var node = this.node;
+            while (node.parent !== undefined)
+                node = node.parent;
+            this.node.remove(this);
+            node.insert(this, this.getBounds());
+        }
+    }
+    this._dirty = false;
+    return (true);
 };
 
 /**
@@ -1153,6 +1173,7 @@ Object.defineProperty(PIXI.DisplayObject.prototype, 'x', {
     },
     set: function(value) {
         this.position.x = value;
+        this._dirty = true;
     }
 });
 
@@ -1168,6 +1189,7 @@ Object.defineProperty(PIXI.DisplayObject.prototype, 'y', {
     },
     set: function(value) {
         this.position.y = value;
+        this._dirty = true;
     }
 });
 
@@ -1249,26 +1271,6 @@ Object.defineProperty(PIXI.DisplayObjectContainer.prototype, 'height', {
 PIXI.DisplayObjectContainer.prototype.addChild = function(child)
 {
     this.addChildAt(child, this.children.length);
-
-    if (this.node !== undefined) {
-        var node = this.node;
-        while (node.parent !== undefined)
-            node = node.parent;
-        (function add(obj) {
-            if (obj.node !== undefined) {
-                var idx = obj.node.objects.indexOf(obj);
-                if (idx !== -1)
-                    obj.node.objects.splice(idx, 1);
-                obj.node = undefined;
-            }
-            node.insert(obj, obj.getBounds());
-            if (obj.children !== undefined) {
-                for (var i = 0, l = obj.children.length; i < l; i++) {
-                    add(obj.children[i]);
-                }
-            }
-        })(this);
-    }
 };
 
 /**
@@ -1292,6 +1294,23 @@ PIXI.DisplayObjectContainer.prototype.addChildAt = function(child, index)
         this.children.splice(index, 0, child);
 
         if(this.stage)child.setStageReference(this.stage);
+
+        if (this.node !== undefined) {
+            var node = this.node;
+            while (node.parent !== undefined)
+                node = node.parent;
+            (function add(obj) {
+                if (obj.node !== undefined) {
+                    obj.node.remove(obj);
+                }
+                node.insert(obj, obj.getBounds());
+                if (obj.children !== undefined) {
+                    for (var i = 0, l = obj.children.length; i < l; i++) {
+                        add(obj.children[i]);
+                    }
+                }
+            })(child);
+        }
     }
     else
     {
@@ -1391,6 +1410,9 @@ PIXI.DisplayObjectContainer.prototype.removeChildren = function(beginIndex, endI
             var child = removed[i];
             if(this.stage)
                 child.removeStageReference();
+            if (child.node !== undefined) {
+                child.node.remove(child);
+            }
             child.parent = undefined;
         }
         return removed;
@@ -1413,14 +1435,16 @@ PIXI.DisplayObjectContainer.prototype.updateTransform = function()
 
     if(!this.visible)return;
 
-    PIXI.DisplayObject.prototype.updateTransform.call( this );
+    var r = PIXI.DisplayObject.prototype.updateTransform.call( this );
 
     if(this._cacheAsBitmap)return;
 
+    this._dirty = r;
     for(var i=0,j=this.children.length; i<j; i++)
     {
         this.children[i].updateTransform();
     }
+    this._dirty = false;
 };
 
 /**
@@ -1555,7 +1579,6 @@ PIXI.DisplayObjectContainer.prototype.removeStageReference = function()
 PIXI.DisplayObjectContainer.prototype._renderWebGL = function(renderSession)
 {
     if(!this.visible || this.alpha <= 0)return;
-
     if(this._cacheAsBitmap)
     {
         this._renderCachedSprite(renderSession);
@@ -3207,6 +3230,13 @@ PIXI.InteractionManager = function(stage)
      */
     this.itemsDown = [];
 
+    /*
+    **
+    **  Object marked as __isOver
+    **
+    */
+    this.itemsOver = [];
+
     /**
      * Our canvas
      * @property interactionDOMElement
@@ -3398,7 +3428,6 @@ PIXI.InteractionManager.prototype.update = function()
         this.dirty = false;
 
         var len = this.interactiveItems.length;
-
         for (i = 0; i < len; i++) {
             this.interactiveItems[i].interactiveChildren = false;
         }
@@ -3411,84 +3440,43 @@ PIXI.InteractionManager.prototype.update = function()
     }
 
     // loop through interactive objects!
-    var length = this.interactiveItems.length;
     var cursor = 'inherit';
-    var over = false;
+    var over;
 
     var potentialObject = this.stage.quadTree.getElementsAt(this.mouse.global.x, this.mouse.global.y);
+    potentialObject = PIXI.Quadtree.sort(potentialObject);
     var evt = {continue: true};
-    for (var i = potentialObject.length - 1; i >= 0; i--) {
+    for (var i = 0, l = potentialObject.length; i < l; ++i) {
         var obj = potentialObject[i];
         obj.__hit = this.hitTest(obj, this.mouse);
-        if (obj.__isOver && (!obj.__hit || over)) {
+        if (obj.__isOver && (!obj.__hit || over !== undefined)) {
             if (obj.mouseout) obj.mouseout(evt, this.mouse);
             obj.__isOver = false;
+            var idx = this.itemsOver.indexOf(obj);
+            if (idx !== -1)
+                this.itemsOver.splice(idx, 1);
         }
-        if (obj.__hit && !over) {
-            over = true;
+        if (obj.__hit && over === undefined) {
+            over = obj;
             if (!obj.__isOver && evt.continue) {
                 if(obj.buttonMode) cursor = obj.defaultCursor;
                 if (obj.mouseover) obj.mouseover(this.mouse);
                 obj.__isOver = true;
+                this.itemsOver.push(obj);
             }
         }
     }
-
-    /*for (i = 0; i < length; i++)
-    {
-        var item = this.interactiveItems[i];
-
-        // OPTIMISATION - only calculate every time if the mousemove function exists..
-        // OK so.. does the object have any other interactive functions?
-        // hit-test the clip!
-        // if(item.mouseover || item.mouseout || item.buttonMode)
-        // {
-        // ok so there are some functions so lets hit test it..
-        if (!over || (item.__isOver && item.mouseout)) {
-            item.__hit = this.hitTest(item, this.mouse);
-            this.mouse.target = item;
-
-            if (item.__isOver && (!item.__hit || over)) {
-                if (item.mouseout) item.mouseout(this.mouse);
-                item.__isOver = false;
-            }
-            if (item.__hit && !over) {
-                if(item.buttonMode) cursor = item.defaultCursor;
-                if(!item.interactiveChildren)over = true;
-                if (!item.__isOver) {
-                    if (item.mouseover) item.mouseover(this.mouse);
-                    item.__isOver = true;
-                }
+    if ((over && this.itemsOver.length > 1) || this.itemsOver.length > 0) {
+        for (var i = this.itemsOver.length - 1; i >= 0; --i) {
+            var obj = this.itemsOver[i];
+            if (obj !== over) {
+                obj.__hit = false;
+                obj.__isOver = false;
+                if (obj.mouseout) obj.mouseout(evt, this.mouse);
+                this.itemsOver.splice(i, 1);
             }
         }
-
-        // OLD
-        /*item.__hit = this.hitTest(item, this.mouse);
-        this.mouse.target = item;
-        // ok so deal with interactions..
-        // looks like there was a hit!
-        if(item.__hit && !over)
-        {
-            if(item.buttonMode) cursor = item.defaultCursor;
-
-            if(!item.interactiveChildren)over = true;
-
-            if(!item.__isOver)
-            {
-                if(item.mouseover)item.mouseover(this.mouse);
-                item.__isOver = true;
-            }
-        }
-        else
-        {
-            if(item.__isOver)
-            {
-                // roll out!
-                if(item.mouseout)item.mouseout(this.mouse);
-                item.__isOver = false;
-            }
-        }*/
-    //}
+    }
 
     if( this.currentCursorStyle !== cursor )
     {
@@ -3514,7 +3502,6 @@ PIXI.InteractionManager.prototype.onMouseMove = function(event)
     this.mouse.global.y = (event.clientY - rect.top) * ( this.target.height / rect.height);
 
     var length = this.interactiveItems.length;
-
     for (var i = 0; i < length; i++)
     {
         var item = this.interactiveItems[i];
@@ -3541,8 +3528,9 @@ PIXI.InteractionManager.prototype.onMouseDown = function(event)
     if(PIXI.AUTO_PREVENT_DEFAULT)this.mouse.originalEvent.preventDefault();
 
     var potentialObject = this.stage.quadTree.getElementsAt(this.mouse.global.x, this.mouse.global.y);
+    potentialObject = PIXI.Quadtree.sort(potentialObject);
     var evt = {continue: true};
-    for (var i = potentialObject.length - 1; i >= 0; i--) {
+    for (var i = 0, l = potentialObject.length; i < l; ++i) {
         var obj = potentialObject[i];
         if (!obj._interactive) continue;
         if (obj.mousedown) {
@@ -3551,60 +3539,10 @@ PIXI.InteractionManager.prototype.onMouseDown = function(event)
                 obj.mousedown(evt, this.mouse);
                 obj.__isDown = true;
                 this.itemsDown.push(obj);
-                if (!evt.continue) return;
+                if (!evt.continue) break;
             }
         }
     }
-    /*return;
-    var scope = this;
-    (function bubble(event, objects) {
-        for (var i = objects.length - 1; i >= 0; --i)
-        {
-            var obj = objects[i];
-            if (!obj._interactive) continue;
-            if (obj.children)
-                bubble(event, obj.children);
-            if (event.continue && (obj.mousedown || obj.mouseup)) {
-                obj.__hit = scope.hitTest(obj, scope.mouse);
-                if (obj.__hit)
-                {
-                    if (obj.mousedown) obj.mousedown(event, scope.mouse);
-                    obj.__isDown = true;
-                }
-            }
-            obj.__mouseIsDown = false;
-        }
-    })({continue: true}, this.stage.children);*/
-
-
-    /*// loop through interaction tree...
-    // hit test each item! ->
-    // get interactive items under point??
-    //stage.__i
-    var length = this.interactiveItems.length;
-
-    // while
-    // hit test
-    for (var i = 0; i < length; i++)
-    {
-        var item = this.interactiveItems[i];
-
-        if(item.mousedown || item.click)
-        {
-            item.__mouseIsDown = true;
-            item.__hit = this.hitTest(item, this.mouse);
-
-            if(item.__hit)
-            {
-                //call the function!
-                if(item.mousedown)item.mousedown(this.mouse);
-                item.__isDown = true;
-
-                // just the one!
-                if(!item.interactiveChildren)break;
-            }
-        }
-    }*/
 };
 
 /**
@@ -3650,8 +3588,9 @@ PIXI.InteractionManager.prototype.onMouseUp = function(event)
     this.mouse.originalEvent = event || window.event; //IE uses window.event
 
     var potentialObject = this.stage.quadTree.getElementsAt(this.mouse.global.x, this.mouse.global.y);
+    potentialObject = PIXI.Quadtree.sort(potentialObject);
     var evt = {continue: true};
-    for (var i = potentialObject.length - 1; i >= 0; i--) {
+    for (var i = 0, l = potentialObject.length; i < l; ++i) {
         var obj = potentialObject[i];
         if (!obj._interactive) continue;
         if (evt.continue && (obj.mouseup || obj.click)) {
@@ -3667,61 +3606,6 @@ PIXI.InteractionManager.prototype.onMouseUp = function(event)
         this.itemsDown[i].__isDown = false;
     }
     this.itemsDown = [];
-    /*var scope = this;
-    (function bubble(event, objects) {
-        for (var i = objects.length - 1; i >= 0; --i)
-        {
-            var obj = objects[i];
-            if (!obj._interactive) continue;
-            if (obj.children)
-                bubble(event, obj.children);
-            if (event.continue) {
-                obj.__hit = scope.hitTest(obj, scope.mouse);
-                if (obj.__hit)
-                {
-                    if (obj.mouseup) obj.mouseup(event, scope.mouse);
-                    if (obj.__isDown && obj.click) obj.click(event, scope.mouse);
-                }
-            }
-            obj.__isDown = false;
-        }
-    })({continue: true}, this.stage.children);*/
-
-
-    /*var length = this.interactiveItems.length;
-    var up = false;
-
-    for (var i = 0; i < length; i++)
-    {
-        var item = this.interactiveItems[i];
-
-        item.__hit = this.hitTest(item, this.mouse);
-
-        if(item.__hit && !up)
-        {
-            //call the function!
-            if(item.mouseup)
-            {
-                item.mouseup(this.mouse);
-            }
-            if(item.__isDown)
-            {
-                if(item.click)item.click(this.mouse);
-            }
-
-            if(!item.interactiveChildren)up = true;
-        }
-        else
-        {
-            if(item.__isDown)
-            {
-                if(item.mouseupoutside)item.mouseupoutside(this.mouse);
-            }
-        }
-
-        item.__isDown = false;
-        //}
-    }*/
 };
 
 /**
@@ -4661,10 +4545,12 @@ PIXI.PolyK._convex = function(ax, ay, bx, by, cx, cy, sign)
 };
 
 /*
- * Constructor
- *
- */
-PIXI.Quadtree = function(x, y, width, height, maxelement) {
+**
+** Constructor
+**
+*/
+PIXI.Quadtree = function(x, y, width, height, maxelement, parent) {
+    "use strict";
     this.x = x;
     this.y = y;
     this.width = width;
@@ -4677,22 +4563,24 @@ PIXI.Quadtree = function(x, y, width, height, maxelement) {
 
     this.objects = [];
     this.nodes = undefined;
-    this.parent = undefined;
+    this.parent = parent || undefined;
     this.maxElement = maxelement || 2;
 };
 
 /*
- * Get appropriate index for child quadtree
- *
- */
+**
+** Get node index for bounds
+**
+*/
 PIXI.Quadtree.prototype._getIndex = function (bounds) {
+    "use strict";
+
     var totalWidth = bounds.x + bounds.width;
     var totalHeight = bounds.y + bounds.height;
 
     if (bounds.x < this.x || bounds.y < this.y ||
         totalWidth > this._edgeWidth || totalHeight > this._edgeHeight)
-        return (-1);
-
+        return (-1); // outside
     if (bounds.x >= this.x && totalWidth < this._halfEdgeWidth &&
         bounds.y >= this.y && totalHeight < this._halfEdgeHeight)
         return (0); // Top Left
@@ -4705,14 +4593,20 @@ PIXI.Quadtree.prototype._getIndex = function (bounds) {
     if (bounds.x >= this._halfEdgeWidth && totalWidth < this._edgeWidth &&
         bounds.y >= this._halfEdgeHeight && totalHeight < this._edgeHeight)
         return (3); // Bottom right;
-    return (-1);
+    return (-1); // outside
 };
 
+/*
+**
+**  Get node index for position
+**
+*/
 PIXI.Quadtree.prototype._getIndexXY = function (x, y) {
+    "use strict";
+
     if (x < this.x || y < this.y ||
         x > this._edgeWidth || y > this._edgeHeight)
-        return (-1);
-
+        return (-1); // outside
     if (x >= this.x && x < this._halfEdgeWidth &&
         y >= this.y && y < this._halfEdgeHeight)
         return (0); // Top Left
@@ -4729,34 +4623,61 @@ PIXI.Quadtree.prototype._getIndexXY = function (x, y) {
 };
 
 /*
- * Insert object in quadtree
- *
- */
+**
+** Insert object in quadtree
+**
+*/
 PIXI.Quadtree.prototype.insert = function (object, bounds) {
-    if (this.objects.length < this.maxElement) {
+    "use strict";
+
+    var idx;
+    if (this.objects.length < this.maxElement || (idx = this._getIndex(bounds)) === -1) {
         this.objects.push(object);
         object.node = this;
         return;
     }
-    var idx = this._getIndex(bounds);
-    if (idx === -1) {
-        this.objects.push(object);
-        object.node = this;
-        return;
-    }
-    if (this.nodes === undefined)
-    {
-        var w2 = this.width / 2,
-            h2 = this.height / 2,
-            x2 = this.x + w2,
-            y2 = this.y + h2;
-        this.nodes = [new PIXI.Quadtree(this.x, this.y, w2, h2, this.maxElement), new PIXI.Quadtree(x2, this.y, w2, h2, this.maxElement),
-                      new PIXI.Quadtree(this.x, y2, w2, h2, this.maxElement), new PIXI.Quadtree(x2, y2, w2, h2, this.maxElement)];
+
+    if (this.nodes === undefined) {
+        this._subdivide();
     }
     this.nodes[idx].insert(object, bounds);
 };
 
+/*
+**
+**  Remove object
+**
+*/
+PIXI.Quadtree.prototype.remove = function (object) {
+    var idx = this.objects.indexOf(object);
+    if (idx !== -1)
+        this.objects.splice(idx, 1);
+    object.node = undefined;
+};
+
+/*
+**
+**  Subdivide node into 4 child nodes
+**
+*/
+PIXI.Quadtree.prototype._subdivide = function () {
+    "use strict";
+    var w2 = this.width / 2,
+        h2 = this.height / 2,
+        x2 = this.x + w2,
+        y2 = this.y + h2;
+    this.nodes = [new PIXI.Quadtree(this.x, this.y, w2, h2, this.maxElement, this), new PIXI.Quadtree(x2, this.y, w2, h2, this.maxElement, this),
+                  new PIXI.Quadtree(this.x, y2, w2, h2, this.maxElement, this), new PIXI.Quadtree(x2, y2, w2, h2, this.maxElement, this)];
+};
+
+/*
+**
+**  Get elements at a position
+**
+*/
 PIXI.Quadtree.prototype.getElementsAt = function (x, y) {
+    "use strict";
+
     var idx = this._getIndexXY(x, y);
     var results = [];
     results = results.concat(this.objects);
@@ -4765,6 +4686,50 @@ PIXI.Quadtree.prototype.getElementsAt = function (x, y) {
     return (results);
 };
 
+/*
+**
+**  Sort elements according to scene graph
+**
+*/
+PIXI.Quadtree.sort = function (results) {
+    "use strict";
+
+    return (results.sort(function (a, b) {
+        var pa = a.parent;
+        var la = a;
+
+        while (pa !== undefined && pa !== null) {
+
+            var pb = b.parent;
+            var lb = b;
+            while (pb !== undefined && pb !== null) {
+                if (pb === la) {
+                    return (1);
+                }
+                if (pa === lb) {
+                    return (-1);
+                }
+                if (pb === pa) {
+                    var id0 = pa.children.indexOf(la);
+                    var id1 = pa.children.indexOf(lb);
+                    return (id1-id0);
+                }
+                lb = pb;
+                pb = pb.parent;
+            }
+
+            la = pa;
+            pa = pa.parent;
+        }
+        return (0); //  not on the same scene graph anyway
+    }));
+};
+
+/*
+**
+**  Resize node
+**
+*/
 PIXI.Quadtree.prototype.resize = function (width, height) {
     if (width === undefined || height === undefined) return (false);
     var collectedObject = [];
@@ -4792,6 +4757,11 @@ PIXI.Quadtree.prototype.resize = function (width, height) {
     }
 };
 
+/*
+**
+**  Clear node and children
+**
+*/
 PIXI.Quadtree.prototype.clear = function() {
     this.objects = [];
     this.nodes = undefined;
@@ -4799,8 +4769,10 @@ PIXI.Quadtree.prototype.clear = function() {
 };
 
 /*
- * Debug, draw quadtree on canvas context
- */
+**
+** Debug, draw quadtree on canvas context
+**
+*/
 PIXI.Quadtree.prototype.debug = function (context) {
     context.beginPath();
     context.rect(this.x, this.y, this.width, this.height);
@@ -8819,8 +8791,8 @@ PIXI.CanvasRenderer.prototype.render = function(stage)
             stage.interactionManager.setTarget(this);
         }
     }
-
-    stage.quadTree.debug(this.context);
+    /*this.context.setTransform(1,0,0,1,0,0);
+    stage.quadTree.debug(this.context);*/
 
     // remove frame updates..
     if(PIXI.Texture.frameUpdates.length > 0)
@@ -9351,7 +9323,7 @@ PIXI.Graphics = function()
      * @property boundsPadding
      * @type Number
      */
-    this.boundsPadding = 10;
+    this.boundsPadding = 0;
 };
 
 // constructor
@@ -9795,7 +9767,7 @@ PIXI.Graphics.prototype.updateBounds = function()
             minX = x < minX ? x : minX;
             maxX = x + w > maxX ? x + w : maxX;
 
-            minY = y < minY ? x : minY;
+            minY = y < minY ? y : minY;
             maxY = y + h > maxY ? y + h : maxY;
         }
         else if(type === PIXI.Graphics.CIRC || type === PIXI.Graphics.ELIP)
