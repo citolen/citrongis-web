@@ -17,13 +17,13 @@ package.json:
     "version": "0.123", - *required*
     "main": "/src/main.js", - optional; default: /src/main.js
     "dependencies": optional
-    {
+    [
         {
             "name": "dependency name",          - *required*
             "version": "dependency version"     - optional
         },
         ...
-    }
+    ]
 }
 ```
 
