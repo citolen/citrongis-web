@@ -53,55 +53,48 @@ code:
 Extension Context
 
 ```
-this = context; /* context of the extension */
 
-this.interface = [
-    {
-        name: 'my_interface_name',
-        view: viewobject
-    },...
-]
-
-this.document = DOM element containing the current interface
-
-this.strings = localization object containing strings.json content
+=== Extension Loader ===
 
 
-viewobject = {
-    bind(data);
-}
+=== Context === // Internal object to manage extensions
 
-view template (EJS syntax):
-
-<extension_body>
-<%= CitronGIS.UI.script(context, 'myscript.js'); %>
-
-<span id="<%= CitronGIS.UI.id(context, 'my_id'); %>" class="<%= CitronGIS.UI.class(context, 'my_class', 'my_class2'); %>">
-    <%= myvariable %>
-<span>
-<button click="<%= CitrongGIS.UI.function(context, my_func || context.my_func || 'function () {}'); %>">Click me</button>
-
-</extension_body>
+context.module  // Module object
+context.handle // Zip handler
+context.package // package info
 
 
-CitronGIS.UI.script =>
+=== Module === // Object seen by developer
 
-(function() {
-    content of myscript.js
-}).bind(extension_context)();
+module.exports =    // export d'un object
+module.strings =    // strings.json
+module.ui =         // UI object
+module.global = {}  // empty object to fill with property you wanna expor to interfaces
 
-CitronGIS.UI.id =>
+=== UI ===
 
-id -> context.name + "_" + id  => id="appname_my_id"
+UI.current  // current document visible
+UI.display('path', { data })    // Display an other document
 
-CitronGIS.UI.class =>
+-C
+    -Extension
+                -UI
+                    include
+        
 
-[class] -> [context.name + "_" + class] class="appname_my_class appname_my_class2"
+=== Include Script ===
 
-CitronGIS.UI.function =>
+    <% include('pathtoscript.js'); %>
+    
+=== Function ===
 
-var func = my_func is function || eval(my_func);
-CitronGIS.UI.__invoke(context.name, CitronGIS.UI.__register(func));
+    <%= function('name'); %>
+    
+    
+    (function(arg_to_pass) {
+        //extension code
+    })(arg_to_pass);
+
 
 
 ```

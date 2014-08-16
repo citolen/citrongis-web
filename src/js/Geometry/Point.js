@@ -48,4 +48,5 @@ C.Geometry.Point.prototype.TransformTo = function (to) {
     this.Y = tmp.Y;
     this.Z = tmp.Z;
     this.CRS = tmp.CRS;
+    return (this);
 };

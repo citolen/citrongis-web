@@ -1,27 +1,32 @@
-function toto(content) {
-    var extZip = new JSZip();
-    extZip.load(content, { base64: true });
+var fileInput = document.getElementById('file');
 
-    var package = JSON.parse(extZip.file('package.json').asText());
-    debugPackage(package);
+fileInput.onchange = function () {
+    var reader = new FileReader();
 
-    executeExtension(extZip, package);
-}
+    reader.onload = function() {
+        var extZip = new JSZip();
+        extZip.load(reader.result);
 
-function executeExtension(extZip, package) {
-    var code = extZip.file(package.main).asText();
-    var script = document.createElement('script');
-    script.innerHTML = "(function(){" + code + "})();";
-    document.body.appendChild(script);
-}
+        var e = new C.Extension.Extension(extZip);
+        C.Extension.Manager.register(e);
+        debugPackage(e.package);
+        e.run();
+
+        console.log(e.module.exports);
+        e.module.exports.toto();
+
+        e.module.ui.on('display', function (element) {
+            document.body.appendChild(element);
+        });
+
+        e.module.ui.display('html/view/index.tmpl');
+    };
+
+    reader.readAsArrayBuffer(fileInput.files[0]);
+};
 
 function debugPackage(package) {
     console.log("name:" + package.name);
     console.log("version:" + package.version);
     console.log("main:" + package.main);
 }
-
-var file = document.createElement('script');
-file.src = "http://localhost/citrongis/download.php?file=/citrongis/citrongis-app.zip&callback=toto";
-document.body.appendChild(file);
-

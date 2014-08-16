@@ -26,3 +26,16 @@ var MyApp = (function() {
 })();
 
 MyApp.my_public_function();
+
+console.log(C);
+
+var p = new C.Geometry.Point(51, 4.3, 0, C.Helpers.ProjectionsHelper.WGS84);
+console.log(p);
+console.log(p.TransformTo(C.Helpers.ProjectionsHelper.EPSG3857));
+
+console.log(module);
+module.exports = {
+    toto: function () {
+        console.log(p);
+    }
+};
