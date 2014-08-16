@@ -1,5 +1,7 @@
+<% include('lib/coffee-script.js'); %>
 <% include('html/js/index.js'); %>
 
 <h1><%= myvar %></h1>
 <span>Comming from strings.json: <%= strings.default.APPLICATION_NAME %></span><br/>
-<button onclick="<%= trigger(myfunc) %>" >TEST bridge</button>
+<button onclick="<%= trigger(myfunc) %>" >TEST bridge</button><br/>
+<span>Coffee Script result of times = (a, b) -> a * b; times(2,5): <%= coffee_result %>
