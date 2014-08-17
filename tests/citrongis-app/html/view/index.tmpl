@@ -1,4 +1,5 @@
 <% include('lib/coffee-script.js'); %>
+<% include('lib/Chart.js') %>
 <% include('html/js/index.js'); %>
 
 <div id="citron_div">
@@ -6,4 +7,5 @@
     <span>Comming from strings.json: <%= strings.default.APPLICATION_NAME %></span><br/>
     <button onclick="<%= trigger(myfunc) %><%= trigger(coffeeFunc) %>">TEST bridge</button><br/>
     <span>Coffee Script result of times = (a, b) -> a * b; times(2,5): <%= coffee_result %><br/>
+    <canvas id="canvas" height="450" width="600"></canvas><br/>
 </div>
