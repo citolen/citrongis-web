@@ -25,12 +25,16 @@ C.Extension.UI.UI.prototype.display = function (path) {
     if (!this._context.handle.file(path)) return;
 
     var template = this._context.handle.file(path).asText();
+    var templateEmitter = new EventEmitter();
     this._context.module.global.strings = this._context.module.strings;
+    this._context.module.global.UI = templateEmitter;
     this._context.module.global.include = C.Extension.UI.include.bind(this._context);
     this._context.module.global.trigger = C.Extension.UI.trigger.bind(this._context);
+    this._context.module.global.require = C.Extension.Require.bind(this._context);
     var result = new EJS({text: template}).render(this._context.module.global);
     var handler = document.createElement('DIV');
     handler.innerHTML = result;
     this.current = handler;
     this.emit('display', handler);
+    templateEmitter.emit('loaded', handler);
 };

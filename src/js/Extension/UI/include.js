@@ -12,7 +12,7 @@ C.Extension.UI = C.Extension.UI || {};
 C.Extension.UI.include = function (filepath) {
     if (!this.handle.file(filepath)) return;
     var code = this.handle.file(filepath).asText();
-    eval('(function() {'
+    eval('(function(require) {'
          + code +
-        '}).call(this.module.global)');
+        '}).call(this.module.global, this.module.global.require)');
 };
