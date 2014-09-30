@@ -1,6 +1,6 @@
 console.log('interface script');
 
-this.myvar = 'toto';
+this.myvar = 'CitronGIS App';
 
 this.myfunc = function () {
     console.log('my click');

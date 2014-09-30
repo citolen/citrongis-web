@@ -1,5 +1,5 @@
-d = document.getElementById("citron_div")
-d.style.backgroundColor = "rgba(0,0,0,0.5)"
+d = document.getElementById("citron_content")
+#d.style.backgroundColor = "rgba(0,0,0,0.5)"
 
 nd = document.createElement("SPAN");
 nd.id = "coffee_span"

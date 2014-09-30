@@ -1,11 +1,14 @@
 <% include('lib/coffee-script.js'); %>
 <% include('lib/Chart.js') %>
 <% include('html/js/index.js'); %>
+<% include('html/css/style.css') %>
 
 <div id="citron_div">
-    <h1><%= myvar %></h1>
-    <span>Comming from strings.json: <%= strings.default.APPLICATION_NAME %></span><br/>
-    <button onclick="<%= trigger(myfunc) %><%= trigger(coffeeFunc) %>">TEST bridge</button><br/>
-    <span>Coffee Script result of times = (a, b) -> a * b; times(2,5): <%= coffee_result %><br/>
-    <canvas id="canvas" height="450" width="600"></canvas><br/>
+    <h1 id="citron_title"><%= myvar %></h1>
+    <div id="citron_content">
+        <span>Comming from strings.json: <%= strings.default.APPLICATION_NAME %></span><br/>
+        <button onclick="<%= trigger(myfunc) %><%= trigger(coffeeFunc) %>">TEST bridge</button><br/>
+        <span>Coffee Script result of times = (a, b) -> a * b; times(2,5): <%= coffee_result %><br/>
+        <canvas id="canvas" height="200" width="200"></canvas><br/>
+    </div>
 </div>
