@@ -1,3 +1,6 @@
+counter = 0
+
 this.coffeeFunc = () ->
+    counter++
     nd = document.getElementById "coffee_span"
-    nd.innerHTML = "Modified by a CoffeeScript callback"
+    nd.innerHTML = "You clicked: " + counter + " times"

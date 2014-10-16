@@ -13,6 +13,7 @@ return times(2, 5)');
 var self = this;
 Function(self.CoffeeScript.compile(require('html/coffee/func.coffee'))).call(self);
 
+console.log(this);
 
 var radarChartData = {
 		labels: ["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"],
