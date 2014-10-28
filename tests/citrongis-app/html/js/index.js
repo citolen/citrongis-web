@@ -1,5 +1,7 @@
 console.log('interface script');
 
+console.log('[RESULT]', require('testinside'));
+
 this.myvar = 'CitronGIS App';
 
 this.myfunc = function () {

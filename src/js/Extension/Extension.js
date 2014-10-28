@@ -18,9 +18,18 @@ C.Extension.Extension = function (handle) {
     if (!handle || !handle.file(C.Extension.AR_PACKAGE)) return (null);
     this.handle = handle;
 
-    this.module = new C.Extension.Module(this,
-                                         this.handle.file(C.Extension.AR_STRINGS_LOCALIZATION) ?
-                                            JSON.parse(this.handle.file(C.Extension.AR_STRINGS_LOCALIZATION).asText()) : {});
+    var localization;
+    if (this.handle.file(C.Extension.AR_STRINGS_LOCALIZATION)) {
+        try {
+            localization = JSON.parse(this.handle.file(C.Extension.AR_STRINGS_LOCALIZATION).asText());
+        } catch (e) {
+            localization = {};
+        }
+    } else {
+        localization = {};
+    }
+
+    this.module = new C.Extension.Module(this, localization);
 
     this.package = JSON.parse(this.handle.file(C.Extension.AR_PACKAGE).asText());
 };
@@ -30,8 +39,20 @@ C.Extension.Extension.prototype.run = function () {
     var startScript = this.package.main || 'src/main.js';
     if (!this.handle.file(startScript)) return (false);
 
-    var code = this.handle.file(startScript).asText();
-    eval('console.log(this); (function (module) {\
-            ' + code + '\
-            }).call(this.module.global, this.module);');
+    this.setupEnvironment();
+
+    C.Extension.Require.call(this, startScript);
+};
+
+C.Extension.Extension.prototype.setupEnvironment = function () {
+
+    'use strict';
+
+    var templateEmitter = new EventEmitter();
+
+    this.currentPath = "";
+    this.module.global.UI = templateEmitter;
+    this.module.global.strings = this.module.strings;
+    //this.module.global.include = C.Extension.UI.include.bind(this);
+    this.module.global.trigger = C.Extension.UI.trigger.bind(this);
 };

@@ -4,6 +4,8 @@
 //
 //
 
+var testContent = require('toto');
+
 var MyApp = (function() {
     /* private member */
     var my_private_member = 1;

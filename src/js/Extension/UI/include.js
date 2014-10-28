@@ -10,7 +10,6 @@ C.Extension = C.Extension || {};
 C.Extension.UI = C.Extension.UI || {};
 
 C.Extension.UI.include = function (filepath) {
-    if (!this.handle.file(filepath)) return;
     var fileExt = filepath.lastIndexOf('.');
     if (fileExt == -1 || fileExt == filepath.length)
         fileExt = "js";
@@ -19,15 +18,12 @@ C.Extension.UI.include = function (filepath) {
     }
     if (fileExt == "js") {
         console.log('[JS include]', filepath);
-        var code = this.handle.file(filepath).asText();
-        eval('(function(require) {'
-             + code +
-            '}).call(this.module.global, this.module.global.require)');
+        C.Extension.Require.call(this, filepath);
     }
     if (fileExt == "css") {
         console.log('[CSS include]', filepath);
         var s = document.createElement("style");
-        s.innerHTML = this.handle.file(filepath).asText();
+        s.innerHTML = C.Extension.Require.call(this, filepath);//this.handle.file(filepath).asText();
         document.getElementsByTagName("head")[0].appendChild(s);
     }
 };

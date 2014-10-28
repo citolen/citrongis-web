@@ -88,11 +88,11 @@ EJS.prototype = {
 	 * @param {Object} extra_helpers an object with additonal view helpers
 	 * @return {String} returns the result of the string
 	 */
-    render : function(object, extra_helpers){
+    render : function(object, extra_helpers, citrongisCtx){
         object = object || {};
         this._extra_helpers = extra_helpers;
 		var v = new EJS.Helpers(object, extra_helpers || {});
-		return this.template.process.call(object, object,v);
+		return this.template.process.call(object, object,v, citrongisCtx);
 	},
     update : function(element, options){
         if(typeof element == 'string'){
@@ -351,7 +351,7 @@ EJS.Compiler.prototype = {
 	}
 	buff.close();
 	this.out = buff.script + ";";
-	var to_be_evaled = '/*'+name+'*/this.process = function(_CONTEXT,_VIEW) { try { with(_VIEW) { with (_CONTEXT) {'+this.out+" return ___ViewO.join('');}}}catch(e){e.lineNumber=null;throw e;}};";
+	var to_be_evaled = '/*'+name+'*/this.process = function(_CONTEXT,_VIEW, _CITRONGIS_CTX) { try { with(_VIEW) { with (_CONTEXT) { with (_CITRONGIS_CTX) {'+this.out+" return ___ViewO.join('');}}}}catch(e){e.lineNumber=null;throw e;}};";
 
 	try{
 		eval(to_be_evaled);
