@@ -22,9 +22,8 @@ C.Extension.UI.UI = C.Utils.Inherit(C.Utils.Inherit(function (_context) {
 //////////////////////////
 C.Extension.UI.UI.prototype.display = function (path) {
     "use strict";
-    if (!this._context.handle.file(path)) return;
-
-    var template = this._context.handle.file(path).asText();
+    var page = C.Extension.Require.call(this._context, path);
+    if (!page) return;
 
     var context = C.Utils.Context.copy(this._context);
     context.currentPath = path;
@@ -32,7 +31,7 @@ C.Extension.UI.UI.prototype.display = function (path) {
         require: C.Extension.Require.bind(context),
         include: C.Extension.UI.include.bind(context)
     };
-    var result = new EJS({text: template}).render(this._context.module.global, {}, citrongisCtx);
+    var result = new EJS({text: page}).render(this._context.module.global, {}, citrongisCtx);
 
     var handler = document.createElement('DIV');
     handler.innerHTML = result;

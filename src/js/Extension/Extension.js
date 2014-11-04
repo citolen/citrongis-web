@@ -55,4 +55,5 @@ C.Extension.Extension.prototype.setupEnvironment = function () {
     this.module.global.strings = this.module.strings;
     //this.module.global.include = C.Extension.UI.include.bind(this);
     this.module.global.trigger = C.Extension.UI.trigger.bind(this);
+    this.module.global.sendMessage = C.Extension.Manager.sendMessage.bind(this);
 };

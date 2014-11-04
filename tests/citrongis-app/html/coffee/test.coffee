@@ -1,4 +1,5 @@
 d = document.getElementById("citron_content")
+
 #d.style.backgroundColor = "rgba(0,0,0,0.5)"
 
 nd = document.createElement("SPAN");

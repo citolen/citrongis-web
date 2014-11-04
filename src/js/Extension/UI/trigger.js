@@ -11,7 +11,10 @@ C.Extension.UI = C.Extension.UI || {};
 
 C.Extension.UI.trigger = function (fct) {
     if (typeof fct == 'function') {
-        var _ = fct.bind(this.module.global, Array.prototype.slice.call(arguments, 1));
+        var args = Array.prototype.slice.call(arguments, 1);
+        if (args.length == 0)
+            args = undefined;
+        var _ = fct.bind(this.module.global, args);
         var id = this.module.ui.register(_);
         return ('C.Extension.Manager.bridge(\'' + this.package.name + '\', ' + id + ');');
     }

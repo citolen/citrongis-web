@@ -1,6 +1,7 @@
 var fileInput = document.getElementById('file');
+var fileInput1 = document.getElementById('file1');
 
-fileInput.onchange = function () {
+function fileChanged() {
     var reader = new FileReader();
 
     reader.onload = function() {
@@ -10,20 +11,22 @@ fileInput.onchange = function () {
         var e = new C.Extension.Extension(extZip);
         C.Extension.Manager.register(e);
         debugPackage(e.package);
-        e.run();
-
-        console.log(e.module.exports);
-        e.module.exports.toto();
 
         e.module.ui.on('display', function (element) {
             document.body.appendChild(element);
         });
 
-        e.module.ui.display('html/view/index.tmpl');
+        e.run();
+
+        console.log(e.module.exports);
     };
 
-    reader.readAsArrayBuffer(fileInput.files[0]);
+    reader.readAsArrayBuffer(this.files[0]);
 };
+
+fileInput.onchange = fileChanged;
+fileInput1.onchange = fileChanged;
+
 
 function debugPackage(package) {
     console.log("name:" + package.name);

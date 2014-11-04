@@ -36,6 +36,10 @@ console.log(p);
 console.log(p.TransformTo(C.Helpers.ProjectionsHelper.EPSG3857));
 
 console.log(module);
+
+
+module.ui.display('html/view/index.tmpl');
+
 module.exports = {
     toto: function () {
         console.log(p);
