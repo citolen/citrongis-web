@@ -33,14 +33,30 @@ C.Utils.Inherit = function (constructor, classToInherit, name) {
     var _;
     if (name === undefined) {
         _ = function () {
-            classToInherit.apply(this, arguments);
-            constructor.apply(this, arguments);
+            var self = this;
+            var baseInit = false;
+            var base = function () {
+                baseInit = true;
+                classToInherit.apply(self, arguments);
+            };
+            var args = [base].concat(Array.prototype.slice.call(arguments));
+            constructor.apply(this, args);
+            if (!baseInit)
+                classToInherit.apply(this, arguments);
         };
     } else {
         _ = eval(name + ' = function () {\
-                                classToInherit.apply(this, arguments);\
-                                constructor.apply(this, arguments);\
-                            };');
+var self = this;\
+var baseInit = false;\
+var base = function () {\
+baseInit = true;\
+classToInherit.apply(self, arguments);\
+};\
+var args = [base].concat(Array.prototype.slice.call(arguments));\
+constructor.apply(this, args);\
+if (!baseInit)\
+classToInherit.apply(this, arguments);\
+};');
     }
     C.Utils.Extends(_.prototype, constructor.prototype);
     C.Utils.Extends(_.prototype, new classToInherit());

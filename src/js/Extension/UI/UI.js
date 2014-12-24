@@ -9,8 +9,11 @@ var C = C || {};
 C.Extension = C.Extension || {};
 C.Extension.UI = C.Extension.UI || {};
 
-C.Extension.UI.UI = C.Utils.Inherit(C.Utils.Inherit(function (_context) {
+C.Extension.UI.UI = C.Utils.Inherit(C.Utils.Inherit(function (base, base1, _context) {
     "use strict";
+
+    base();
+    base1();
 
     this._context = _context;
 

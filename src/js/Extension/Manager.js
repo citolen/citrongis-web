@@ -8,7 +8,11 @@
 var C = C || {};
 C.Extension = C.Extension || {};
 
-C.Extension.Manager = new (C.Utils.Inherit(function () {
+C.Extension.Manager = new (C.Utils.Inherit(function (base) {
+
+    'use strict';
+
+    base();
 
     this.Extensions = [];
 
