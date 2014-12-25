@@ -57,10 +57,11 @@ C.Geo.Layer.prototype.name = function (name) {
 
     'use strict';
 
-    if (name === undefined || this._name === name) return;
+    if (name === undefined || this._name === name) return this._name;
 
     this._name = name;
     this.emit('nameChanged', name);
+    return this._name;
 };
 
 /* Enable/Disable layer */
@@ -68,10 +69,11 @@ C.Geo.Layer.prototype.enabled = function (enabled) {
 
     'use strict';
 
-    if (enabled == undefined || this._enabled === enabled) return;
+    if (enabled == undefined || this._enabled === enabled) return this._enabled;
 
     this._enabled = enabled;
     this.emit('enabledChanged', enabled);
+    return this._enabled;
 };
 
 /* Change zIndex of the layer */
@@ -79,10 +81,11 @@ C.Geo.Layer.prototype.zIndex = function (zIndex) {
 
     'use strict';
 
-    if (zIndex === undefined || this._zIndex === zIndex) return;
+    if (zIndex === undefined || this._zIndex === zIndex) return this._zIndex;
 
     this._zIndex = zIndex;
     this.emit('zIndexChanged', zIndex);
+    return this._zIndex;
 };
 
 /* Change layer's opacity */
@@ -90,11 +93,12 @@ C.Geo.Layer.prototype.opacity = function (opacity) {
 
     'use strict';
 
-    if (opacity === undefined || this._opacity === opacity) return;
+    if (opacity === undefined || this._opacity === opacity) return this._opacity;
 
     this._opacity = opacity;
     this.emit('opacity', opacity);
     this.makeDirty();
+    return this._opacity;
 };
 
 /* Make the layer dirty */
