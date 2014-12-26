@@ -34,8 +34,22 @@ C.Geo.Feature.Line.prototype.locations = function (locations) {
     if (locations === undefined || typeof locations !== 'Array') return this._locations;
 
     this._locations = locations;
-    this.emit('locationChanged', locations);
+    this.emit('locationsChanged', locations);
+    this.makeDirty();
     return this._locations;
+};
+
+C.Geo.Feature.Line.prototype.locationAt = function (idx, location) {
+
+    'use strict';
+
+    if (idx === undefined) return (null);
+    if (idx !== undefined && location === undefined) return this._locations[idx];
+
+    this._locations[idx] = location;
+    this.emit('locationChanged', {idx: idx, location: location});
+    this.makeDirty();
+    return (location);
 };
 
 C.Geo.Feature.Line.prototype.lineWidth = function (lineWidth) {
@@ -46,6 +60,7 @@ C.Geo.Feature.Line.prototype.lineWidth = function (lineWidth) {
 
     this._lineWidth = lineWidth;
     this.emit('lineWidthChanged', lineWidth);
+    this.makeDirty();
     return this._lineWidth;
 };
 
@@ -57,5 +72,6 @@ C.Geo.Feature.Line.prototype.lineColor = function (lineColor) {
 
     this._lineColor = lineColor;
     this.emit('lineColorChanged', lineColor);
+    this.makeDirty();
     return this._lineColor;
 };

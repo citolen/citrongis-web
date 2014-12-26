@@ -19,7 +19,7 @@ C.Geo.Feature.Circle = C.Utils.Inherit(function (options) {
 
     this._location = options.location;
 
-    this._radius = options.radius || {val:1,format:'px'};
+    this._radius = options.radius || 1;
 
     this._backgroundColor = options.backgroundColor || '#000000';
 
@@ -38,6 +38,7 @@ C.Geo.Feature.Circle.prototype.location = function (location) {
     this._location = location;
     this.emit('locationChanged', location);
     this.makeDirty();
+    return this._location;
 };
 
 C.Geo.Feature.Circle.prototype.radius = function (radius) {
@@ -49,6 +50,7 @@ C.Geo.Feature.Circle.prototype.radius = function (radius) {
     this._radius = radius;
     this.emit('radiusChanged', radius);
     this.makeDirty();
+    return this._radius;
 };
 
 C.Geo.Feature.Circle.prototype.backgroundColor = function (backgroundColor) {
@@ -60,6 +62,7 @@ C.Geo.Feature.Circle.prototype.backgroundColor = function (backgroundColor) {
     this._backgroundColor = backgroundColor;
     this.emit('backgroundColorChanged', backgroundColor);
     this.makeDirty();
+    return this._backgroundColor;
 };
 
 C.Geo.Feature.Circle.prototype.outlineColor = function (outlineColor) {
@@ -71,6 +74,7 @@ C.Geo.Feature.Circle.prototype.outlineColor = function (outlineColor) {
     this._outlineColor = outlineColor;
     this.emit('outlineColorChanged', outlineColor);
     this.makeDirty();
+    return this._outlineColor;
 };
 
 C.Geo.Feature.Circle.prototype.outlineWidth = function (outlineWidth) {
@@ -82,4 +86,5 @@ C.Geo.Feature.Circle.prototype.outlineWidth = function (outlineWidth) {
     this._outlineWidth = outlineWidth;
     this.emit('outlineWidthChanged', outlineWidth);
     this.makeDirty();
+    return this._outlineWidth;
 };
