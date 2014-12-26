@@ -48,10 +48,7 @@ C.Extension.Extension.prototype.setupEnvironment = function () {
 
     'use strict';
 
-    var templateEmitter = new EventEmitter();
-
     this.currentPath = "";
-    this.module.global.UI = templateEmitter;
     this.module.global.strings = this.module.strings;
     this.module.global.trigger = C.Extension.UI.trigger.bind(this);
     this.module.global.sendMessage = C.Extension.Manager.sendMessage.bind(this);

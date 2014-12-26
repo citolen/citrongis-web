@@ -40,5 +40,7 @@ C.Extension.UI.UI.prototype.display = function (path) {
     handler.innerHTML = result;
     this.current = handler;
     this.emit('display', handler);
-    this._context.module.global.UI.emit('loaded', handler);
+    if (this._context.module.global.onLoaded !== undefined && typeof this._context.module.global.onLoaded === 'function') {
+        this._context.module.global.onLoaded(handler);
+    }
 };
