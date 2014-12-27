@@ -21,7 +21,7 @@ C.Geo.Layer = C.Utils.Inherit(function (base, options) {
     base();
 
     /* Displayed name, if none not displayed */
-    this._name = options.name || undefined;
+    this._name = options.name;
 
     /* Layer enable */
     this._enabled = options.enabled || true;
@@ -45,12 +45,48 @@ C.Geo.Layer = C.Utils.Inherit(function (base, options) {
     this._dirty = false;
 
     /* Layer's minimum zoom */
-    this._minZoom = options.minZoom || undefined;
+    this._minZoom = options.minZoom;
 
     /* Layer's maximum zoom */
-    this._maxZoom = options.maxZoom || undefined;
+    this._maxZoom = options.maxZoom;
+
+    this._featureDirty = featureDirty.bind(this);
 
 }, EventEmitter, 'C.Geo.Layer');
+
+C.Geo.Layer.prototype.addFeature = function (feature) {
+
+    'use strict';
+
+    if (feature === undefined ||
+        feature instanceof C.Geo.Feature.Feature !== true ||
+        this._features.indexOf(feature) !== -1) return false;
+
+    this._features.push(feature);
+    feature.on('dirty', this._featureDirty);
+    this.emit('featureAdded', feature);
+    return true;
+};
+
+C.Geo.Layer.prototype.removeFeature = function (feature) {
+
+    'use strict';
+
+    var idx;
+    if (feature === undefined ||
+        feature instanceof C.Geo.Feature.Feature !== true ||
+        (idx=this._features.indexOf(feature)) === -1) return false;
+
+    this._features.splice(idx, 1);
+    feature.off('dirty', this._featureDirty);
+    this.emit('featureRemoved', feature);
+    return true;
+};
+
+function featureDirty(feature) {
+    /* redraw feature */
+    feature._dirty = false;
+}
 
 /* Change layer's name */
 C.Geo.Layer.prototype.name = function (name) {

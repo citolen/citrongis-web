@@ -1,4 +1,6 @@
-$('.loader .bar').width('0%');
+$('#citrongis').html('<div class="main"><div id="background-citrongis">CitronGIS<div class="loader"><div class="bar"></div><div class="info"></div></div></div></div>');
+
+
 
 var it = 0;
 var files = [
@@ -32,7 +34,8 @@ var files = [
     'http://localhost:8080/js/Geo/Feature/Image.js',
     'http://localhost:8080/js/Geo/Feature/Line.js',
     'http://localhost:8080/js/Geo/Feature/Polygon.js',
-    'http://localhost:8080/js/Geo/Layer.js'
+    'http://localhost:8080/js/Geo/Layer.js',
+    'http://localhost:8080/js/Extension/LayerGroup.js'
 ];
 
 function loadfile(src) {
@@ -53,3 +56,41 @@ function loadnext() {
 }
 
 loadnext();
+
+var fileInput = document.getElementById('file');
+
+function fileChanged() {
+    var reader = new FileReader();
+
+    reader.onload = function() {
+        var extZip = new JSZip();
+        extZip.load(reader.result);
+
+        var e = new C.Extension.Extension(extZip);
+        C.Extension.Manager.register(e);
+        debugPackage(e.package);
+
+        e.module.ui.on('display', function (element) {
+            var container = document.createElement('DIV');
+            container.appendChild(element);
+            container.className = "extension-container";
+            document.body.appendChild(container);
+            $(container).draggable({ containment: "#citrongis", scroll: false });
+        });
+
+        e.run();
+
+        console.log(e.module.exports);
+    };
+
+    reader.readAsArrayBuffer(this.files[0]);
+};
+
+fileInput.onchange = fileChanged;
+
+
+function debugPackage(package) {
+    console.log("name:" + package.name);
+    console.log("version:" + package.version);
+    console.log("main:" + package.main);
+}
