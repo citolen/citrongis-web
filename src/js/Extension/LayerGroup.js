@@ -28,6 +28,22 @@ C.Extension.LayerGroup = C.Utils.Inherit(function (base, options) {
 
 }, EventEmitter, 'C.Extension.LayerGroup');
 
+C.Extension.LayerGroup.prototype.layers = function () {
+
+    'use strict';
+
+    var result = [];
+    for (var i = 0; i < this._layers.length; ++i) {
+        var l = this._layers[i];
+        result.push({
+            name: l.name(),
+            layer: l,
+            idx: i
+        });
+    }
+    return (result);
+};
+
 C.Extension.LayerGroup.prototype.addLayer = function (layer) {
 
     'use strict';
