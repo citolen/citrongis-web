@@ -35,62 +35,38 @@ var files = [
     'http://localhost:8080/js/Geo/Feature/Line.js',
     'http://localhost:8080/js/Geo/Feature/Polygon.js',
     'http://localhost:8080/js/Geo/Layer.js',
-    'http://localhost:8080/js/Extension/LayerGroup.js'
+    'http://localhost:8080/js/Extension/LayerGroup.js',
+    'http://localhost:8080/js/Extension/LayerManager.js',
+    'http://localhost:8080/js/CitronGIS.js'
 ];
 
-function loadfile(src) {
-    $('.loader .info').html(src);
-    var script = document.createElement('SCRIPT');
-    script.onload = loadnext;
-    script.src = src;
-    document.body.appendChild(script);
-}
+var map;
 
-function loadnext() {
+(function loadnext(callback) {
     $('.loader .bar').width((it / files.length * 100) + '%');
     if (it === files.length) {
         $('.loader').fadeTo(400,0);
+        callback();
         return;
     }
-    loadfile(files[it++]);
-}
+    var src = files[it++];
+    $('.loader .info').html(src);
+    var script = document.createElement('SCRIPT');
+    script.onload = loadnext.bind(this, callback);
+    script.src = src;
+    document.body.appendChild(script);
+})(function () {
+    console.log('loading done');
 
-loadnext();
+    map = new C.CitrongGIS(document.getElementById('citrongis'));
+});
 
 var fileInput = document.getElementById('file');
 
+//
+
 function fileChanged() {
-    var reader = new FileReader();
-
-    reader.onload = function() {
-        var extZip = new JSZip();
-        extZip.load(reader.result);
-
-        var e = new C.Extension.Extension(extZip);
-        C.Extension.Manager.register(e);
-        debugPackage(e.package);
-
-        e.module.ui.on('display', function (element) {
-            var container = document.createElement('DIV');
-            container.appendChild(element);
-            container.className = "extension-container";
-            document.body.appendChild(container);
-            $(container).draggable({ containment: "#citrongis", scroll: false });
-        });
-
-        e.run();
-
-        console.log(e.module.exports);
-    };
-
-    reader.readAsArrayBuffer(this.files[0]);
+    map.loadExtension(this.files[0]);
 };
 
 fileInput.onchange = fileChanged;
-
-
-function debugPackage(package) {
-    console.log("name:" + package.name);
-    console.log("version:" + package.version);
-    console.log("main:" + package.main);
-}
