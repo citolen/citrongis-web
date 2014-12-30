@@ -12,7 +12,7 @@ C.Extension.AR_STRINGS_LOCALIZATION = 'strings.json';
 C.Extension.AR_PACKAGE = 'package.json';
 
 //
-C.Extension.Extension = function (handle) {
+C.Extension.Extension = function (handle, layerManager) {
     "use strict";
 
     if (!handle || !handle.file(C.Extension.AR_PACKAGE)) return (null);
@@ -29,7 +29,7 @@ C.Extension.Extension = function (handle) {
         localization = {};
     }
 
-    this.module = new C.Extension.Module(this, localization);
+    this.module = new C.Extension.Module(this, localization, layerManager);
 
     this.package = JSON.parse(this.handle.file(C.Extension.AR_PACKAGE).asText());
 };

@@ -10,7 +10,7 @@ C.Extension = C.Extension || {};
 
 // Module Constructor
 // @strings : localization string (strings.json)
-C.Extension.Module = function (_context, strings) {
+C.Extension.Module = function (_context, strings, layerManager) {
 
     this._context = _context;
 
@@ -23,4 +23,6 @@ C.Extension.Module = function (_context, strings) {
     this.global = {};
 
     this.ui = new C.Extension.UI.UI(_context);
+
+    this.layerHelper = new C.Extension.LayerHelper(layerManager, this._context);
 };

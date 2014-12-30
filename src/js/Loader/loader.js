@@ -37,6 +37,7 @@ var files = [
     'http://localhost:8080/js/Geo/Layer.js',
     'http://localhost:8080/js/Extension/LayerGroup.js',
     'http://localhost:8080/js/Extension/LayerManager.js',
+    'http://localhost:8080/js/Extension/LayerHelper.js',
     'http://localhost:8080/js/CitronGIS.js'
 ];
 

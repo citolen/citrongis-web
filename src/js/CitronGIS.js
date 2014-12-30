@@ -14,6 +14,8 @@ C.CitrongGIS = function (rootDIV) {
     'use strict';
 
     this._rootDiv = rootDIV;
+
+    this._layerManager = new C.Extension.LayerManager();
 };
 
 C.CitrongGIS.prototype.loadExtension = function (file) {
@@ -28,7 +30,7 @@ C.CitrongGIS.prototype.loadExtension = function (file) {
         var extZip = new JSZip();
         extZip.load(reader.result);
 
-        var e = new C.Extension.Extension(extZip);
+        var e = new C.Extension.Extension(extZip, self._layerManager);
         C.Extension.Manager.register(e);
 
         e.module.ui.on('display', function (element) {
