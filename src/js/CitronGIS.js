@@ -23,7 +23,7 @@ C.CitrongGIS = function (rootDIV) {
 
     this._renderer.view.id = '__citrongisRenderer';
     this._rootDiv.appendChild(this._renderer.view);
-    this._rendererStage = new PIXI.Stage(0x000000, true);
+    this._rendererStage = new PIXI.Stage(0x000000, 10);
     this._rendererStage.setQuadtreeSize(this._renderer.width, this._renderer.height);
 
     this._viewport = new C.System.Viewport({
@@ -55,8 +55,27 @@ C.CitrongGIS = function (rootDIV) {
     var graphics = new PIXI.Graphics();
     graphics.beginFill(0x0000FF);
     graphics.lineStyle(1, 0xFF0000);
-    graphics.drawRect(500, 100, 300, 200);
-    graphics.hitArea = new PIXI.Rectangle(500, 100, 300, 200);
+    graphics.drawRect(0, 0, 300, 200);
+    graphics.hitArea = new PIXI.Rectangle(0, 0, 300, 200);
+    graphics.position = new PIXI.Point(500, 100);
+    graphics.interactive = true;
+    var d = false;
+    graphics.mousedown = function () {
+        d = true;
+    };
+
+    graphics.mousemove = function (evt, mouse) {
+        if (!d) return;
+        graphics.x = mouse.global.x - 100;
+        graphics.y = mouse.global.y - 100;
+        //console.log(mouse);
+    };
+
+    graphics.mouseup = function () {
+        d = false;
+    };
+
+
     this._rendererStage.addChild(graphics);
 };
 

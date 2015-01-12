@@ -1,13 +1,5 @@
 var renderer = new PIXI.autoDetectRenderer(800, 600, {transparent:true});
 
-var quadTest = new PIXI.Quadtree(0, 0, 800, 600, 4);
-/*quadTest.nodes = [
-    new PIXI.Quadtree(0, 0, 400, 300), new PIXI.Quadtree(400, 0, 800, 300),
-    new PIXI.Quadtree(0, 300, 400, 600), new PIXI.Quadtree(400, 300, 800, 600)
-                    ];*/
-
-
-
 var rendererElement = document.getElementById('renderer');
 var consoleElement = document.getElementById('console');
 
@@ -19,7 +11,7 @@ function log(str)
 
 rendererElement.appendChild(renderer.view);
 
-var stage = new PIXI.Stage(0x000000, true);
+var stage = new PIXI.Stage(0x000000, 10);
 stage.setQuadtreeSize(renderer.width, renderer.height);
 
 /*var o = {x: 10, y: 10, edgeW: 10 + 20, edgeH: 10 + 20};
@@ -162,6 +154,7 @@ function animate() {
 
     // render the stage
     renderer.render(stage);
+	//stage.quadTree.debug(renderer.context);
     //quadTest.debug(renderer.context);
     //
 }

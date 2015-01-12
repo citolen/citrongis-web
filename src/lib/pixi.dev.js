@@ -783,6 +783,17 @@ PIXI.Matrix = function()
     this.ty = 0;
 };
 
+PIXI.Matrix.prototype.fromMatrix = function(matrix)
+{
+    this.a = matrix.a;
+    this.b = matrix.b;
+    this.c = matrix.c;
+    this.d = matrix.d;
+    this.tx = matrix.tx;
+    this.ty = matrix.ty;
+	return (this);
+};
+
 /**
  * Creates a Matrix object based on the given array. The Element to Matrix mapping order is as follows:
  *
@@ -1456,7 +1467,7 @@ PIXI.DisplayObject.prototype.updateTransform = function()
     // create some matrix refs for easy access
     var pt = this.parent.worldTransform;
     var wt = this.worldTransform;
-	var saveTransform = new PIXI.Matrix(this.worldTransform);
+	var save = new PIXI.Matrix().fromMatrix(wt);
 
     // temporary matrix variables
     var a, b, c, d, tx, ty;
@@ -1517,7 +1528,7 @@ PIXI.DisplayObject.prototype.updateTransform = function()
     // multiply the alphas..
     this.worldAlpha = this.alpha * this.parent.worldAlpha;
 
-    if (!saveTransform.equals(this.worldTransform)) {
+    if (!save.equals(wt)) {
         if (this.node !== undefined) {
             var node = this.node;
             while (node.parent !== undefined)
@@ -4855,7 +4866,7 @@ PIXI.InteractionManager.prototype.onTouchEnd = function(event)
  * Here is how to add a sprite to the stage :
  * stage.addChild(sprite);
  */
-PIXI.Stage = function(backgroundColor)
+PIXI.Stage = function(backgroundColor, quadTreeMaxElem)
 {
     PIXI.DisplayObjectContainer.call( this );
 
@@ -4902,7 +4913,7 @@ PIXI.Stage = function(backgroundColor)
 
     this.setBackgroundColor(backgroundColor);
 
-    this.quadTree = new PIXI.Quadtree(0, 0, 800, 600);
+    this.quadTree = new PIXI.Quadtree(0, 0, 800, 600, quadTreeMaxElem);
     this.node = this.quadTree;
 };
 
@@ -5758,7 +5769,7 @@ PIXI.Quadtree = function(x, y, width, height, maxelement, parent) {
     this.objects = [];
     this.nodes = undefined;
     this.parent = parent || undefined;
-    this.maxElement = maxelement || 10;
+    this.maxElement = maxelement || 2;
 };
 
 /*
@@ -5844,8 +5855,17 @@ PIXI.Quadtree.prototype.insert = function (object, bounds) {
 */
 PIXI.Quadtree.prototype.remove = function (object) {
     var idx = this.objects.indexOf(object);
-    if (idx !== -1)
+    if (idx !== -1) {
         this.objects.splice(idx, 1);
+		if (this.objects.length === 0 && this.nodes === undefined && this.parent !== undefined) {
+			if (this.parent.nodes[0].objects.length === 0 && this.parent.nodes[0].nodes === undefined &&
+				this.parent.nodes[1].objects.length === 0 && this.parent.nodes[1].nodes === undefined &&
+				this.parent.nodes[2].objects.length === 0 && this.parent.nodes[2].nodes === undefined &&
+				this.parent.nodes[3].objects.length === 0 && this.parent.nodes[3].nodes === undefined) {
+				this.parent.nodes = undefined;
+			}
+		}
+	}
     object.node = undefined;
 };
 
@@ -5875,7 +5895,7 @@ PIXI.Quadtree.prototype.getElementsAt = function (x, y) {
     var idx = this._getIndexXY(x, y);
     var results = [];
     results = results.concat(this.objects);
-    if (idx !== -1 && this.nodes !== undefined)
+    if (idx !== -1 && this.nodes !== undefined && this.nodes[idx] !== undefined)
         return (results.concat(this.nodes[idx].getElementsAt(x,y)));
     return (results);
 };
@@ -5968,6 +5988,7 @@ PIXI.Quadtree.prototype.clear = function() {
 **
 */
 PIXI.Quadtree.prototype.debug = function (context) {
+	context.setTransform(1, 0, 0, 1, 0, 0);
     context.beginPath();
     context.rect(this.x, this.y, this.width, this.height);
     var r = (this.x + this.width)  % 255;
