@@ -67,6 +67,15 @@ var map;
     console.log('loading done');
 
     map = new C.CitrongGIS(document.getElementById('citrongis'));
+
+    map.on('viewportMove', function (viewport) {
+
+        console.log('viewportMove');
+    });
+    map.on('viewportMoved', function (viewport) {
+
+        console.log('viewportMoved');
+    });
 });
 
 var fileInput = document.getElementById('file');

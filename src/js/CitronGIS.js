@@ -9,7 +9,7 @@
 
 var C = C || {};
 
-C.CitrongGIS = function (rootDIV) {
+C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
 
     'use strict';
 
@@ -59,25 +59,10 @@ C.CitrongGIS = function (rootDIV) {
     graphics.hitArea = new PIXI.Rectangle(0, 0, 300, 200);
     graphics.position = new PIXI.Point(500, 100);
     graphics.interactive = true;
-    var d = false;
-    graphics.mousedown = function () {
-        d = true;
-    };
-
-    graphics.mousemove = function (evt, mouse) {
-        if (!d) return;
-        graphics.x = mouse.global.x - 100;
-        graphics.y = mouse.global.y - 100;
-        //console.log(mouse);
-    };
-
-    graphics.mouseup = function () {
-        d = false;
-    };
 
 
     this._rendererStage.addChild(graphics);
-};
+}, EventEmitter, 'C.CitronGIS');
 
 C.CitrongGIS.prototype.loadExtension = function (file) {
 

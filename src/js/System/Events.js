@@ -14,8 +14,9 @@ C.System.Events = {
 
     _isDown: false,
     _lastX: undefined,
-    _lastY: undefined
-
+    _lastY: undefined,
+    _movedTimer: undefined,
+    _movedTimeout: 500
 };
 
 C.System.Events.attach = function (citronGIS) {
@@ -56,8 +57,26 @@ C.System.Events.stageMove = function (evt) {
     var dx = evt.clientX - this._lastX;
     var dy = evt.clientY - this._lastY;
 
+    if (dx === 0 && dy === 0) return;
+
+    if (this._movedTimer) {
+        clearTimeout(this._movedTimer);
+    }
+    this._movedTimer = setTimeout(this._movedCallback, C.System.Events._movedTimeout);
+
     this._citronGIS._viewport.translate(dx, dy);
+
+    this._citronGIS.emit('viewportMove', this._citronGIS._viewport);
 
     this._lastX = evt.clientX;
     this._lastY = evt.clientY;
 };
+
+C.System.Events.stageMovedTimeout = function () {
+
+    'use strict';
+
+    this._citronGIS.emit('viewportMoved', this._citronGIS._viewport);
+};
+
+C.System.Events._movedCallback = C.System.Events.stageMovedTimeout.bind(C.System.Events);
