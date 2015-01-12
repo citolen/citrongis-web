@@ -8,6 +8,7 @@ var files = [
     'http://localhost:8080/lib/proj4.js',
     'http://localhost:8080/lib/ejs.js',
     'http://localhost:8080/lib/EventEmitter.js',
+    'http://localhost:8080/lib/pixi.dev.js',
     'http://localhost:8080/js/Utils/Comparison.js',
     'http://localhost:8080/js/Utils/Intersection.js',
     'http://localhost:8080/js/Utils/Inheritance.js',
@@ -18,8 +19,11 @@ var files = [
     'http://localhost:8080/js/Geometry/Vector2.js',
     'http://localhost:8080/js/Geometry/Vector3.js',
     'http://localhost:8080/js/Geometry/BoundingBox.js',
+    'http://localhost:8080/js/Geometry/Extent.js',
+    'http://localhost:8080/js/System/Viewport.js',
     'http://localhost:8080/js/Helpers/CoordinatesHelper.js',
     'http://localhost:8080/js/Helpers/ProjectionsHelper.js',
+    'http://localhost:8080/js/Helpers/ResolutionHelper.js',
     'http://localhost:8080/js/Extension/Require.js',
     'http://localhost:8080/js/Extension/UI/include.js',
     'http://localhost:8080/js/Extension/UI/trigger.js',
@@ -38,6 +42,9 @@ var files = [
     'http://localhost:8080/js/Extension/LayerGroup.js',
     'http://localhost:8080/js/Extension/LayerManager.js',
     'http://localhost:8080/js/Extension/LayerHelper.js',
+    'http://localhost:8080/js/Schema/SchemaBase.js',
+    'http://localhost:8080/js/Schema/SphericalMercator.js',
+    'http://localhost:8080/js/System/Events.js',
     'http://localhost:8080/js/CitronGIS.js'
 ];
 

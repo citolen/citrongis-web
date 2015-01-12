@@ -1,4 +1,4 @@
-var renderer = new PIXI.autoDetectRenderer(800, 600, null, true);
+var renderer = new PIXI.autoDetectRenderer(800, 600, {transparent:true});
 
 var quadTest = new PIXI.Quadtree(0, 0, 800, 600, 4);
 /*quadTest.nodes = [
@@ -59,7 +59,7 @@ var i = 0;
 while (i < 10000) {
     var o = {x: Math.random() * 800, y: Math.random() * 600};
     var rect = new PIXI.Graphics();
-    rect.setInteractive(true);
+    rect.interactive = true;
     rect.hitArea = new PIXI.Rectangle(o.x, o.y, 2, 2);
     rect.beginFill(0x000000);
     rect.drawRect(o.x, o.y, 2, 2);
@@ -71,7 +71,7 @@ cont.cacheAsBitmap = true;
 console.timeEnd("toto");
 
 var graphics = new PIXI.Graphics();
-graphics.setInteractive(true);
+graphics.interactive = true;
 graphics.beginFill(0x0000FF);
 graphics.lineStyle(1, 0xFF0000);
 graphics.drawRect(15, 15, 300, 200);
@@ -83,7 +83,7 @@ graphics.mouseover = function (event) { console.log("over bleu"); event.continue
 graphics.mouseout = function (event) { console.log("out bleu"); event.continue = false; };
 
 var graphics1 = new PIXI.Graphics();
-graphics1.setInteractive(true);
+graphics1.interactive = true;
 graphics1.beginFill(0x00FF00);
 graphics1.lineStyle(1, 0xFF0000);
 graphics1.drawRect(30, 30, 300, 200);
@@ -97,12 +97,12 @@ graphics1.mouseout = function (event) { console.log("out vert"); event.continue 
 var container = new PIXI.DisplayObjectContainer();
 container.addChild(graphics1);
 container.addChild(graphics);
-container.setInteractive(true);
+container.interactive = true;
 
 // ----------------------
 
 graphics = new PIXI.Graphics();
-graphics.setInteractive(true);
+graphics.interactive = true;
 graphics.beginFill(0xFF0000);
 graphics.lineStyle(1, 0x00FF00);
 graphics.drawRect(30, 30, 30, 30);
@@ -126,7 +126,7 @@ graphics.mouseout = function (e) {
 };
 
 graphics1 = new PIXI.Graphics();
-graphics1.setInteractive(true);
+graphics1.interactive = true;
 graphics1.beginFill(0x00FF00);
 graphics1.lineStyle(1, 0xFF0000);
 graphics1.drawRect(35, 35, 30, 30);
@@ -138,7 +138,7 @@ graphics1.click = function() { console.log("click vert1");};
 var container2 = new PIXI.DisplayObjectContainer();
 container2.addChild(graphics1);
 container2.addChild(graphics);
-container2.setInteractive(true);
+container2.interactive = true;
 container2.x = 50;
 container2.y = 25;
 

@@ -13,13 +13,13 @@ C.Geometry = C.Geometry || {};
 C.Geometry.BoundingBox = function (bottomLeft, topLeft, topRight, bottomRight) {
     "use strict";
 
-    this.BottomLeft = bottomLeft || new C.Geometry.Vector2();
+    this._bottomLeft = bottomLeft || new C.Geometry.Vector2();
 
-    this.TopLeft = topLeft || new C.Geometry.Vector2();
+    this._topLeft = topLeft || new C.Geometry.Vector2();
 
-    this.TopRight = topRight || new C.Geometry.Vector2();
+    this._topRight = topRight || new C.Geometry.Vector2();
 
-    this.BottomRight = bottomRight || new C.Geometry.Vector2();
+    this._bottomRight = bottomRight || new C.Geometry.Vector2();
 };
 
 //////////////
@@ -27,7 +27,7 @@ C.Geometry.BoundingBox = function (bottomLeft, topLeft, topRight, bottomRight) {
 //////////////
 C.Geometry.BoundingBox.prototype.toString = function () {
     "use strict";
-    return ("{ BottomLeft:" + this.BottomLeft + ", TopLeft:" + this.TopLeft + ", TopRight:" + this.TopRight + ", BottomRight:" + this.BottomRight + "}");
+    return ("{ BottomLeft:" + this._bottomLeft + ", TopLeft:" + this._topLeft + ", TopRight:" + this._topRight + ", BottomRight:" + this._bottomRight + "}");
 };
 
 ////////////
@@ -35,10 +35,10 @@ C.Geometry.BoundingBox.prototype.toString = function () {
 ////////////
 C.Geometry.BoundingBox.prototype.Equals = function (b) {
     "use strict";
-    if (this.BottomLeft.Equals(b.BottomLeft) &&
-            this.BottomRight.Equals(b.BottomRight) &&
-            this.TopLeft.Equals(b.TopLeft) &&
-            this.TopRight.Equals(b.TopRight)) {
+    if (this._bottomLeft.Equals(b._bottomLeft) &&
+            this._bottomRight.Equals(b._bottomRight) &&
+            this._topLeft.Equals(b._topLeft) &&
+            this._topRight.Equals(b._topRight)) {
         return (true);
     }
     return (false);
@@ -50,8 +50,8 @@ C.Geometry.BoundingBox.prototype.Equals = function (b) {
 //////////////////////////////////////////
 C.Geometry.BoundingBox.prototype.Center = function () {
     "use strict";
-    var x = (this.BottomLeft.X + this.BottomRight.X + this.TopLeft.X + this.TopRight.X) / 4.0,
-        y = (this.BottomLeft.Y + this.BottomRight.Y + this.TopLeft.Y + this.TopRight.Y) / 4.0;
+    var x = (this._bottomLeft.X + this._bottomRight.X + this._topLeft.X + this._topRight.X) / 4.0,
+        y = (this._bottomLeft.Y + this._bottomRight.Y + this._topLeft.Y + this._topRight.Y) / 4.0;
     return (new C.Geometry.Vector2(x, y));
 };
 
@@ -62,14 +62,14 @@ C.Geometry.BoundingBox.prototype.Center = function () {
 C.Geometry.BoundingBox.prototype.Intersect = function (o) {
     "use strict";
     if (o instanceof C.Geometry.BoundingBox) {
-        if (C.Utils.Intersection.IsPointInsideRectangle(this.TopLeft, this.TopRight, this.BottomRight, this.BottomLeft, o.TopLeft) ||
-                C.Utils.Intersection.IsPointInsideRectangle(this.TopLeft, this.TopRight, this.BottomRight, this.BottomLeft, o.TopRight) ||
-                C.Utils.Intersection.IsPointInsideRectangle(this.TopLeft, this.TopRight, this.BottomRight, this.BottomLeft, o.BottomRight) ||
-                C.Utils.Intersection.IsPointInsideRectangle(this.TopLeft, this.TopRight, this.BottomRight, this.BottomLeft, o.BottomLeft)) {
+        if (C.Utils.Intersection.IsPointInsideRectangle(this._topLeft, this._topRight, this._bottomRight, this._bottomLeft, o._topLeft) ||
+                C.Utils.Intersection.IsPointInsideRectangle(this._topLeft, this._topRight, this._bottomRight, this._bottomLeft, o._topRight) ||
+                C.Utils.Intersection.IsPointInsideRectangle(this._topLeft, this._topRight, this._bottomRight, this._bottomLeft, o._bottomRight) ||
+                C.Utils.Intersection.IsPointInsideRectangle(this._topLeft, this._topRight, this._bottomRight, this._bottomLeft, o._bottomLeft)) {
             return (true);
         }
         return (false);
     } else {
-        return (C.Utils.Intersection.IsPointInsideRectangle(this.TopLeft, this.TopRight, this.BottomRight, this.BottomLeft, o));
+        return (C.Utils.Intersection.IsPointInsideRectangle(this._topLeft, this._topRight, this._bottomRight, this._bottomLeft, o));
     }
 };

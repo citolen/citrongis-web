@@ -16,6 +16,48 @@ C.CitrongGIS = function (rootDIV) {
     this._rootDiv = rootDIV;
 
     this._layerManager = new C.Extension.LayerManager();
+
+    this._renderer = new PIXI.autoDetectRenderer($(this._rootDiv).width(), $(this._rootDiv).height(), {
+        transparent: true
+    });
+
+    this._renderer.view.id = '__citrongisRenderer';
+    this._rootDiv.appendChild(this._renderer.view);
+    this._rendererStage = new PIXI.Stage(0x000000, true);
+    this._rendererStage.setQuadtreeSize(this._renderer.width, this._renderer.height);
+
+    this._viewport = new C.System.Viewport({
+        width: this._renderer.width,
+        height: this._renderer.height,
+        resolution: C.Helpers.ResolutionHelper.Resolutions[10],
+        schema: new C.Schema.SphericalMercator(),
+        origin: new C.Geometry.Vector2(0,0)
+    });
+
+
+    var self = this;
+    $(window).resize(function () {
+        var width = $(self._rootDiv).width();
+        var height = $(self._rootDiv).height();
+        self._renderer.resize(width, height);
+        self._rendererStage.setQuadtreeSize(self._renderer.width, self._renderer.height);
+        self._viewport.resize(width, height);
+    });
+
+    requestAnimFrame( animate );
+    function animate() {
+        requestAnimFrame( animate );
+        self._renderer.render(self._rendererStage);
+    }
+
+    C.System.Events.attach(this);
+
+    var graphics = new PIXI.Graphics();
+    graphics.beginFill(0x0000FF);
+    graphics.lineStyle(1, 0xFF0000);
+    graphics.drawRect(500, 100, 300, 200);
+    graphics.hitArea = new PIXI.Rectangle(500, 100, 300, 200);
+    this._rendererStage.addChild(graphics);
 };
 
 C.CitrongGIS.prototype.loadExtension = function (file) {
