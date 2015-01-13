@@ -67,6 +67,7 @@ C.System.Events.stageMove = function (evt) {
     this._citronGIS._viewport.translate(dx, dy);
 
     this._citronGIS.emit('viewportMove', this._citronGIS._viewport);
+    this._citronGIS.internalUpdate();
 
     this._lastX = evt.clientX;
     this._lastY = evt.clientY;
@@ -77,6 +78,7 @@ C.System.Events.stageMovedTimeout = function () {
     'use strict';
 
     this._citronGIS.emit('viewportMoved', this._citronGIS._viewport);
+    this._citronGIS.internalUpdate();
 };
 
 C.System.Events._movedCallback = C.System.Events.stageMovedTimeout.bind(C.System.Events);

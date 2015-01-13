@@ -42,7 +42,8 @@ C.Schema.SphericalMercator.prototype.rotate = function (viewport, angle) {
 
     'use strict';
 
-    viewport._rotation = (viewport._rotation + angle + 360) % 360;
+    var pid = 2*Math.PI;
+    viewport._rotation = (viewport._rotation + (angle * Math.PI / 180) + pid) % pid;
 };
 
 C.Schema.SphericalMercator.prototype.update = function (viewport) {

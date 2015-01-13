@@ -26,6 +26,8 @@ C.Extension.LayerGroup = C.Utils.Inherit(function (base, options) {
 
     this._layerDirty = layerDirty.bind(this);
 
+    this._layerFeatureChange = LayerFeatureChange.bind(this);
+
 }, EventEmitter, 'C.Extension.LayerGroup');
 
 C.Extension.LayerGroup.prototype.layers = function () {
@@ -48,10 +50,14 @@ C.Extension.LayerGroup.prototype.addLayer = function (layer) {
 
     'use strict';
 
-    if (layer === undefined || this._layers.indexof(layer) !== -1) return false;
+    if (layer === undefined || this._layers.indexOf(layer) !== -1) return false;
 
+    layer._group = this;
     this._layers.push(layer);
     layer.on('dirty', this._layerDirty);
+
+    layer.on('featureChange', this._layerFeatureChange);
+
     this.emit('layerAdded', layer);
     return true;
 };
@@ -61,10 +67,13 @@ C.Extension.LayerGroup.prototype.removeLayer = function (layer) {
     'use strict';
 
     var idx;
-    if (layer === undefined || (idx=this._layers.indexof(layer)) === -1) return false;
+    if (layer === undefined || (idx=this._layers.indexOf(layer)) === -1) return false;
 
     this._layers.splice(idx, 1);
     layer.off('dirty', this._layerDirty);
+
+    layer.off('featureChange', this._layerFeatureChange);
+
     this.emit('layerRemoved', layer);
     return true;
 };
@@ -85,6 +94,14 @@ C.Extension.LayerGroup.prototype.moveLayer = function (layer, toIdx) {
     this.emit('layerMoved', {layer: layer, idx: toIdx});
     /* Reorganize rendering */
     return true;
+};
+
+/* Forward event to upper level */
+function LayerFeatureChange(eventType, feature) {
+
+    'use strict';
+
+    this.emit('featureChange', eventType, feature);
 };
 
 function layerDirty(layer) {

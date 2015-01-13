@@ -18,6 +18,8 @@ C.Extension.LayerManager = C.Utils.Inherit(function (base) {
 
     this._layerGroups = [];
 
+    this._featureChange = FeatureChange.bind(this);
+
 }, EventEmitter, 'C.Extension.LayerManager');
 
 C.Extension.LayerManager.prototype._groups = function () {
@@ -66,6 +68,9 @@ C.Extension.LayerManager.prototype.createGroup = function (owner, options) {
     options.owner = owner;
 
     var group = new C.Extension.LayerGroup(options);
+
+    group.on('featureChange', this._featureChange);
+
     this._layerGroups.push(group);
     this.emit('groupCreated', group);
     return (group);
@@ -80,6 +85,9 @@ C.Extension.LayerManager.prototype.deleteGroup = function (owner, instanceOrName
     for (var i = 0; i < this._layerGroups.length; ++i) {
         var g = this._layerGroups[i];
         if (g._owner === owner && (g === instanceOrName || g._name === instanceOrName)) {
+
+            group.off('featureChange', this._featureChange);
+
             this._layerGroups.splice(i, 1);
             this.emit('groupDeleted', g);
             return (true);
@@ -107,4 +115,11 @@ C.Extension.LayerManager.prototype.moveGroup = function (owner, instanceOrName, 
         }
     }
     return (false);
+};
+
+function FeatureChange(eventType, feature) {
+
+    'use strict';
+
+    this.emit('featureChange', eventType, feature);
 };

@@ -21,6 +21,12 @@ C.Geo.Feature.Feature = C.Utils.Inherit(function (base) {
 
 }, EventEmitter, 'C.Geo.Feature.Feature');
 
+C.Geo.Feature.Feature.EventType = {
+    ADDED: 0,
+    REMOVED: 1,
+    UPDATED: 2
+};
+
 C.Geo.Feature.Feature.prototype.makeDirty = function () {
 
     'use strict';

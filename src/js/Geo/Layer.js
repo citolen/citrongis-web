@@ -14,7 +14,7 @@ C.Geo.Layer = C.Utils.Inherit(function (base, options) {
 
     'use strict';
 
-    if (options === undefined || options.owner === undefined || options.group === undefined) {
+    if (options === undefined || options.owner === undefined) {
         throw 'Invalid Argument';
     }
 
@@ -36,7 +36,7 @@ C.Geo.Layer = C.Utils.Inherit(function (base, options) {
     this._owner = options.owner;
 
     /* Group in which the layer is */
-    this._group = options.group;
+    this._group = undefined;
 
     /* All the features */
     this._features = [];
@@ -50,7 +50,7 @@ C.Geo.Layer = C.Utils.Inherit(function (base, options) {
     /* Layer's maximum zoom */
     this._maxZoom = options.maxZoom;
 
-    this._featureDirty = featureDirty.bind(this);
+    this._featureDirty = FeatureDirty.bind(this);
 
 }, EventEmitter, 'C.Geo.Layer');
 
@@ -64,6 +64,7 @@ C.Geo.Layer.prototype.addFeature = function (feature) {
 
     this._features.push(feature);
     feature.on('dirty', this._featureDirty);
+    this.notifyFeatureChange(C.Geo.Feature.Feature.EventType.ADDED, feature);
     this.emit('featureAdded', feature);
     return true;
 };
@@ -79,14 +80,22 @@ C.Geo.Layer.prototype.removeFeature = function (feature) {
 
     this._features.splice(idx, 1);
     feature.off('dirty', this._featureDirty);
+    this.notifyFeatureChange(C.Geo.Feature.Feature.EventType.REMOVED, feature);
     this.emit('featureRemoved', feature);
     return true;
 };
 
-function featureDirty(feature) {
-    /* redraw feature */
+function FeatureDirty(feature) {
+    this.notifyFeatureChange(C.Geo.Feature.Feature.EventType.UPDATED, feature);
     feature._dirty = false;
 }
+
+C.Geo.Layer.prototype.notifyFeatureChange = function (eventType, feature) {
+
+    'use strict';
+
+    this.emit('featureChange', eventType, feature);
+};
 
 /* Change layer's name */
 C.Geo.Layer.prototype.name = function (name) {

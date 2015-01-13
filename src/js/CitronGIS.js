@@ -63,7 +63,15 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
 
 
     this._rendererStage.addChild(graphics);
+    C.CitrongGISDebug(this);
 }, EventEmitter, 'C.CitronGIS');
+
+C.CitrongGIS.prototype.internalUpdate = function () {
+
+    'use strict';
+
+
+};
 
 C.CitrongGIS.prototype.loadExtension = function (file) {
 

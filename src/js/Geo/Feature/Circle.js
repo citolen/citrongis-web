@@ -11,9 +11,11 @@ var C = C || {};
 C.Geo = C.Geo || {};
 C.Geo.Feature = C.Geo.Feature || {};
 
-C.Geo.Feature.Circle = C.Utils.Inherit(function (options) {
+C.Geo.Feature.Circle = C.Utils.Inherit(function (base, options) {
 
     'use strict';
+
+    base();
 
     if (options === undefined || options.location == undefined) throw 'Invalid Argument';
 

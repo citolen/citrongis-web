@@ -10,10 +10,10 @@
 var C = C || {};
 C.Geometry = C.Geometry || {};
 
-C.Geometry.LatLng = C.Utils.Inherit(function (base, y, x, crs) {
+C.Geometry.LatLng = C.Utils.Inherit(function (base, y, x) {
 
     'use strict';
 
-    base(x, y, undefined, crs);
+    base(x, y, undefined, C.Helpers.ProjectionsHelper.WGS84);
 
 }, C.Geometry.Point, 'C.Geometry.LatLng');
