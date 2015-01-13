@@ -75,6 +75,8 @@ var map;
     map.on('viewportMoved', function (viewport) {
 
         console.log('viewportMoved');
+        console.log(viewport._origin.toString());
+        console.log(viewport._bbox.toString());
     });
 });
 

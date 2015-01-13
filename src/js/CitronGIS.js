@@ -31,7 +31,8 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
         height: this._renderer.height,
         resolution: C.Helpers.ResolutionHelper.Resolutions[10],
         schema: new C.Schema.SphericalMercator(),
-        origin: new C.Geometry.Vector2(0,0)
+        origin: new C.Geometry.Vector2(0,0),
+        rotation: 0 * Math.PI / 180
     });
 
 
