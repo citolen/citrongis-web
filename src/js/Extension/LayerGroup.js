@@ -24,11 +24,17 @@ C.Extension.LayerGroup = C.Utils.Inherit(function (base, options) {
 
     this._layers = [];
 
-    this._layerDirty = layerDirty.bind(this);
+    this._layerDirty = LayerDirty.bind(this);
 
     this._layerFeatureChange = LayerFeatureChange.bind(this);
 
 }, EventEmitter, 'C.Extension.LayerGroup');
+
+C.Extension.LayerGroup.EventType = {
+    ADDED: 0,
+    REMOVED: 1,
+    MOVED: 2
+};
 
 C.Extension.LayerGroup.prototype.layers = function () {
 
@@ -55,9 +61,8 @@ C.Extension.LayerGroup.prototype.addLayer = function (layer) {
     layer._group = this;
     this._layers.push(layer);
     layer.on('dirty', this._layerDirty);
-
     layer.on('featureChange', this._layerFeatureChange);
-
+    this.notifyLayerChange(C.Geo.Layer.EventType.ADDED, layer);
     this.emit('layerAdded', layer);
     return true;
 };
@@ -71,9 +76,8 @@ C.Extension.LayerGroup.prototype.removeLayer = function (layer) {
 
     this._layers.splice(idx, 1);
     layer.off('dirty', this._layerDirty);
-
     layer.off('featureChange', this._layerFeatureChange);
-
+    this.notifyLayerChange(C.Geo.Layer.EventType.REMOVED, layer);
     this.emit('layerRemoved', layer);
     return true;
 };
@@ -91,20 +95,29 @@ C.Extension.LayerGroup.prototype.moveLayer = function (layer, toIdx) {
 
     this._layers.splice(idx, 1);
     this._layers.splice(toIdx, 0, layer);
-    this.emit('layerMoved', {layer: layer, idx: toIdx});
     /* Reorganize rendering */
+    this.notifyLayerChange(C.Geo.Layer.EventType.MOVED, layer);
+    this.emit('layerMoved', {layer: layer, idx: toIdx});
     return true;
 };
 
 /* Forward event to upper level */
-function LayerFeatureChange(eventType, feature) {
+function LayerFeatureChange(eventType, feature, layer) {
 
     'use strict';
 
-    this.emit('featureChange', eventType, feature);
+    this.emit('featureChange', eventType, feature, layer);
 };
 
-function layerDirty(layer) {
+C.Extension.LayerGroup.prototype.notifyLayerChange = function (eventType, layer) {
+
+    'use strict';
+
+    this.emit('layerChange', eventType, layer);
+};
+
+function LayerDirty(layer) {
     /* Redraw all features */
+    this.notifyLayerChange(C.Geo.Layer.EventType.UPDATED, layer);
     layer._dirty = false;
 }

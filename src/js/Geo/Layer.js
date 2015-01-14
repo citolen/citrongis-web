@@ -54,6 +54,13 @@ C.Geo.Layer = C.Utils.Inherit(function (base, options) {
 
 }, EventEmitter, 'C.Geo.Layer');
 
+C.Geo.Layer.EventType = {
+    ADDED: 0,
+    REMOVED: 1,
+    UPDATED: 2,
+    MOVED: 3
+};
+
 C.Geo.Layer.prototype.addFeature = function (feature) {
 
     'use strict';
@@ -94,7 +101,7 @@ C.Geo.Layer.prototype.notifyFeatureChange = function (eventType, feature) {
 
     'use strict';
 
-    this.emit('featureChange', eventType, feature);
+    this.emit('featureChange', eventType, feature, this);
 };
 
 /* Change layer's name */

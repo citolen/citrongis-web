@@ -18,7 +18,8 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     this._layerManager = new C.Extension.LayerManager();
 
     this._renderer = new PIXI.autoDetectRenderer($(this._rootDiv).width(), $(this._rootDiv).height(), {
-        transparent: true
+        transparent: true,
+        antialias: true
     });
 
     this._renderer.view.id = '__citrongisRenderer';
@@ -29,7 +30,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     this._viewport = new C.System.Viewport({
         width: this._renderer.width,
         height: this._renderer.height,
-        resolution: C.Helpers.ResolutionHelper.Resolutions[10],
+        resolution: C.Helpers.ResolutionHelper.Resolutions[2],
         schema: new C.Schema.SphericalMercator(),
         origin: new C.Geometry.Vector2(0,0),
         rotation: 0 * Math.PI / 180
@@ -53,16 +54,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
 
     C.System.Events.attach(this);
 
-    var graphics = new PIXI.Graphics();
-    graphics.beginFill(0x0000FF);
-    graphics.lineStyle(1, 0xFF0000);
-    graphics.drawRect(0, 0, 300, 200);
-    graphics.hitArea = new PIXI.Rectangle(0, 0, 300, 200);
-    graphics.position = new PIXI.Point(500, 100);
-    graphics.interactive = true;
-
-
-    this._rendererStage.addChild(graphics);
+    this._customRenderer = new C.Renderer.PIXIRenderer(this);
     C.CitrongGISDebug(this);
 }, EventEmitter, 'C.CitronGIS');
 

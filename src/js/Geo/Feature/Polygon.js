@@ -15,7 +15,7 @@ C.Geo.Feature.Polygon = C.Utils.Inherit(function (base, options) {
 
     'use strict';
 
-    base();
+    base(C.Geo.Feature.Feature.FeatureType.POLYGON);
 
     if (options === undefined || options.locations === undefined) throw 'Invalid Arguments';
 

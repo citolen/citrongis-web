@@ -15,7 +15,7 @@ C.Geo.Feature.Image = C.Utils.Inherit(function (base, options) {
 
     'use strict';
 
-    base();
+    base(C.Geo.Feature.Feature.FeatureType.IMAGE);
 
     if (options === undefined || options.location === undefined) throw 'Invalid Argument';
 

@@ -20,6 +20,8 @@ C.Extension.LayerManager = C.Utils.Inherit(function (base) {
 
     this._featureChange = FeatureChange.bind(this);
 
+    this._layerChange = LayerChange.bind(this);
+
 }, EventEmitter, 'C.Extension.LayerManager');
 
 C.Extension.LayerManager.prototype._groups = function () {
@@ -68,10 +70,12 @@ C.Extension.LayerManager.prototype.createGroup = function (owner, options) {
     options.owner = owner;
 
     var group = new C.Extension.LayerGroup(options);
+    this._layerGroups.push(group);
 
     group.on('featureChange', this._featureChange);
+    group.on('layerChange', this._layerChange);
 
-    this._layerGroups.push(group);
+    this.notifyGroupChange(C.Extension.LayerGroup.EventType.ADDED, group);
     this.emit('groupCreated', group);
     return (group);
 };
@@ -85,10 +89,11 @@ C.Extension.LayerManager.prototype.deleteGroup = function (owner, instanceOrName
     for (var i = 0; i < this._layerGroups.length; ++i) {
         var g = this._layerGroups[i];
         if (g._owner === owner && (g === instanceOrName || g._name === instanceOrName)) {
-
-            group.off('featureChange', this._featureChange);
-
+            g.off('featureChange', this._featureChange);
+            g.off('layerChange', this._layerChange);
             this._layerGroups.splice(i, 1);
+
+            this.notifyGroupChange(C.Extension.LayerGroup.EventType.REMOVED, g);
             this.emit('groupDeleted', g);
             return (true);
         }
@@ -110,6 +115,8 @@ C.Extension.LayerManager.prototype.moveGroup = function (owner, instanceOrName, 
             if (i === idx) return (false);
             this._layerGroups.splice(i, 1);
             this._layerGroups.splice(idx, 0, g);
+
+            this.notifyGroupChange(C.Extension.LayerGroup.EventType.MOVED, group);
             this.emit('groupMoved', {group: g, idx: idx});
             return (true);
         }
@@ -117,9 +124,23 @@ C.Extension.LayerManager.prototype.moveGroup = function (owner, instanceOrName, 
     return (false);
 };
 
-function FeatureChange(eventType, feature) {
+C.Extension.LayerManager.prototype.notifyGroupChange = function (eventType, group) {
 
     'use strict';
 
-    this.emit('featureChange', eventType, feature);
+    this.emit('groupChange', eventType, group);
+};
+
+function FeatureChange(eventType, feature, layer) {
+
+    'use strict';
+
+    this.emit('featureChange', eventType, feature, layer);
+};
+
+function LayerChange(eventType, feature) {
+
+    'use strict';
+
+    this.emit('layerChange', eventType, feature);
 };

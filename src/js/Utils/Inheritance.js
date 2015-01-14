@@ -58,8 +58,9 @@ if (!baseInit)\
 classToInherit.apply(this, arguments);\
 };');
     }
-    //C.Utils.Extends(_.prototype, constructor.prototype);
-    //C.Utils.Extends(_.prototype, new classToInherit());
-    _.prototype = new classToInherit();
+    var o = Object.create(classToInherit.prototype);
+    C.Utils.Extends(o, constructor.prototype);
+    _.prototype = o;
+    _.prototype.constructor = _;
     return (_);
 };

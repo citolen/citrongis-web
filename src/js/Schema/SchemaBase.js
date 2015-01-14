@@ -18,7 +18,7 @@ C.Schema.SchemaBase = function (options) {
 
     this._name = options.name;
 
-    this._srs = options.srs; // Like Espg
+    this._crs = options.crs; // Like Espg
 
     this._originX = options.originX;
 

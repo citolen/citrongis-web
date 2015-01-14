@@ -46,6 +46,8 @@ var files = [
     'http://localhost:8080/js/Schema/SphericalMercator.js',
     'http://localhost:8080/js/System/Events.js',
     'http://localhost:8080/js/CitronGISDebugger.js',
+    'http://localhost:8080/js/Renderer/RendererBase.js',
+    'http://localhost:8080/js/Renderer/PIXIRenderer.js',
     'http://localhost:8080/js/CitronGIS.js'
 ];
 

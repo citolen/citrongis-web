@@ -15,7 +15,7 @@ C.Geo.Feature.Circle = C.Utils.Inherit(function (base, options) {
 
     'use strict';
 
-    base();
+    base(C.Geo.Feature.Feature.FeatureType.CIRCLE);
 
     if (options === undefined || options.location == undefined) throw 'Invalid Argument';
 

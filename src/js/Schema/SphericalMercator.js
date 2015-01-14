@@ -16,7 +16,7 @@ C.Schema.SphericalMercator = C.Utils.Inherit(function (base) {
 
     base({
         name: 'SphericalMercator',
-        src: 'epsg:3857',
+        crs: C.Helpers.ProjectionsHelper.EPSG3857,
         originX: -20037508.342789,
         originY: -20037508.342789,
         extent: new C.Geometry.Extent(-20037508.342789,
@@ -95,7 +95,7 @@ C.Schema.SphericalMercator.prototype.screenToWorld = function (viewport, px, py)
     'use strict';
 
     var dx = -(viewport._width / 2 - px);
-    var dy = -(viewport._height / 2 - py);
+    var dy = (viewport._height / 2 - py);
     dx *= viewport._resolution; // to meter
     dy *= viewport._resolution; // to meter;
 
@@ -118,7 +118,7 @@ C.Schema.SphericalMercator.prototype.worldToScreen = function (viewport, wx, wy)
     'use strict';
 
     var dx = wx - viewport._origin.X;
-    var dy = wy - viewport._origin.Y;
+    var dy = -(wy - viewport._origin.Y);
 
     if (!C.Utils.Comparison.Equals(viewport._rotation, 0)) {
         var cosAngle = Math.cos(-viewport._rotation);

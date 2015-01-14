@@ -15,7 +15,7 @@ C.Geo.Feature.Line = C.Utils.Inherit(function (base, options) {
 
     'use strict';
 
-    base();
+    base(C.Geo.Feature.Feature.FeatureType.LINE);
 
     if (options === undefined || options.locations === undefined) throw 'Invalid Arguments';
 
