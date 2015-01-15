@@ -61,8 +61,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
 C.CitrongGIS.prototype.internalUpdate = function () {
 
     'use strict';
-
-
+    this._customRenderer.updatePositions();
 };
 
 C.CitrongGIS.prototype.loadExtension = function (file) {

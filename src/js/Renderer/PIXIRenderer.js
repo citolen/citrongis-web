@@ -197,6 +197,23 @@ C.Renderer.PIXIRenderer.prototype.featureUpdated = function (feature, layer) {
     'use strict';
 };
 
+C.Renderer.PIXIRenderer.prototype.updateFeaturePosition = function (feature) {
+
+    'use strict';
+
+    if (feature.__location !== undefined) { // Circle,Image
+        var position = this._viewport.worldToScreen(feature.__location.X, feature.__location.Y);
+        feature.__graphics.position.x = position.X;
+        feature.__graphics.position.y = position.Y;
+        return;
+    }
+    if (feature.__locations !== undefined) { // Line,Polygon
+        var position = this._viewport.worldToScreen(feature.__locations[0].X, feature.__locations[0].Y);
+        feature.__graphics.position.x = position.X;
+        feature.__graphics.position.y = position.Y;
+    }
+};
+
 //////////////////////
 //  LAYER RENDERING //
 //////////////////////
@@ -279,4 +296,23 @@ C.Renderer.PIXIRenderer.prototype.groupRemoved = function (group) {
 C.Renderer.PIXIRenderer.prototype.groupMoved = function (group) {
 
     'use strict';
+};
+
+///////////////////////
+//  UPDATE POSITIONS //
+///////////////////////
+C.Renderer.PIXIRenderer.prototype.updatePositions = function () {
+
+    'use strict';
+
+    var groups = this._layerManager._layerGroups;
+    for (var i = 0; i < groups.length; ++i) {
+        var layers = groups[i]._layers;
+        for (var j = 0; j < layers.length; ++j) {
+            var features = layers[j]._features;
+            for (var k = 0; k < features.length; ++k) {
+                this.updateFeaturePosition(features[k]);
+            }
+        }
+    }
 };

@@ -34,7 +34,7 @@ C.Schema.SphericalMercator.prototype.translate = function (viewport, tx, ty) {
     var mx = viewport._resolution * tx; // m/px * px -> m
     var my = viewport._resolution * ty; // m/px * px -> m, inverted Y
 
-    viewport._origin.X += mx;
+    viewport._origin.X -= mx;
     viewport._origin.Y += my;
 };
 

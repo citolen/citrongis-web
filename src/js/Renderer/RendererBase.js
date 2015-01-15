@@ -49,3 +49,10 @@ C.Renderer.RendererBase.prototype.groupChange = function (eventType, group) {
 
     throw 'ToImplement';
 };
+
+C.Renderer.RendererBase.prototype.updatePositions = function () {
+
+    'use strict';
+
+    throw 'ToImplement';
+};
