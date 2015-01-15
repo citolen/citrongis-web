@@ -37,16 +37,25 @@ C.CitrongGISDebug = function (citronGIS) {
 
     layerGroup.addLayer(layer);
 
+    layer.addFeature(new C.Geo.Feature.Image({
+        location: new C.Geometry.LatLng(0, 0),
+        width: 256,
+        height: 256,
+        anchorX: 0.5,
+        anchorY: 0.5,
+        source: 'http://a.tile.openstreetmap.org/0/0/0.png'
+    }));
+
     var circle = new C.Geo.Feature.Circle({
         location: new C.Geometry.LatLng(0,0),
-        radius: 10
+        radius: 2
     });
 
     layer.addFeature(circle);
 
     layer.addFeature(new C.Geo.Feature.Circle({
         location: new C.Geometry.LatLng(43.306426, -0.415039),
-        radius: 10
+        radius: 2
     }));
 
     layer.addFeature(new C.Geo.Feature.Line({
@@ -56,6 +65,19 @@ C.CitrongGISDebug = function (citronGIS) {
         ],
         lineColor: 0xff0000
     }));
+
+    layer.addFeature(new C.Geo.Feature.Polygon({
+        locations: [
+            new C.Geometry.LatLng(-55.679726, -68.288577),
+            new C.Geometry.LatLng(-18.316418, -70.573733),
+            new C.Geometry.LatLng(-5.094729, -81.823733),
+            new C.Geometry.LatLng(12.722377, -73.913577),
+            new C.Geometry.LatLng(-6.493759, -34.187013)
+        ],
+        fillColor: 0x6e6eff
+    }));
+
+
 
     //43.306426, -0.415039
 

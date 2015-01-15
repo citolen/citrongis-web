@@ -56,6 +56,11 @@ C.Renderer.PIXIRenderer.prototype.featureAdded = function (feature, layer) {
     }
 };
 
+/*
+**
+**  Render Circle
+**
+*/
 C.Renderer.PIXIRenderer.prototype.renderCircle = function (feature, layer) {
 
     'use strict';
@@ -75,11 +80,38 @@ C.Renderer.PIXIRenderer.prototype.renderCircle = function (feature, layer) {
     layer.__graphics.addChild(feature.__graphics);
 };
 
+/*
+**
+**  Render Image
+**
+*/
 C.Renderer.PIXIRenderer.prototype.renderImage = function (feature, layer) {
 
     'use strict';
+
+    feature.__location = C.Helpers.CoordinatesHelper.TransformTo(feature._location, this._viewport._schema._crs);
+
+    feature.__texture = PIXI.Texture.fromImage(feature._source);
+    var sprite = feature.__graphics = new PIXI.Sprite(feature.__texture);
+
+    sprite.width = feature._width;
+    sprite.height = feature._height;
+
+    sprite.anchor.x = feature._anchorX;
+    sprite.anchor.y = feature._anchorY;
+
+    var position = this._viewport.worldToScreen(feature.__location.X, feature.__location.Y);
+    sprite.position = new PIXI.Point(position.X, position.Y);
+    sprite.rotation = -this._viewport._rotation;
+
+    layer.__graphics.addChild(feature.__graphics);
 };
 
+/*
+**
+**  Render Line
+**
+*/
 C.Renderer.PIXIRenderer.prototype.renderLine = function (feature, layer) {
 
     'use strict';
@@ -114,9 +146,45 @@ C.Renderer.PIXIRenderer.prototype.renderLine = function (feature, layer) {
     layer.__graphics.addChild(feature.__graphics);
 };
 
+/*
+**
+**  Render Polygon
+**
+*/
 C.Renderer.PIXIRenderer.prototype.renderPolygon = function (feature, layer) {
 
     'use strict';
+
+    if (feature._locations.length < 3) return;
+
+    feature.__locations = [];
+    for (var i = 0; i < feature._locations.length; ++i) {
+        feature.__locations.push(C.Helpers.CoordinatesHelper.TransformTo(feature._locations[i], this._viewport._schema._crs));
+    }
+
+    feature.__graphics = new PIXI.Graphics();
+
+    feature.__graphics.lineStyle(feature._outlineWidth, feature._outlineColor);
+    feature.__graphics.beginFill(feature._fillColor);
+
+    var origin;
+    var points = [];
+    for (var i = 0; i < feature.__locations.length; ++i) {
+        var loc = feature.__locations[i];
+        var pt = this._viewport.worldToScreen(loc.X, loc.Y);
+        if (i === 0) {
+            origin = pt;
+            points.push(new PIXI.Point(0, 0));
+            continue;
+        }
+        points.push(new PIXI.Point(pt.X - origin.X, pt.Y - origin.Y));
+    }
+
+    feature.__graphics.drawPolygon(points);
+    feature.__graphics.endFill();
+    feature.__graphics.position = new PIXI.Point(origin.X, origin.Y);
+
+    layer.__graphics.addChild(feature.__graphics);
 };
 
 C.Renderer.PIXIRenderer.prototype.featureRemoved = function (feature, layer) {

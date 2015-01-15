@@ -19,7 +19,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
 
     this._renderer = new PIXI.autoDetectRenderer($(this._rootDiv).width(), $(this._rootDiv).height(), {
         transparent: true,
-        antialias: true
+        antialias: false
     });
 
     this._renderer.view.id = '__citrongisRenderer';
@@ -30,7 +30,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     this._viewport = new C.System.Viewport({
         width: this._renderer.width,
         height: this._renderer.height,
-        resolution: C.Helpers.ResolutionHelper.Resolutions[2],
+        resolution: C.Helpers.ResolutionHelper.Resolutions[0],
         schema: new C.Schema.SphericalMercator(),
         origin: new C.Geometry.Vector2(0,0),
         rotation: 0 * Math.PI / 180

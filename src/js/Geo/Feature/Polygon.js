@@ -19,7 +19,7 @@ C.Geo.Feature.Polygon = C.Utils.Inherit(function (base, options) {
 
     if (options === undefined || options.locations === undefined) throw 'Invalid Arguments';
 
-    this._locations = options.location;
+    this._locations = options.locations;
 
     this._fillColor = options.fillColor || '#ffffff';
 
