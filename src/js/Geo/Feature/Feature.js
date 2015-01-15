@@ -19,6 +19,8 @@ C.Geo.Feature.Feature = C.Utils.Inherit(function (base, type) {
 
     this._dirty = false;
 
+    this._mask = 0;
+
     this._type = type;
 
 }, EventEmitter, 'C.Geo.Feature.Feature');

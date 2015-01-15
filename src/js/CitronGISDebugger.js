@@ -66,7 +66,7 @@ C.CitrongGISDebug = function (citronGIS) {
         lineColor: 0xff0000
     }));
 
-    layer.addFeature(new C.Geo.Feature.Polygon({
+    var southAmerica = new C.Geo.Feature.Polygon({
         locations: [
             new C.Geometry.LatLng(-55.679726, -68.288577),
             new C.Geometry.LatLng(-18.316418, -70.573733),
@@ -74,10 +74,17 @@ C.CitrongGISDebug = function (citronGIS) {
             new C.Geometry.LatLng(12.722377, -73.913577),
             new C.Geometry.LatLng(-6.493759, -34.187013)
         ],
-        fillColor: 0x6e6eff
-    }));
+        fillColor: 0x6e6eff,
+        outlineWidth: 2
+    });
 
+    layer.addFeature(southAmerica);
 
+    setTimeout(function () {
+        southAmerica.outlineColor(0x00FF00);
+        southAmerica.fillColor(0xFF0000);
+        southAmerica.outlineWidth(5);
+    }, 3000);
 
     //43.306426, -0.415039
 

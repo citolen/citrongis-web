@@ -27,14 +27,23 @@ C.Geo.Feature.Image = C.Utils.Inherit(function (base, options) {
 
     this._height = options.height || 42;
 
-    this._offsetX = options.offsetX || 0;
+    /*this._offsetX = options.offsetX || 0;
 
-    this._offsetY = options.offsetY || 0;
+    this._offsetY = options.offsetY || 0;*/
 
     this._anchorX = options.anchorX || 0;
 
     this._anchorY = options.anchorY || 0;
 }, C.Geo.Feature.Feature, 'C.Geo.Feature.Image');
+
+C.Geo.Feature.Image.MaskIndex = {
+    LOCATION: 1,
+    SOURCE: 2,
+    WIDTH: 4,
+    HEIGHT: 8,
+    ANCHORX: 16,
+    ANCHORY: 32
+};
 
 C.Geo.Feature.Image.prototype.location = function (location) {
 
@@ -43,6 +52,7 @@ C.Geo.Feature.Image.prototype.location = function (location) {
     if (location === undefined || this._location === location) return this._location;
 
     this._location = location;
+    this._mask |= C.Geo.Feature.Image.MaskIndex.LOCATION;
     this.emit('locationChanged', location);
     this.makeDirty();
     return this._location;
@@ -55,6 +65,7 @@ C.Geo.Feature.Image.prototype.source = function (source) {
     if (source === undefined || this._source === source) return this._source;
 
     this._source = source;
+    this._mask |= C.Geo.Feature.Image.MaskIndex.SOURCE;
     this.emit('sourceChanged', source);
     this.makeDirty();
     return this._source;
@@ -67,6 +78,7 @@ C.Geo.Feature.Image.prototype.width = function (width) {
     if (width === undefined || this._width === width) return this._width;
 
     this._width = width;
+    this._mask |= C.Geo.Feature.Image.MaskIndex.WIDTH;
     this.emit('widthChanged', width);
     this.makeDirty();
     return this._width;
@@ -79,12 +91,13 @@ C.Geo.Feature.Image.prototype.height = function (height) {
     if (height === undefined || this._height === height) return this._height;
 
     this._height = height;
+    this._mask |= C.Geo.Feature.Image.MaskIndex.HEIGHT;
     this.emit('heightChanged', height);
     this.makeDirty();
     return this._height;
 };
 
-C.Geo.Feature.Image.prototype.offsetX = function (offsetX) {
+/*C.Geo.Feature.Image.prototype.offsetX = function (offsetX) {
 
     'use strict';
 
@@ -106,7 +119,7 @@ C.Geo.Feature.Image.prototype.offsetY = function (offsetY) {
     this.emit('offsetYChanged', offsetY);
     this.makeDirty();
     return this._offsetY;
-};
+};*/
 
 C.Geo.Feature.Image.prototype.anchorX = function (anchorX) {
 
@@ -115,6 +128,7 @@ C.Geo.Feature.Image.prototype.anchorX = function (anchorX) {
     if (anchorX === undefined || this._anchorX === anchorX) return this._anchorX;
 
     this._anchorX = anchorX;
+    this._mask |= C.Geo.Feature.Image.MaskIndex.ANCHORX;
     this.emit('anchorXChanged', anchorX);
     this.makeDirty();
     return this._anchorX;
@@ -127,6 +141,7 @@ C.Geo.Feature.Image.prototype.anchorY = function (anchorY) {
     if (anchorY === undefined || this._anchorY === anchorY) return this._anchorY;
 
     this._anchorY = anchorY;
+    this._mask |= C.Geo.Feature.Image.MaskIndex.ANCHORY;
     this.emit('anchorYChanged', anchorY);
     this.makeDirty();
     return this._anchorY;

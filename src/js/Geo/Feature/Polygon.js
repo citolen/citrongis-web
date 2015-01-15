@@ -21,9 +21,9 @@ C.Geo.Feature.Polygon = C.Utils.Inherit(function (base, options) {
 
     this._locations = options.locations;
 
-    this._fillColor = options.fillColor || '#ffffff';
+    this._fillColor = options.fillColor || 0xffffff;
 
-    this._outlineColor = options.outlineColor || '#000000';
+    this._outlineColor = options.outlineColor || 0;
 
     this._outlineWidth = options.outlineWidth || 0;
 
@@ -36,6 +36,7 @@ C.Geo.Feature.Polygon.prototype.locations = function (locations) {
     if (locations == undefined || this._locations === locations) return this._locations;
 
     this._locations = locations;
+    this._mask |= C.Geo.Feature.Polygon.MaskIndex.LOCATION;
     this.emit('locationsChanged', locations);
     this.makeDirty();
     return this._locations;
