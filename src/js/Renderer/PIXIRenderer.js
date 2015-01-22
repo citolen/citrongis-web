@@ -15,6 +15,8 @@ C.Renderer.PIXIRenderer = C.Utils.Inherit(function (base, citronGIS) {
     'use strict';
     base(citronGIS);
 
+    this._dirtyFeatures = [];
+
     console.log('--PIXI renderer--');
 }, C.Renderer.RendererBase, 'C.Renderer.RendererBase');
 
@@ -194,24 +196,45 @@ C.Renderer.PIXIRenderer.prototype.featureRemoved = function (feature, layer) {
     }
 };
 
+/*
+**
+**
+**  Feature Updated, makeDirty()
+**
+*/
 C.Renderer.PIXIRenderer.prototype.featureUpdated = function (feature) {
 
     'use strict';
 
-    switch (feature._type) {
-        case C.Geo.Feature.Feature.FeatureType.CIRCLE:
-            this.renderCircle(feature);
-            break;
-        case C.Geo.Feature.Feature.FeatureType.IMAGE:
-            this.updateImage(feature);
-            break;
-        case C.Geo.Feature.Feature.FeatureType.LINE:
-            this.renderLine(feature);
-            break;
-        case C.Geo.Feature.Feature.FeatureType.POLYGON:
-            this.renderPolygon(feature);
-            break;
+    if (feature._noted) return;
+    this._dirtyFeatures.push(feature);
+    feature._noted = true;
+};
+
+C.Renderer.PIXIRenderer.prototype.updateFeature = function () {
+
+    'use strict';
+
+    for (var i = 0; i < this._dirtyFeatures.length; ++i) {
+        var feature = this._dirtyFeatures[i];
+        switch (feature._type) {
+            case C.Geo.Feature.Feature.FeatureType.CIRCLE:
+                this.renderCircle(feature);
+                break;
+            case C.Geo.Feature.Feature.FeatureType.IMAGE:
+                this.updateImage(feature);
+                break;
+            case C.Geo.Feature.Feature.FeatureType.LINE:
+                this.renderLine(feature);
+                break;
+            case C.Geo.Feature.Feature.FeatureType.POLYGON:
+                this.renderPolygon(feature);
+                break;
+        }
+        feature._dirty = false;
+        feature._noted = undefined;
     }
+    this._dirtyFeatures = [];
 };
 
 C.Renderer.PIXIRenderer.prototype.updateImage = function (feature) {
@@ -359,4 +382,11 @@ C.Renderer.PIXIRenderer.prototype.updatePositions = function () {
             }
         }
     }
+};
+
+C.Renderer.PIXIRenderer.prototype.renderFrame = function () {
+
+    'use strict';
+
+    this.updateFeature();
 };

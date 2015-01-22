@@ -56,3 +56,10 @@ C.Renderer.RendererBase.prototype.updatePositions = function () {
 
     throw 'ToImplement';
 };
+
+C.Renderer.RendererBase.prototype.renderFrame = function () {
+
+    'use strict';
+
+    throw 'ToImplement';
+};

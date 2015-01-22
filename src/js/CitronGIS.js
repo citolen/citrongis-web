@@ -47,16 +47,17 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
         self.internalUpdate();
     });
 
-    requestAnimFrame( animate );
-    function animate() {
-        requestAnimFrame( animate );
-        self._renderer.render(self._rendererStage);
-    }
-
     C.System.Events.attach(this);
 
     this._customRenderer = new C.Renderer.PIXIRenderer(this);
     C.CitrongGISDebug(this);
+
+    requestAnimFrame( animate );
+    function animate() {
+        requestAnimFrame( animate );
+        self._customRenderer.renderFrame();
+        self._renderer.render(self._rendererStage);
+    }
 }, EventEmitter, 'C.CitronGIS');
 
 C.CitrongGIS.prototype.internalUpdate = function () {

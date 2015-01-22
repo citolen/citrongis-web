@@ -94,7 +94,6 @@ C.Geo.Layer.prototype.removeFeature = function (feature) {
 
 function FeatureDirty(feature) {
     this.notifyFeatureChange(C.Geo.Feature.Feature.EventType.UPDATED, feature);
-    feature._dirty = false;
 }
 
 C.Geo.Layer.prototype.notifyFeatureChange = function (eventType, feature) {
