@@ -49,6 +49,14 @@ C.System.Viewport.prototype.rotate = function (angle) {
     this._schema.update(this);
 };
 
+C.System.Viewport.prototype.zoom = function (resolution) {
+
+    'use strict';
+
+    this._resolution = resolution;
+    this._schema.update(this);
+};
+
 C.System.Viewport.prototype.resize = function (newWidth, newHeight) {
 
     'use strict';

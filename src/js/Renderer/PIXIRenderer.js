@@ -80,6 +80,7 @@ C.Renderer.PIXIRenderer.prototype.renderCircle = function (feature, layer) {
 
     var position = this._viewport.worldToScreen(feature.__location.X, feature.__location.Y);
     g.position = new PIXI.Point(position.X, position.Y);
+    feature._dirty = false;
 };
 
 /*
@@ -93,7 +94,6 @@ C.Renderer.PIXIRenderer.prototype.renderImage = function (feature) {
 
     feature.__location = C.Helpers.CoordinatesHelper.TransformTo(feature._location, this._viewport._schema._crs);
 
-    feature.__texture = PIXI.Texture.fromImage(feature._source);
     var sprite = feature.__graphics = new PIXI.Sprite(feature.__texture);
 
     sprite.width = feature._width;
@@ -105,6 +105,7 @@ C.Renderer.PIXIRenderer.prototype.renderImage = function (feature) {
     var position = this._viewport.worldToScreen(feature.__location.X, feature.__location.Y);
     sprite.position = new PIXI.Point(position.X, position.Y);
     sprite.rotation = -this._viewport._rotation;
+    feature._dirty = false;
 };
 
 /*
@@ -118,6 +119,7 @@ C.Renderer.PIXIRenderer.prototype.renderLine = function (feature, layer) {
 
     if (feature._locations.length < 2) return;
 
+    //TODO: don't re project points if location didn't change
     feature.__locations = [];
     for (var i = 0; i < feature._locations.length; ++i) {
         feature.__locations.push(C.Helpers.CoordinatesHelper.TransformTo(feature._locations[i], this._viewport._schema._crs));
@@ -143,6 +145,7 @@ C.Renderer.PIXIRenderer.prototype.renderLine = function (feature, layer) {
     }
     g.position = new PIXI.Point(origin.X, origin.Y);
     g.endFill();
+    feature._dirty = false;
 };
 
 /*
@@ -156,6 +159,7 @@ C.Renderer.PIXIRenderer.prototype.renderPolygon = function (feature) {
 
     if (feature._locations.length < 3) return;
 
+    //TODO: don't re project points if location didn't change
     feature.__locations = [];
     for (var i = 0; i < feature._locations.length; ++i) {
         feature.__locations.push(C.Helpers.CoordinatesHelper.TransformTo(feature._locations[i], this._viewport._schema._crs));
@@ -183,6 +187,7 @@ C.Renderer.PIXIRenderer.prototype.renderPolygon = function (feature) {
     g.drawPolygon(points);
     g.endFill();
     g.position = new PIXI.Point(origin.X, origin.Y);
+    feature._dirty = false;
 };
 
 C.Renderer.PIXIRenderer.prototype.featureRemoved = function (feature, layer) {
@@ -231,7 +236,6 @@ C.Renderer.PIXIRenderer.prototype.updateFeature = function () {
                 this.renderPolygon(feature);
                 break;
         }
-        feature._dirty = false;
         feature._noted = undefined;
     }
     this._dirtyFeatures = [];
@@ -247,8 +251,9 @@ C.Renderer.PIXIRenderer.prototype.updateImage = function (feature) {
         feature.__graphics.position = new PIXI.Point(position.X, position.Y);
     }
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.SOURCE) != 0) {
-        feature.__texture = PIXI.Texture.fromImage(feature._source);
         feature.__graphics.setTexture(feature.__texture);
+        feature.__graphics.width = feature._width;
+        feature.__graphics.height = feature._height;
     }
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.WIDTH) != 0) {
         feature.__graphics.width = feature._width;
@@ -275,9 +280,14 @@ C.Renderer.PIXIRenderer.prototype.updateFeaturePosition = function (feature) {
         return;
     }
     if (feature.__locations !== undefined) { // Line,Polygon
-        var position = this._viewport.worldToScreen(feature.__locations[0].X, feature.__locations[0].Y);
-        feature.__graphics.position.x = position.X;
-        feature.__graphics.position.y = position.Y;
+        switch (feature._type) {
+            case C.Geo.Feature.Feature.FeatureType.LINE:
+                this.renderLine(feature);
+                break;
+            case C.Geo.Feature.Feature.FeatureType.POLYGON:
+                this.renderPolygon(feature);
+                break;
+        }
     }
 };
 

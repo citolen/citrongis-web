@@ -27,13 +27,11 @@ C.Geo.Feature.Image = C.Utils.Inherit(function (base, options) {
 
     this._height = options.height || 42;
 
-    /*this._offsetX = options.offsetX || 0;
-
-    this._offsetY = options.offsetY || 0;*/
-
     this._anchorX = options.anchorX || 0;
 
     this._anchorY = options.anchorY || 0;
+
+    this.processSource();
 }, C.Geo.Feature.Feature, 'C.Geo.Feature.Image');
 
 C.Geo.Feature.Image.MaskIndex = {
@@ -58,6 +56,24 @@ C.Geo.Feature.Image.prototype.location = function (location) {
     return this._location;
 };
 
+C.Geo.Feature.Image.prototype.processSource = function () {
+
+    'use strict';
+
+    if (!this._source) return;
+
+    this._loader = new PIXI.ImageLoader(this._source);
+    var self = this;
+    this._loader.on('loaded', function () {
+        self.__texture = self._loader.texture;
+        self.emit('loaded', self);
+        self._mask |= C.Geo.Feature.Image.MaskIndex.SOURCE;
+        self.emit('sourceChanged', self._source);
+        self.makeDirty();
+    });
+    this._loader.load();
+};
+
 C.Geo.Feature.Image.prototype.source = function (source) {
 
     'use strict';
@@ -65,9 +81,7 @@ C.Geo.Feature.Image.prototype.source = function (source) {
     if (source === undefined || this._source === source) return this._source;
 
     this._source = source;
-    this._mask |= C.Geo.Feature.Image.MaskIndex.SOURCE;
-    this.emit('sourceChanged', source);
-    this.makeDirty();
+    this.processSource();
     return this._source;
 };
 
@@ -96,30 +110,6 @@ C.Geo.Feature.Image.prototype.height = function (height) {
     this.makeDirty();
     return this._height;
 };
-
-/*C.Geo.Feature.Image.prototype.offsetX = function (offsetX) {
-
-    'use strict';
-
-    if (offsetX === undefined || this._offsetX === offsetX) return this._offsetX;
-
-    this._offsetX = offsetX;
-    this.emit('offsetXChanged', offsetX);
-    this.makeDirty();
-    return this._offsetX;
-};
-
-C.Geo.Feature.Image.prototype.offsetY = function (offsetY) {
-
-    'use strict';
-
-    if (offsetY === undefined || this._offsetY === offsetY) return this._offsetY;
-
-    this._offsetY = offsetY;
-    this.emit('offsetYChanged', offsetY);
-    this.makeDirty();
-    return this._offsetY;
-};*/
 
 C.Geo.Feature.Image.prototype.anchorX = function (anchorX) {
 
