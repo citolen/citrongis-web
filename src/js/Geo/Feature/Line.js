@@ -20,6 +20,7 @@ C.Geo.Feature.Line = C.Utils.Inherit(function (base, options) {
     if (options === undefined || options.locations === undefined) throw 'Invalid Arguments';
 
     this._locations = options.locations;
+    this._locationChanged = true;
 
     this._lineWidth = options.lineWidth || 1;
 
@@ -34,6 +35,7 @@ C.Geo.Feature.Line.prototype.locations = function (locations) {
     if (locations === undefined || typeof locations !== 'Array') return this._locations;
 
     this._locations = locations;
+    this._locationChanged = true;
     this.emit('locationsChanged', locations);
     this.makeDirty();
     return this._locations;

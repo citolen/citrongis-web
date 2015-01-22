@@ -119,10 +119,12 @@ C.Renderer.PIXIRenderer.prototype.renderLine = function (feature, layer) {
 
     if (feature._locations.length < 2) return;
 
-    //TODO: don't re project points if location didn't change
-    feature.__locations = [];
-    for (var i = 0; i < feature._locations.length; ++i) {
-        feature.__locations.push(C.Helpers.CoordinatesHelper.TransformTo(feature._locations[i], this._viewport._schema._crs));
+    if (feature._locationChanged) {
+        feature.__locations = [];
+        for (var i = 0; i < feature._locations.length; ++i) {
+            feature.__locations.push(C.Helpers.CoordinatesHelper.TransformTo(feature._locations[i], this._viewport._schema._crs));
+        }
+        feature.__locationChanged = false;
     }
 
     var g = feature.__graphics = feature.__graphics || new PIXI.Graphics();
@@ -159,10 +161,12 @@ C.Renderer.PIXIRenderer.prototype.renderPolygon = function (feature) {
 
     if (feature._locations.length < 3) return;
 
-    //TODO: don't re project points if location didn't change
-    feature.__locations = [];
-    for (var i = 0; i < feature._locations.length; ++i) {
-        feature.__locations.push(C.Helpers.CoordinatesHelper.TransformTo(feature._locations[i], this._viewport._schema._crs));
+    if (feature._locationChanged) {
+        feature.__locations = [];
+        for (var i = 0; i < feature._locations.length; ++i) {
+            feature.__locations.push(C.Helpers.CoordinatesHelper.TransformTo(feature._locations[i], this._viewport._schema._crs));
+        }
+        feature._locationChanged = false;
     }
 
     var g = feature.__graphics = feature.__graphics || new PIXI.Graphics();

@@ -20,6 +20,7 @@ C.Geo.Feature.Polygon = C.Utils.Inherit(function (base, options) {
     if (options === undefined || options.locations === undefined) throw 'Invalid Arguments';
 
     this._locations = options.locations;
+    this._locationChanged = true;
 
     this._fillColor = options.fillColor || 0xffffff;
 
@@ -36,7 +37,7 @@ C.Geo.Feature.Polygon.prototype.locations = function (locations) {
     if (locations == undefined || this._locations === locations) return this._locations;
 
     this._locations = locations;
-    this._mask |= C.Geo.Feature.Polygon.MaskIndex.LOCATION;
+    this._locationChanged = true;
     this.emit('locationsChanged', locations);
     this.makeDirty();
     return this._locations;
