@@ -43,9 +43,21 @@ C.CitrongGISDebug = function (citronGIS) {
         height: 256,
         anchorX: 0.5,
         anchorY: 0.5,
-        source: 'http://a.tile.openstreetmap.org/0/0/0.png'
+        source: 'http://c.tile.openstreetmap.org/5/19/13.png'
     });
     layer.addFeature(tile);
+    tile.on('loaded', function () {
+        console.log('loaded');
+        tile.__graphics.alpha = 0;
+        (function f() {
+            if (tile.__graphics.alpha < 1)
+                setTimeout(f, 70);
+            tile.__graphics.alpha += 0.1;
+            if (tile.__graphics.alpha > 1)
+                tile.__graphics.alpha = 1;
+        })();
+
+    });
 
     citronGIS.on('viewportMove', function (viewport, type) {
 

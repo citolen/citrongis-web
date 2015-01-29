@@ -106,7 +106,7 @@ C.System.Events.viewportMove = function (type) {
     'use strict';
 
     this._citronGIS.emit('viewportMove', this._citronGIS._viewport, type);
-    this._citronGIS.internalUpdate();
+    this.internalUpdate();
 };
 
 C.System.Events.stageMovedTimeout = function () {
@@ -114,7 +114,14 @@ C.System.Events.stageMovedTimeout = function () {
     'use strict';
 
     this._citronGIS.emit('viewportMoved', this._citronGIS._viewport);
-    this._citronGIS.internalUpdate();
+    this.internalUpdate();
+};
+
+C.System.Events.internalUpdate = function () {
+
+    'use strict';
+
+    this._citronGIS._customRenderer.updatePositions();
 };
 
 C.System.Events._movedCallback = C.System.Events.stageMovedTimeout.bind(C.System.Events);
