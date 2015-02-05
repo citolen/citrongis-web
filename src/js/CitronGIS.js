@@ -44,7 +44,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
         self._renderer.resize(width, height);
         self._rendererStage.setQuadtreeSize(self._renderer.width, self._renderer.height);
         self._viewport.resize(width, height);
-        self.internalUpdate();
+        C.System.Events.internalUpdate();
     });
 
     C.System.Events.attach(this);

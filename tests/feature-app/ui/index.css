@@ -1,0 +1,9 @@
+.ui {
+    width: 300px;
+    height: 200px;
+    background-color: #FDFDFD;
+    border-radius: 4px;
+    border: 1px solid rgb(229, 229, 229);
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.07);
+    padding: 10px;
+}

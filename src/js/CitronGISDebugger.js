@@ -12,7 +12,7 @@ var C = C || {};
 C.CitrongGISDebug = function (citronGIS) {
     console.log('--Debugger--');
 
-    citronGIS._layerManager.on('featureChange', function (eventType, feature) {
+    /*citronGIS._layerManager.on('featureChange', function (eventType, feature) {
         console.log(eventType, feature);
     });
 
@@ -22,7 +22,7 @@ C.CitrongGISDebug = function (citronGIS) {
 
     citronGIS._layerManager.on('groupChange', function (eventType, group) {
         console.log(eventType, group);
-    });
+    });*/
 
     var owner = {};
 
@@ -43,7 +43,7 @@ C.CitrongGISDebug = function (citronGIS) {
         height: 256,
         anchorX: 0.5,
         anchorY: 0.5,
-        source: 'http://c.tile.openstreetmap.org/5/19/13.png'
+        source: 'http://c.tile.openstreetmap.org/0/0/0.png'
     });
     layer.addFeature(tile);
     tile.on('loaded', function () {
@@ -102,7 +102,7 @@ C.CitrongGISDebug = function (citronGIS) {
         outlineWidth: 2
     });
 
-    layer.addFeature(southAmerica);
+    //layer.addFeature(southAmerica);
 
     setTimeout(function () {
         southAmerica.outlineColor(0x00FF00);
