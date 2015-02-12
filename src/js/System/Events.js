@@ -35,13 +35,24 @@ C.System.Events.attach = function (citronGIS) {
 
 C.System.Events.viewportMoveType = {
     ZOOM: 0,
-    PAN: 1
+    PAN: 1,
+    ROTATION: 2
 };
 
 C.System.Events.keyDown = function (evt) {
 
     'use strict';
 
+    if (evt.keyCode == 106) {
+        this.resetTimer();
+        this._citronGIS._viewport.rotate(-5);
+        this.viewportMove(C.System.Events.viewportMoveType.ROTATION);
+    }
+    if (evt.keyCode == 111) {
+        this.resetTimer();
+        this._citronGIS._viewport.rotate(5);
+        this.viewportMove(C.System.Events.viewportMoveType.ROTATION);
+    }
     if (evt.keyCode == 107) {
         this.resetTimer();
         this._citronGIS._viewport.zoom(this._citronGIS._viewport._resolution * 0.85);

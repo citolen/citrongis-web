@@ -43,7 +43,7 @@ C.CitrongGISDebug = function (citronGIS) {
         height: 256,
         anchorX: 0.5,
         anchorY: 0.5,
-        source: 'http://c.tile.openstreetmap.org/0/0/0.png'
+        source: 'http://a.basemaps.cartocdn.com/light_all/0/0/0.png'
     });
     layer.addFeature(tile);
     tile.on('loaded', function () {
@@ -63,11 +63,14 @@ C.CitrongGISDebug = function (citronGIS) {
 
         'use strict';
 
-        if (type != C.System.Events.viewportMoveType.ZOOM) return;
-
-        var size = (Math.abs(viewport._schema._extent._minX) + Math.abs(viewport._schema._extent._maxX)) / viewport._resolution;
-        tile.width(size);
-        tile.height(size);
+        if (type == C.System.Events.viewportMoveType.ZOOM) {
+            var size = (Math.abs(viewport._schema._extent._minX) + Math.abs(viewport._schema._extent._maxX)) / viewport._resolution;
+            tile.width(size);
+            tile.height(size);
+            console.log(C.Layer.Tile.Schema.SphericalMercator.computeTiles(viewport));
+        } else if (type == C.System.Events.viewportMoveType.ROTATION) {
+            tile.__graphics.rotation = -viewport._rotation;
+        }
     });
 
     var circle = new C.Geo.Feature.Circle({

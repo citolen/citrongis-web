@@ -4,6 +4,7 @@ $('#citrongis').html('<div class="main"><div id="background-citrongis">CitronGIS
 
 var it = 0;
 var files = [
+    'http://localhost:8080/lib/Long.js',
     'http://localhost:8080/lib/jszip.js',
     'http://localhost:8080/lib/proj4.js',
     'http://localhost:8080/lib/ejs.js',
@@ -39,6 +40,9 @@ var files = [
     'http://localhost:8080/js/Geo/Feature/Line.js',
     'http://localhost:8080/js/Geo/Feature/Polygon.js',
     'http://localhost:8080/js/Geo/Layer.js',
+    'http://localhost:8080/js/Layer/Tile/TileIndex.js',
+    'http://localhost:8080/js/Layer/Tile/TileSchema.js',
+    'http://localhost:8080/js/Layer/Tile/Schema/SphericalMercator.js',
     'http://localhost:8080/js/Extension/LayerGroup.js',
     'http://localhost:8080/js/Extension/LayerManager.js',
     'http://localhost:8080/js/Extension/LayerHelper.js',

@@ -31,6 +31,15 @@ C.Schema.SphericalMercator.prototype.translate = function (viewport, tx, ty) {
 
     'use strict';
 
+    if (!C.Utils.Comparison.Equals(viewport._rotation, 0)) { // Rotate translation
+        var cosAngle = Math.cos(viewport._rotation);
+        var sinAngle = Math.sin(viewport._rotation);
+
+        var tmp = tx;
+        tx = tx * cosAngle - ty * sinAngle;
+        ty = tmp * sinAngle + ty * cosAngle;
+    }
+
     var mx = viewport._resolution * tx; // m/px * px -> m
     var my = viewport._resolution * ty; // m/px * px -> m, inverted Y
 
