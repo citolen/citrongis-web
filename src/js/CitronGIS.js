@@ -19,7 +19,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
 
     this._renderer = new PIXI.autoDetectRenderer($(this._rootDiv).width(), $(this._rootDiv).height(), {
         transparent: true,
-        antialias: true
+        antialias: false
     });
 
     this._renderer.view.id = '__citrongisRenderer';

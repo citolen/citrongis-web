@@ -13,6 +13,7 @@ C.System = C.System || {};
 C.System.Events = {
 
     _isDown: false,
+    _hasMoved: false,
     _lastX: undefined,
     _lastY: undefined,
     _movedTimer: undefined,
@@ -30,6 +31,15 @@ C.System.Events.attach = function (citronGIS) {
     $(this._citronGIS._renderer.view).mousedown(C.System.Events.stageDown.bind(this));
     $(window).mouseup(C.System.Events.stageUp.bind(this));
     $(document).mousemove(C.System.Events.stageMove.bind(this));
+
+    this._citronGIS._renderer.view.addEventListener('touchstart', C.System.Events.stageDown.bind(this));
+    document.addEventListener('touchmove',C.System.Events.stageMove.bind(this));
+    window.addEventListener('touchend', C.System.Events.stageUp.bind(this));
+
+    /*$(this._citronGIS._renderer.view).on('touchstart', C.System.Events.stageDown.bind(this));
+    $(window).on('touchmove', C.System.Events.stageUp.bind(this));
+    $(document).on('touchend',C.System.Events.stageMove.bind(this));*/
+
     $(window).keydown(C.System.Events.keyDown.bind(this));
 };
 
@@ -55,13 +65,21 @@ C.System.Events.keyDown = function (evt) {
     }
     if (evt.keyCode == 107) {
         this.resetTimer();
-        this._citronGIS._viewport.zoom(this._citronGIS._viewport._resolution * 0.85);
-        this.viewportMove(C.System.Events.viewportMoveType.ZOOM);
+        var zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._citronGIS._viewport._resolution);
+        zoomLevel = C.Helpers.ResolutionHelper.Resolutions[zoomLevel + 1];
+        if (zoomLevel !== undefined) {
+            this._citronGIS._viewport.zoom(zoomLevel);
+            this.viewportMove(C.System.Events.viewportMoveType.ZOOM);
+        }
     }
     if (evt.keyCode == 109) {
         this.resetTimer();
-        this._citronGIS._viewport.zoom(this._citronGIS._viewport._resolution * 1.15);
-        this.viewportMove(C.System.Events.viewportMoveType.ZOOM);
+        var zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._citronGIS._viewport._resolution);
+        zoomLevel = C.Helpers.ResolutionHelper.Resolutions[zoomLevel - 1];
+        if (zoomLevel !== undefined) {
+            this._citronGIS._viewport.zoom(zoomLevel);
+            this.viewportMove(C.System.Events.viewportMoveType.ZOOM);
+        }
     }
 };
 
@@ -70,8 +88,9 @@ C.System.Events.stageDown = function (evt) {
     'use strict';
 
     this._isDown = true;
-    this._lastX = evt.clientX;
-    this._lastY = evt.clientY;
+    this._hasMoved = false;
+    this._lastX = evt.clientX || evt.touches[0].pageX;
+    this._lastY = evt.clientY || evt.touches[0].pageY;
 };
 
 C.System.Events.stageUp = function () {
@@ -79,6 +98,15 @@ C.System.Events.stageUp = function () {
     'use strict';
 
     this._isDown = false;
+    if (!this._hasMoved) {
+        this.resetTimer();
+        var zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._citronGIS._viewport._resolution);
+        zoomLevel = C.Helpers.ResolutionHelper.Resolutions[zoomLevel + 1];
+        if (zoomLevel !== undefined) {
+            this._citronGIS._viewport.zoom(zoomLevel);
+            this.viewportMove(C.System.Events.viewportMoveType.ZOOM);
+        }
+    }
 };
 
 C.System.Events.stageMove = function (evt) {
@@ -87,8 +115,11 @@ C.System.Events.stageMove = function (evt) {
 
     if (!this._isDown) return;
 
-    var dx = evt.clientX - this._lastX;
-    var dy = evt.clientY - this._lastY;
+    var x = evt.clientX || evt.touches[0].pageX;
+    var y = evt.clientY || evt.touches[0].pageY;
+
+    var dx = x - this._lastX;
+    var dy = y - this._lastY;
 
     if (dx === 0 && dy === 0) return;
 
@@ -98,8 +129,9 @@ C.System.Events.stageMove = function (evt) {
 
     this.viewportMove(C.System.Events.viewportMoveType.PAN);
 
-    this._lastX = evt.clientX;
-    this._lastY = evt.clientY;
+    this._lastX = x;
+    this._lastY = y;
+    this._hasMoved = true;
 };
 
 C.System.Events.resetTimer = function () {

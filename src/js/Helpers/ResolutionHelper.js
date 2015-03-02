@@ -22,6 +22,18 @@ C.Helpers.ResolutionHelper.resolutionForZoom = function (zoomLevel) {
     return (C.Helpers.ResolutionHelper._resolutionReference / Math.pow(2, zoomLevel));
 };
 
+C.Helpers.ResolutionHelper.getZoomLevel = function (resolution) {
+
+    'use strict';
+
+    for (var i = 0; i < C.Helpers.ResolutionHelper.Resolutions.length; ++i) {
+        var res = C.Helpers.ResolutionHelper.Resolutions[i];
+        if (resolution > res || C.Utils.Comparison.Equals(resolution, res))
+            return (i);
+    }
+    return (C.Helpers.ResolutionHelper.Resolutions.length - 1);
+};
+
 C.Helpers.ResolutionHelper.Resolutions = [
     C.Helpers.ResolutionHelper._resolutionReference,
     C.Helpers.ResolutionHelper.resolutionForZoom(1),

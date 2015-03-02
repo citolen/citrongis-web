@@ -14,7 +14,7 @@ C.Geo.Layer = C.Utils.Inherit(function (base, options) {
 
     'use strict';
 
-    if (options === undefined || options.owner === undefined) {
+    if (options === undefined) {
         throw 'Invalid Argument';
     }
 
@@ -33,7 +33,7 @@ C.Geo.Layer = C.Utils.Inherit(function (base, options) {
     this._opacity = options.opacity || 1.0;
 
     /* Extension owning the layer */
-    this._owner = options.owner;
+    this._owner = undefined;
 
     /* Group in which the layer is */
     this._group = undefined;

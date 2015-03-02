@@ -31,11 +31,26 @@ C.CitrongGISDebug = function (citronGIS) {
         owner: owner
     });
 
+    var osm = new C.Layer.Tile.TileLayer({
+
+        name: 'Open Street Map',
+
+        source: new C.Layer.Tile.Source.TMSSource({
+            url: 'http://mt3.google.com/vt/lyrs=s,h&z={z}&x={x}&y={y}',
+            server: undefined
+        }),
+
+        schema: C.Layer.Tile.Schema.SphericalMercator
+
+    });
+
     var layerGroup = citronGIS._layerManager.createGroup(owner, {
         name: 'Simple Group'
     });
 
+    layerGroup.addLayer(osm);
     layerGroup.addLayer(layer);
+
 
     var tile = new C.Geo.Feature.Image({
         location: new C.Geometry.LatLng(0, 0),
@@ -45,7 +60,7 @@ C.CitrongGISDebug = function (citronGIS) {
         anchorY: 0.5,
         source: 'http://a.basemaps.cartocdn.com/light_all/0/0/0.png'
     });
-    layer.addFeature(tile);
+    osm.addFeature(tile);
     tile.on('loaded', function () {
         console.log('loaded');
         tile.__graphics.alpha = 0;
@@ -63,11 +78,11 @@ C.CitrongGISDebug = function (citronGIS) {
 
         'use strict';
 
+        C.Layer.Tile.Schema.SphericalMercator.computeTiles(viewport);
         if (type == C.System.Events.viewportMoveType.ZOOM) {
             var size = (Math.abs(viewport._schema._extent._minX) + Math.abs(viewport._schema._extent._maxX)) / viewport._resolution;
             tile.width(size);
             tile.height(size);
-            console.log(C.Layer.Tile.Schema.SphericalMercator.computeTiles(viewport));
         } else if (type == C.System.Events.viewportMoveType.ROTATION) {
             tile.__graphics.rotation = -viewport._rotation;
         }

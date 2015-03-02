@@ -1,1 +1,1 @@
-http-server ./src
+http-server ./

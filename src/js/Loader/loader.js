@@ -3,56 +3,60 @@ $('#citrongis').html('<div class="main"><div id="background-citrongis">CitronGIS
 
 
 var it = 0;
+var prefix = "http://127.0.0.1:8080/src/";
 var files = [
-    'http://localhost:8080/lib/Long.js',
-    'http://localhost:8080/lib/jszip.js',
-    'http://localhost:8080/lib/proj4.js',
-    'http://localhost:8080/lib/ejs.js',
-    'http://localhost:8080/lib/EventEmitter.js',
-    'http://localhost:8080/lib/pixi.dev.js',
-    'http://localhost:8080/js/Utils/Comparison.js',
-    'http://localhost:8080/js/Utils/Intersection.js',
-    'http://localhost:8080/js/Utils/Inheritance.js',
-    'http://localhost:8080/js/Utils/Object.js',
-    'http://localhost:8080/js/Utils/Context.js',
-    'http://localhost:8080/js/Utils/Path.js',
-    'http://localhost:8080/js/Geometry/Point.js',
-    'http://localhost:8080/js/Geometry/Vector2.js',
-    'http://localhost:8080/js/Geometry/Vector3.js',
-    'http://localhost:8080/js/Geometry/BoundingBox.js',
-    'http://localhost:8080/js/Geometry/Extent.js',
-    'http://localhost:8080/js/System/Viewport.js',
-    'http://localhost:8080/js/Helpers/CoordinatesHelper.js',
-    'http://localhost:8080/js/Helpers/ProjectionsHelper.js',
-    'http://localhost:8080/js/Helpers/ResolutionHelper.js',
-    'http://localhost:8080/js/Extension/Require.js',
-    'http://localhost:8080/js/Extension/UI/include.js',
-    'http://localhost:8080/js/Extension/UI/trigger.js',
-    'http://localhost:8080/js/Extension/UI/Bridge.js',
-    'http://localhost:8080/js/Extension/UI/UI.js',
-    'http://localhost:8080/js/Extension/Module.js',
-    'http://localhost:8080/js/Extension/Extension.js',
-    'http://localhost:8080/js/Extension/Manager.js',
-    'http://localhost:8080/js/Geometry/LatLng.js',
-    'http://localhost:8080/js/Geo/Feature/Feature.js',
-    'http://localhost:8080/js/Geo/Feature/Circle.js',
-    'http://localhost:8080/js/Geo/Feature/Image.js',
-    'http://localhost:8080/js/Geo/Feature/Line.js',
-    'http://localhost:8080/js/Geo/Feature/Polygon.js',
-    'http://localhost:8080/js/Geo/Layer.js',
-    'http://localhost:8080/js/Layer/Tile/TileIndex.js',
-    'http://localhost:8080/js/Layer/Tile/TileSchema.js',
-    'http://localhost:8080/js/Layer/Tile/Schema/SphericalMercator.js',
-    'http://localhost:8080/js/Extension/LayerGroup.js',
-    'http://localhost:8080/js/Extension/LayerManager.js',
-    'http://localhost:8080/js/Extension/LayerHelper.js',
-    'http://localhost:8080/js/Schema/SchemaBase.js',
-    'http://localhost:8080/js/Schema/SphericalMercator.js',
-    'http://localhost:8080/js/System/Events.js',
-    'http://localhost:8080/js/CitronGISDebugger.js',
-    'http://localhost:8080/js/Renderer/RendererBase.js',
-    'http://localhost:8080/js/Renderer/PIXIRenderer.js',
-    'http://localhost:8080/js/CitronGIS.js'
+    'lib/Long.js',
+    'lib/jszip.js',
+    'lib/proj4.js',
+    'lib/ejs.js',
+    'lib/EventEmitter.js',
+    'lib/pixi.dev.js',
+    'js/Utils/Comparison.js',
+    'js/Utils/Intersection.js',
+    'js/Utils/Inheritance.js',
+    'js/Utils/Object.js',
+    'js/Utils/Context.js',
+    'js/Utils/Path.js',
+    'js/Geometry/Point.js',
+    'js/Geometry/Vector2.js',
+    'js/Geometry/Vector3.js',
+    'js/Geometry/BoundingBox.js',
+    'js/Geometry/Extent.js',
+    'js/System/Viewport.js',
+    'js/Helpers/CoordinatesHelper.js',
+    'js/Helpers/ProjectionsHelper.js',
+    'js/Helpers/ResolutionHelper.js',
+    'js/Extension/Require.js',
+    'js/Extension/UI/include.js',
+    'js/Extension/UI/trigger.js',
+    'js/Extension/UI/Bridge.js',
+    'js/Extension/UI/UI.js',
+    'js/Extension/Module.js',
+    'js/Extension/Extension.js',
+    'js/Extension/Manager.js',
+    'js/Geometry/LatLng.js',
+    'js/Geo/Feature/Feature.js',
+    'js/Geo/Feature/Circle.js',
+    'js/Geo/Feature/Image.js',
+    'js/Geo/Feature/Line.js',
+    'js/Geo/Feature/Polygon.js',
+    'js/Geo/Layer.js',
+    'js/Layer/Tile/TileIndex.js',
+    'js/Layer/Tile/TileSchema.js',
+    'js/Layer/Tile/Schema/SphericalMercator.js',
+    'js/Layer/Tile/Source/TileSource.js',
+    'js/Layer/Tile/Source/TMSSource.js',
+    'js/Layer/Tile/TileLayer.js',
+    'js/Extension/LayerGroup.js',
+    'js/Extension/LayerManager.js',
+    'js/Extension/LayerHelper.js',
+    'js/Schema/SchemaBase.js',
+    'js/Schema/SphericalMercator.js',
+    'js/System/Events.js',
+    'js/CitronGISDebugger.js',
+    'js/Renderer/RendererBase.js',
+    'js/Renderer/PIXIRenderer.js',
+    'js/CitronGIS.js'
 ];
 
 var map;
@@ -64,7 +68,7 @@ var map;
         callback();
         return;
     }
-    var src = files[it++];
+    var src = prefix + files[it++];
     $('.loader .info').html(src);
     var script = document.createElement('SCRIPT');
     script.onload = loadnext.bind(this, callback);
@@ -77,13 +81,13 @@ var map;
 
     map.on('viewportMove', function (viewport) {
 
-        console.log('viewportMove');
+        //console.log('viewportMove');
     });
     map.on('viewportMoved', function (viewport) {
 
-        console.log('viewportMoved');
-        console.log(viewport._origin.toString());
-        console.log(viewport._bbox.toString());
+        //console.log('viewportMoved');
+        //console.log(viewport._origin.toString());
+        //console.log(viewport._bbox.toString());
     });
 });
 

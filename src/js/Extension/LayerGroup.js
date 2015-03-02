@@ -58,6 +58,7 @@ C.Extension.LayerGroup.prototype.addLayer = function (layer) {
 
     if (layer === undefined || this._layers.indexOf(layer) !== -1) return false;
 
+    layer._owner = this._owner;
     layer._group = this;
     this._layers.push(layer);
     layer.on('dirty', this._layerDirty);

@@ -103,7 +103,7 @@ C.Renderer.PIXIRenderer.prototype.renderImage = function (feature) {
     sprite.anchor.y = feature._anchorY;
 
     var position = this._viewport.worldToScreen(feature.__location.X, feature.__location.Y);
-    sprite.position = new PIXI.Point(position.X, position.Y);
+    sprite.position = new PIXI.Point(Math.floor(position.X + 0.5), Math.floor(position.Y + 0.5));
     sprite.rotation = -this._viewport._rotation;
     feature._dirty = false;
 };
@@ -200,8 +200,10 @@ C.Renderer.PIXIRenderer.prototype.featureRemoved = function (feature, layer) {
 
     if (feature.__graphics) {
         layer.__graphics.removeChild(feature.__graphics);
-        //TODO: maybe you can unload and release the texture
-        feature.__texture = undefined;
+        var index = this._dirtyFeatures.indexOf(feature);
+        if (index > -1) {
+            this._dirtyFeatures.splice(index, 1);
+        }
     }
 };
 
@@ -279,8 +281,8 @@ C.Renderer.PIXIRenderer.prototype.updateFeaturePosition = function (feature) {
 
     if (feature.__location !== undefined) { // Circle,Image
         var position = this._viewport.worldToScreen(feature.__location.X, feature.__location.Y);
-        feature.__graphics.position.x = position.X;
-        feature.__graphics.position.y = position.Y;
+        feature.__graphics.position.x = Math.floor(position.X + 0.5);
+        feature.__graphics.position.y = Math.floor(position.Y + 0.5);
         return;
     }
     if (feature.__locations !== undefined) { // Line,Polygon
