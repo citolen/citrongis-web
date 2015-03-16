@@ -165,6 +165,7 @@ C.System.Events.internalUpdate = function () {
     'use strict';
 
     this._citronGIS._customRenderer.updatePositions();
+    this._citronGIS._viewport._zoomDirection = C.System.Viewport.zoomDirection.NONE;
 };
 
 C.System.Events._movedCallback = C.System.Events.stageMovedTimeout.bind(C.System.Events);

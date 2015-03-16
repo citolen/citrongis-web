@@ -73,6 +73,7 @@ C.CitrongGISDebug = function (citronGIS) {
         })();
 
     });
+    tile.load();
 
     citronGIS.on('viewportMove', function (viewport, type) {
 
@@ -120,6 +121,7 @@ C.CitrongGISDebug = function (citronGIS) {
         outlineWidth: 2
     });
 
+    C.Helpers.CoordinatesHelper.TransformTo(new C.Geometry.LatLng(-55.679726, -68.288577), C.Helpers.ProjectionsHelper.EPSG3857);
     //layer.addFeature(southAmerica);
 
     setTimeout(function () {

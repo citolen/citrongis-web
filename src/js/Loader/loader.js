@@ -3,14 +3,16 @@ $('#citrongis').html('<div class="main"><div id="background-citrongis">CitronGIS
 
 
 var it = 0;
-var prefix = "http://127.0.0.1:8080/src/";
+var prefix = "http://192.168.1.7:8080/src/";
 var files = [
     'lib/Long.js',
     'lib/jszip.js',
-    'lib/proj4.js',
+    'lib/proj4-src.js',
     'lib/ejs.js',
     'lib/EventEmitter.js',
     'lib/pixi.dev.js',
+    'lib/lru-cache.js',
+    'lib/async.js',
     'js/Utils/Comparison.js',
     'js/Utils/Intersection.js',
     'js/Utils/Inheritance.js',

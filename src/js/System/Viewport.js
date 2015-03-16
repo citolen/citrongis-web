@@ -30,7 +30,15 @@ C.System.Viewport = function (options) {
 
     this._bbox = new C.Geometry.BoundingBox();
 
+    this._zoomDirection = C.System.Viewport.zoomDirection.NONE;
+
     this._schema.update(this);
+};
+
+C.System.Viewport.zoomDirection = {
+    IN: 0,
+    OUT: 1,
+    NONE: 2
 };
 
 C.System.Viewport.prototype.translate = function (tx, ty) {
@@ -53,6 +61,10 @@ C.System.Viewport.prototype.zoom = function (resolution) {
 
     'use strict';
 
+    if (resolution > this._resolution)
+        this._zoomDirection = C.System.Viewport.zoomDirection.OUT;
+    if (resolution < this._resolution)
+        this._zoomDirection = C.System.Viewport.zoomDirection.IN;
     this._resolution = resolution;
     this._schema.update(this);
 };

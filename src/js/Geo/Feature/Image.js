@@ -31,7 +31,6 @@ C.Geo.Feature.Image = C.Utils.Inherit(function (base, options) {
 
     this._anchorY = options.anchorY || 0;
 
-    this.processSource();
 }, C.Geo.Feature.Feature, 'C.Geo.Feature.Image');
 
 C.Geo.Feature.Image.MaskIndex = {
@@ -56,7 +55,7 @@ C.Geo.Feature.Image.prototype.location = function (location) {
     return this._location;
 };
 
-C.Geo.Feature.Image.prototype.processSource = function () {
+C.Geo.Feature.Image.prototype.load = function () {
 
     'use strict';
 
@@ -74,6 +73,38 @@ C.Geo.Feature.Image.prototype.processSource = function () {
     this._loader.load();
 };
 
+C.Geo.Feature.Image.prototype.crop = function (crop) {
+
+    'use strict';
+
+    var img = new C.Geo.Feature.Image({
+        location: this._location,
+        width: this._width,
+        height: this._height,
+        anchorX: this._anchorX,
+        anchorY: this._anchorY
+    });
+
+    img.__texture = new PIXI.Texture(this.__texture, crop);
+    return (img);
+};
+
+C.Geo.Feature.Image.prototype.copy = function () {
+
+    'use strict';
+
+    var img = new C.Geo.Feature.Image({
+        location: this._location,
+        width: this._width,
+        height: this._height,
+        anchorX: this._anchorX,
+        anchorY: this._anchorY
+    });
+
+    img.__texture = new PIXI.Texture(this.__texture);
+    return (img);
+};
+
 C.Geo.Feature.Image.prototype.source = function (source) {
 
     'use strict';
@@ -81,7 +112,7 @@ C.Geo.Feature.Image.prototype.source = function (source) {
     if (source === undefined || this._source === source) return this._source;
 
     this._source = source;
-    this.processSource();
+    this.load();
     return this._source;
 };
 

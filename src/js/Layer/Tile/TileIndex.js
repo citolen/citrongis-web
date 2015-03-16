@@ -21,7 +21,7 @@ C.Layer.Tile.TileIndex = function (x, y, z, BId) {
 
     this._z = z || 0;
 
-    this._BId = BId;
+    this._BId = BId.toString();
 };
 
 C.Layer.Tile.TileIndex.fromXYZ = function (x, y, z) {
@@ -48,6 +48,21 @@ C.Layer.Tile.TileIndex.createBId = function (x, y, z) {
     'use strict';
 
     return (new Long((x << 24) | (y << 8 >>> 8), (z << 16) | (x >>> 8)));
+};
+
+C.Layer.Tile.TileIndex.prototype.positionInTile = function (tile) {
+
+    'use strict';
+
+    if (this._z >= tile._z)
+        return (null);
+
+    var dZ = tile._z - this._z;
+    var pZ = 1 << dZ;
+    return ({
+        x:tile._x / pZ - this._x,
+        y:tile._y / pZ - this._y,
+        pZ: pZ });
 };
 
 C.Layer.Tile.TileIndex.prototype.levelUp = function () {

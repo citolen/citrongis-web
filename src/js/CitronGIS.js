@@ -36,6 +36,8 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
         rotation: 0 * Math.PI / 180
     });
 
+    C.Helpers.schema = this._viewport._schema;
+
 
     var self = this;
     $(window).resize(function () {
