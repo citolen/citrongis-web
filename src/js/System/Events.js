@@ -36,10 +36,6 @@ C.System.Events.attach = function (citronGIS) {
     document.addEventListener('touchmove',C.System.Events.stageMove.bind(this));
     window.addEventListener('touchend', C.System.Events.stageUp.bind(this));
 
-    /*$(this._citronGIS._renderer.view).on('touchstart', C.System.Events.stageDown.bind(this));
-    $(window).on('touchmove', C.System.Events.stageUp.bind(this));
-    $(document).on('touchend',C.System.Events.stageMove.bind(this));*/
-
     $(window).keydown(C.System.Events.keyDown.bind(this));
 };
 
@@ -65,8 +61,10 @@ C.System.Events.keyDown = function (evt) {
     }
     if (evt.keyCode == 107) {
         this.resetTimer();
-        var zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._citronGIS._viewport._resolution);
-        zoomLevel = C.Helpers.ResolutionHelper.Resolutions[zoomLevel + 1];
+        /*var zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._citronGIS._viewport._resolution);
+        zoomLevel = C.Helpers.ResolutionHelper.Resolutions[zoomLevel + 2]*1*/
+
+        var zoomLevel = this._citronGIS._viewport._resolution * 0.9;
         if (zoomLevel !== undefined) {
             this._citronGIS._viewport.zoom(zoomLevel);
             this.viewportMove(C.System.Events.viewportMoveType.ZOOM);
@@ -74,8 +72,13 @@ C.System.Events.keyDown = function (evt) {
     }
     if (evt.keyCode == 109) {
         this.resetTimer();
-        var zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._citronGIS._viewport._resolution);
-        zoomLevel = C.Helpers.ResolutionHelper.Resolutions[zoomLevel - 1];
+        /*var zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._citronGIS._viewport._resolution);
+        zoomLevel = C.Helpers.ResolutionHelper.Resolutions[zoomLevel - 1] * 0.85;*/
+
+        var zoomLevel = this._citronGIS._viewport._resolution * 1.1;
+        if (zoomLevel > C.Helpers.ResolutionHelper.Resolutions[0])
+            zoomLevel = C.Helpers.ResolutionHelper.Resolutions[0];
+
         if (zoomLevel !== undefined) {
             this._citronGIS._viewport.zoom(zoomLevel);
             this.viewportMove(C.System.Events.viewportMoveType.ZOOM);

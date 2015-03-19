@@ -35,7 +35,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
         origin: new C.Geometry.Vector2(0,0),
         rotation: 0 * Math.PI / 180
     });
-
+    C.Helpers.viewport = this._viewport;
     C.Helpers.schema = this._viewport._schema;
 
 

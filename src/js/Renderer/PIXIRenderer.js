@@ -202,6 +202,7 @@ C.Renderer.PIXIRenderer.prototype.featureRemoved = function (feature, layer) {
         layer.__graphics.removeChild(feature.__graphics);
         var index = this._dirtyFeatures.indexOf(feature);
         if (index > -1) {
+            feature._noted = false;
             this._dirtyFeatures.splice(index, 1);
         }
     }
@@ -254,7 +255,9 @@ C.Renderer.PIXIRenderer.prototype.updateImage = function (feature) {
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.LOCATION) != 0) {
         feature.__location = C.Helpers.CoordinatesHelper.TransformTo(feature._location, this._viewport._schema._crs);
         var position = this._viewport.worldToScreen(feature.__location.X, feature.__location.Y);
-        feature.__graphics.position = new PIXI.Point(position.X, position.Y);
+        feature.__graphics.position.x = Math.floor(position.X + 0.5);
+        feature.__graphics.position.y = Math.floor(position.Y + 0.5);
+        /*feature.__graphics.position = new PIXI.Point(position.X, position.Y);*/
     }
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.SOURCE) != 0) {
         feature.__graphics.setTexture(feature.__texture);

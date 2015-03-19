@@ -36,6 +36,8 @@ C.Layer.Tile.TileSchema = C.Utils.Inherit(function (base, option) {
 
     this._bounds = [];
 
+    this._resolution = 0;
+
     this.calculateBounds();
 
     /*
@@ -76,8 +78,10 @@ C.Layer.Tile.TileSchema.prototype.getZoomLevel = function (resolution) {
 
     for (var i = 0; i < this._resolutions.length; ++i) {
         var res = this._resolutions[i];
-        if (resolution > res || C.Utils.Comparison.Equals(resolution, res))
+        if (resolution > res && !C.Utils.Comparison.Equals(resolution, res)) {
+            i = (i > 0) ? (i - 1) : (0);
             return (i);
+        }
     }
     return (this._resolutions.length - 1);
 };
@@ -141,18 +145,25 @@ C.Layer.Tile.TileSchema.prototype.computeTiles = function (viewport) {
     if (!C.Utils.Comparison.Equals(viewport._rotation, 0)) { // Compute tile with rotation
 
     } else {
-        var topLeft = this.worldToTile(viewport._bbox._topLeft, viewport._resolution);
-        var topRight = this.worldToTile(viewport._bbox._topRight, viewport._resolution);
-        var bottomRight = this.worldToTile(viewport._bbox._bottomRight, viewport._resolution);
-        var bottomLeft = this.worldToTile(viewport._bbox._bottomLeft, viewport._resolution);
 
         var zoom = this.getZoomLevel(viewport._resolution);
+        this._resolution = this._resolutions[zoom];
+
+        var size = this._resolution / viewport._resolution * this._tileWidth;
+
+        var topLeft = this.worldToTile(viewport._bbox._topLeft, viewport._resolution, size);
+        var topRight = this.worldToTile(viewport._bbox._topRight, viewport._resolution, size);
+        var bottomRight = this.worldToTile(viewport._bbox._bottomRight, viewport._resolution, size);
+        var bottomLeft = this.worldToTile(viewport._bbox._bottomLeft, viewport._resolution, size);
+
         var bound = this._bounds[zoom];
 
         this.fitToBounds(topLeft, bound, true);
         this.fitToBounds(topRight, bound);
         this.fitToBounds(bottomRight, bound);
         this.fitToBounds(bottomLeft, bound);
+
+
 
         var tiles = {};
 

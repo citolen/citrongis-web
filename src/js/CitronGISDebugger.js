@@ -81,7 +81,7 @@ C.CitrongGISDebug = function (citronGIS) {
 
         C.Layer.Tile.Schema.SphericalMercator.computeTiles(viewport);
         if (type == C.System.Events.viewportMoveType.ZOOM) {
-            var size = (Math.abs(viewport._schema._extent._minX) + Math.abs(viewport._schema._extent._maxX)) / viewport._resolution;
+            var size = (osm._schema._resolutions[0] / viewport._resolution) * 256;
             tile.width(size);
             tile.height(size);
         } else if (type == C.System.Events.viewportMoveType.ROTATION) {

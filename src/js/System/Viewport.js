@@ -10,9 +10,11 @@ C.System = C.System || {};
 /////////////////
 // Constructor //
 /////////////////
-C.System.Viewport = function (options) {
+C.System.Viewport = C.Utils.Inherit(function (base, options) {
 
     'use strict';
+
+    base();
 
     options = options || {};
 
@@ -33,7 +35,7 @@ C.System.Viewport = function (options) {
     this._zoomDirection = C.System.Viewport.zoomDirection.NONE;
 
     this._schema.update(this);
-};
+}, EventEmitter, 'C.System.Viewport');
 
 C.System.Viewport.zoomDirection = {
     IN: 0,
@@ -67,6 +69,7 @@ C.System.Viewport.prototype.zoom = function (resolution) {
         this._zoomDirection = C.System.Viewport.zoomDirection.IN;
     this._resolution = resolution;
     this._schema.update(this);
+    this.emit('resolutionUpdate', this);
 };
 
 C.System.Viewport.prototype.resize = function (newWidth, newHeight) {
