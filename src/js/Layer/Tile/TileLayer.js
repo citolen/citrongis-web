@@ -27,6 +27,8 @@ C.Layer.Tile.TileLayer = C.Utils.Inherit(function (base, options) {
 
     this._substitution = {};
 
+    this._loading = {};
+
     this._cache = new LRUCache({
         max: 200
     });
@@ -34,6 +36,8 @@ C.Layer.Tile.TileLayer = C.Utils.Inherit(function (base, options) {
     this._queue = async.queue(this.loadTile.bind(this), 5);
 
     C.Helpers.viewport.on('resolutionUpdate', this.updateResolution.bind(this));
+
+    this.on('added', function () { console.log(this._schema.getCurrentTiles());this.addedTile.call(this, this._schema.getCurrentTiles())});
 
 }, C.Geo.Layer, 'C.Layer.Tile.TileLayer');
 
@@ -44,7 +48,7 @@ C.Layer.Tile.TileLayer.prototype.getTileSize = function () {
 
 C.Layer.Tile.TileLayer.prototype.getAproxTileSize = function () {
     'use strict';
-    return (this._schema._resolution / C.Helpers.viewport._resolution * this._schema._tileWidth + 0.5);
+    return (this._schema._resolution / C.Helpers.viewport._resolution * this._schema._tileWidth);
 };
 
 /*
@@ -104,6 +108,8 @@ C.Layer.Tile.TileLayer.prototype.loadTile = function (tile, callback) {
 
     'use strict';
 
+    var key = tile._BId;
+    delete this._loading[key];
     if (!this._schema.isTileInView(tile)) {
         return callback(true);
     }
@@ -125,7 +131,6 @@ C.Layer.Tile.TileLayer.prototype.loadTile = function (tile, callback) {
         source: url
     });
     this.addFeature(feature);
-    var key = tile._BId;
     this._tileInView[key] = {
         feature: feature,
         tile: tile
@@ -143,21 +148,21 @@ C.Layer.Tile.TileLayer.prototype.loadTile = function (tile, callback) {
 };
 
 C.Layer.Tile.TileLayer.prototype.tileLoaded = function (key, noanim) {
-    if (!(key in this._tileInView)) { // tile is gone
-        return;
-    }
 
     if (noanim)return;
     var self = this;
     // Opacity animation
     var o = this._tileInView[key];
-    o.feature.__graphics.alpha = 0;
+    o.feature.opacity(0);
+
     (function f() {
-        o.feature.__graphics.alpha += 0.1;
-        if (o.feature.__graphics.alpha < 1)
+        var opacity = o.feature.opacity() + 0.1
+        o.feature.opacity(opacity);
+
+        if (opacity < 1)
             o.opacity_animation = setTimeout(f, 30);
         else {
-            o.feature.__graphics.alpha = 1;
+            o.feature.opacity(1);
             delete o.opacity_animation;
             self.deleteSubstitute(key);
         }
@@ -185,8 +190,9 @@ C.Layer.Tile.TileLayer.prototype.addedTile = function (addedTiles, viewport) {
             item.feature.location(new C.Geometry.Point(location.X, location.Y, 0, C.Helpers.schema._crs));
             this.addFeature(item.feature);
             this.tileLoaded.call(this, key, true);
-        } else {
+        } else if (!(key in this._loading)) {
             this.createSubstitute(tile, viewport._zoomDirection);
+            this._loading[key] = true;
             this._queue.push(tile);
         }
     }
@@ -290,8 +296,9 @@ C.Layer.Tile.TileLayer.prototype.deleteSubstitute = function (key) {
 
     'use strict';
 
-    if (!(key in this._substitution))
+    if (!(key in this._substitution)) {
         return;
+    }
     var o = this._substitution[key];
     for (var i = 0, j = o.tiles.length; i < j; ++i) {
         this.removeFeature(o.tiles[i].feature);
@@ -305,7 +312,7 @@ C.Layer.Tile.TileLayer.prototype.removedTile = function (removedTiles, viewport)
 
     //console.log('removed', removedTiles);
     for (var key in removedTiles) {
-        this.deleteSubstitute(key);
+
         if (key in this._tileInView) {
             var o = this._tileInView[key];
             if (o.opacity_animation) {
@@ -314,5 +321,6 @@ C.Layer.Tile.TileLayer.prototype.removedTile = function (removedTiles, viewport)
             this.removeFeature(o.feature);
             delete this._tileInView[key];
         }
+        this.deleteSubstitute(key);
     }
 };

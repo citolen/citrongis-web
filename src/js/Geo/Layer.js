@@ -52,13 +52,33 @@ C.Geo.Layer = C.Utils.Inherit(function (base, options) {
 
     this._featureDirty = FeatureDirty.bind(this);
 
+    this._mask = 0;
+
 }, EventEmitter, 'C.Geo.Layer');
+
+C.Geo.Layer.Mask = {
+    OPACITY: 1
+};
 
 C.Geo.Layer.EventType = {
     ADDED: 0,
     REMOVED: 1,
     UPDATED: 2,
     MOVED: 3
+};
+
+C.Geo.Layer.prototype.__added = function () {
+
+    'use strict';
+
+    this.emit('added', this);
+};
+
+C.Geo.Layer.prototype.__removed = function () {
+
+    'use strict';
+
+    this.emit('removed', this);
 };
 
 C.Geo.Layer.prototype.addFeature = function (feature) {
@@ -146,6 +166,7 @@ C.Geo.Layer.prototype.opacity = function (opacity) {
 
     if (opacity === undefined || this._opacity === opacity) return this._opacity;
 
+    this._mask |= C.Geo.Layer.Mask.OPACITY;
     this._opacity = opacity;
     this.emit('opacity', opacity);
     this.makeDirty();

@@ -22,6 +22,9 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
         antialias: false
     });
 
+    /*console.log(this._renderer);
+    this._renderer.renderSession.roundPixels = true;*/
+
     this._renderer.view.id = '__citrongisRenderer';
     this._rootDiv.appendChild(this._renderer.view);
     this._rendererStage = new PIXI.Stage(0x000000, 10);
@@ -46,7 +49,6 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
         self._renderer.resize(width, height);
         self._rendererStage.setQuadtreeSize(self._renderer.width, self._renderer.height);
         self._viewport.resize(width, height);
-        C.System.Events.internalUpdate();
     });
 
     C.System.Events.attach(this);

@@ -35,9 +35,14 @@ C.CitrongGISDebug = function (citronGIS) {
 
         name: 'Open Street Map',
 
+        //http://bcdcspatial.blogspot.com/2012/01/onlineoffline-mapping-map-tiles-and.html
         source: new C.Layer.Tile.Source.TMSSource({
-            url: 'http://mt3.google.com/vt/lyrs=s,h&z={z}&x={x}&y={y}',
-            server: undefined
+            url: 'http://mt3.google.com/vt/lyrs=s,h&z={z}&x={x}&y={y}'/*,
+            server: undefined*/
+            /*url: 'http://{server}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            server: ['a', 'b', 'c']*/
+            //url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png'
+            //url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga'
         }),
 
         schema: C.Layer.Tile.Schema.SphericalMercator
@@ -50,6 +55,8 @@ C.CitrongGISDebug = function (citronGIS) {
 
     layerGroup.addLayer(osm);
     layerGroup.addLayer(layer);
+
+    //osm.opacity(0.5);
 
 
     var tile = new C.Geo.Feature.Image({
@@ -75,18 +82,14 @@ C.CitrongGISDebug = function (citronGIS) {
     });
     tile.load();
 
-    citronGIS.on('viewportMove', function (viewport, type) {
+    citronGIS._viewport.on('move', function (viewport, type) {
 
         'use strict';
 
         C.Layer.Tile.Schema.SphericalMercator.computeTiles(viewport);
-        if (type == C.System.Events.viewportMoveType.ZOOM) {
-            var size = (osm._schema._resolutions[0] / viewport._resolution) * 256;
-            tile.width(size);
-            tile.height(size);
-        } else if (type == C.System.Events.viewportMoveType.ROTATION) {
-            tile.__graphics.rotation = -viewport._rotation;
-        }
+        var size = (osm._schema._resolutions[0] / viewport._resolution) * 256;
+        tile.width(size);
+        tile.height(size);
     });
 
     var circle = new C.Geo.Feature.Circle({

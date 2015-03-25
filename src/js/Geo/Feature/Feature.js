@@ -23,7 +23,11 @@ C.Geo.Feature.Feature = C.Utils.Inherit(function (base, type) {
 
     this._type = type;
 
+    this._opacity = 1.0;
+
 }, EventEmitter, 'C.Geo.Feature.Feature');
+
+C.Geo.Feature.Feature.OpacityMask = 64;
 
 C.Geo.Feature.Feature.EventType = {
     ADDED: 0,
@@ -36,6 +40,16 @@ C.Geo.Feature.Feature.FeatureType = {
     IMAGE: 1,
     LINE: 2,
     POLYGON: 3
+};
+
+C.Geo.Feature.Feature.prototype.opacity = function (opacity) {
+
+    if (opacity == undefined || this._opacity == opacity) return (this._opacity);
+
+    this._mask |= C.Geo.Feature.Feature.OpacityMask;
+    this._opacity = opacity;
+    this.makeDirty();
+    return this._opacity;
 };
 
 C.Geo.Feature.Feature.prototype.makeDirty = function () {

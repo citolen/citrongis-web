@@ -61,6 +61,8 @@ C.Extension.LayerGroup.prototype.addLayer = function (layer) {
     layer._owner = this._owner;
     layer._group = this;
     this._layers.push(layer);
+
+    layer.__added();
     layer.on('dirty', this._layerDirty);
     layer.on('featureChange', this._layerFeatureChange);
     this.notifyLayerChange(C.Geo.Layer.EventType.ADDED, layer);
@@ -76,6 +78,8 @@ C.Extension.LayerGroup.prototype.removeLayer = function (layer) {
     if (layer === undefined || (idx=this._layers.indexOf(layer)) === -1) return false;
 
     this._layers.splice(idx, 1);
+
+    layer.__removed();
     layer.off('dirty', this._layerDirty);
     layer.off('featureChange', this._layerFeatureChange);
     this.notifyLayerChange(C.Geo.Layer.EventType.REMOVED, layer);
