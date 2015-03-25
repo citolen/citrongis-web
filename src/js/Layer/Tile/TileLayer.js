@@ -86,7 +86,7 @@ C.Layer.Tile.TileLayer.prototype.updateResolution = function () {
             var trsize = rsize;
             if (obj.level != undefined) {
                 trsize = rsize / (1 << obj.level);
-                tsize = trsize + 0.5;
+                tsize = trsize;
             }
             obj.feature.width(tsize);
             obj.feature.height(tsize);
@@ -190,10 +190,13 @@ C.Layer.Tile.TileLayer.prototype.addedTile = function (addedTiles, viewport) {
             item.feature.location(new C.Geometry.Point(location.X, location.Y, 0, C.Helpers.schema._crs));
             this.addFeature(item.feature);
             this.tileLoaded.call(this, key, true);
+            continue;
         } else if (!(key in this._loading)) {
-            this.createSubstitute(tile, viewport._zoomDirection);
             this._loading[key] = true;
             this._queue.push(tile);
+        }
+        if (!(key in this._substitution)) {
+            this.createSubstitute(tile, viewport._zoomDirection);
         }
     }
 };
@@ -240,7 +243,7 @@ C.Layer.Tile.TileLayer.prototype.createSubstitute = function (tile, zoomDirectio
 
                 var img = substitute.origin.feature.copy();
                 var rsize = trsize / (1 << substitute.level);
-                var size = rsize + 0.5;
+                var size = rsize;
 
                 var location = this._schema.tileToWorld(substitute.tile, C.Helpers.viewport._resolution, rsize);
                 img._location = new C.Geometry.Point(location.X, location.Y, 0, C.Helpers.schema._crs);
@@ -265,6 +268,7 @@ C.Layer.Tile.TileLayer.prototype.createSubstitute = function (tile, zoomDirectio
     var current = tile;
     while (current._z > 0) {
         var parent = current.levelUp();
+
         var parentObj = this._cache.get(parent._BId);
         if (parentObj) {
             var position = parent.positionInTile(tile);
@@ -312,7 +316,7 @@ C.Layer.Tile.TileLayer.prototype.removedTile = function (removedTiles, viewport)
 
     //console.log('removed', removedTiles);
     for (var key in removedTiles) {
-
+        this.deleteSubstitute(key);
         if (key in this._tileInView) {
             var o = this._tileInView[key];
             if (o.opacity_animation) {
@@ -321,6 +325,5 @@ C.Layer.Tile.TileLayer.prototype.removedTile = function (removedTiles, viewport)
             this.removeFeature(o.feature);
             delete this._tileInView[key];
         }
-        this.deleteSubstitute(key);
     }
 };

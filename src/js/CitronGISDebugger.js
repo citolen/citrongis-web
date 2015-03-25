@@ -59,7 +59,7 @@ C.CitrongGISDebug = function (citronGIS) {
     //osm.opacity(0.5);
 
 
-    var tile = new C.Geo.Feature.Image({
+    /*var tile = new C.Geo.Feature.Image({
         location: new C.Geometry.LatLng(0, 0),
         width: 256,
         height: 256,
@@ -80,16 +80,16 @@ C.CitrongGISDebug = function (citronGIS) {
         })();
 
     });
-    tile.load();
+    tile.load();*/
 
     citronGIS._viewport.on('move', function (viewport, type) {
 
         'use strict';
 
         C.Layer.Tile.Schema.SphericalMercator.computeTiles(viewport);
-        var size = (osm._schema._resolutions[0] / viewport._resolution) * 256;
+        /*var size = (osm._schema._resolutions[0] / viewport._resolution) * 256;
         tile.width(size);
-        tile.height(size);
+        tile.height(size);*/
     });
 
     var circle = new C.Geo.Feature.Circle({
