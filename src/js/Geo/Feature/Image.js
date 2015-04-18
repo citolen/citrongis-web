@@ -31,7 +31,16 @@ C.Geo.Feature.Image = C.Utils.Inherit(function (base, options) {
 
     this._anchorY = options.anchorY || 0;
 
+    this._rotation = options.rotation || 0;
+
+    this._scaleMode = options.scaleMode || C.Geo.Feature.Image.ScaleMode.DEFAULT;
+
 }, C.Geo.Feature.Feature, 'C.Geo.Feature.Image');
+
+C.Geo.Feature.Image.ScaleMode = {
+    DEFAULT: 0,
+    NEAREST: 1
+};
 
 C.Geo.Feature.Image.MaskIndex = {
     LOCATION: 1,
@@ -39,7 +48,9 @@ C.Geo.Feature.Image.MaskIndex = {
     WIDTH: 4,
     HEIGHT: 8,
     ANCHORX: 16,
-    ANCHORY: 32
+    ANCHORY: 32,
+    ROTATION: 64,
+    SCALEMODE: 128
 };
 
 C.Geo.Feature.Image.prototype.location = function (location) {
@@ -166,4 +177,30 @@ C.Geo.Feature.Image.prototype.anchorY = function (anchorY) {
     this.emit('anchorYChanged', anchorY);
     this.makeDirty();
     return this._anchorY;
+};
+
+C.Geo.Feature.Image.prototype.rotation = function (rotation) {
+
+    'use strict';
+
+    if (rotation === undefined || this._rotation == rotation) return this._rotation;
+
+    this._rotation = rotation;
+    this._mask |= C.Geo.Feature.Image.MaskIndex.ROTATION;
+    this.emit('rotationChanged', rotation);
+    this.makeDirty();
+    return this._rotation;
+};
+
+C.Geo.Feature.Image.prototype.scaleMode = function (scaleMode) {
+
+    'use strict';
+
+    if (scaleMode === undefined || this._scaleMode == scaleMode) return this._scaleMode;
+
+    this._scaleMode = scaleMode;
+    this._mask |= C.Geo.Feature.Image.MaskIndex.SCALEMODE;
+    this.emit('scaleModeChanged', scaleMode);
+    this.makeDirty();
+    return this._scaleMode;
 };

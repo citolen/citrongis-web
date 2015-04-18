@@ -96,6 +96,10 @@ C.Renderer.PIXIRenderer.prototype.renderImage = function (feature) {
 
     var sprite = feature.__graphics = new PIXI.Sprite(feature.__texture);
 
+    if (feature.__texture) {
+        feature.__texture.baseTexture.scaleMode = this._scaleModeConvert(feature._scaleMode);
+    }
+
     sprite.width = feature._width;
     sprite.height = feature._height;
 
@@ -103,13 +107,13 @@ C.Renderer.PIXIRenderer.prototype.renderImage = function (feature) {
     sprite.anchor.y = feature._anchorY;
 
     var position = this._viewport.worldToScreen(feature.__location.X, feature.__location.Y);
-    sprite.position = new PIXI.Point(Math.floor(position.X + 0.5), Math.floor(position.Y + 0.5));
+    sprite.position = new PIXI.Point(position.X, position.Y); //new PIXI.Point(Math.floor(position.X + 0.5), Math.floor(position.Y + 0.5));
 
     feature._xRoundWay = sprite.position.x - position.X;
     feature._yRoundWay = sprite.position.y - position.Y;
 
-    sprite.width = Math.floor(feature._width - feature._xRoundWay +0.5);
-    sprite.height = Math.floor(feature._height - feature._yRoundWay +0.5);
+    sprite.width = feature._width;//Math.floor(feature._width - feature._xRoundWay +0.5);
+    sprite.height = feature._height;//Math.floor(feature._height - feature._yRoundWay +0.5);
 
     sprite.rotation = -this._viewport._rotation;
     feature._dirty = false;
@@ -272,11 +276,12 @@ C.Renderer.PIXIRenderer.prototype.updateImage = function (feature) {
     var xRoundWay = 0;
     var yRoundWay = 0;
 
+
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.LOCATION) != 0) {
         feature.__location = C.Helpers.CoordinatesHelper.TransformTo(feature._location, this._viewport._schema._crs);
         var position = this._viewport.worldToScreen(feature.__location.X, feature.__location.Y);
-        feature.__graphics.position.x = Math.floor(position.X + 0.5);
-        feature.__graphics.position.y = Math.floor(position.Y + 0.5);
+        feature.__graphics.position.x = position.X;//Math.floor(position.X + 0.5);
+        feature.__graphics.position.y = position.Y;//Math.floor(position.Y + 0.5);
 
         feature._xRoundWay = feature.__graphics.position.x - position.X;
         feature._yRoundWay = feature.__graphics.position.y - position.Y;
@@ -285,18 +290,29 @@ C.Renderer.PIXIRenderer.prototype.updateImage = function (feature) {
         feature.__graphics.setTexture(feature.__texture);
         feature._mask |= C.Geo.Feature.Image.MaskIndex.WIDTH;
         feature._mask |= C.Geo.Feature.Image.MaskIndex.HEIGHT;
+        feature._mask |= C.Geo.Feature.Image.MaskIndex.SCALEMODE;
     }
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.WIDTH) != 0) {
-        feature.__graphics.width = Math.floor(feature._width - feature._xRoundWay +0.5);
+        feature.__graphics.width = feature._width;//Math.floor(feature._width - feature._xRoundWay +0.5);
     }
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.HEIGHT) != 0) {
-        feature.__graphics.height = Math.floor(feature._height - feature._yRoundWay +0.5);
+        feature.__graphics.height = feature._height;//Math.floor(feature._height - feature._yRoundWay +0.5);
     }
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.ANCHORX) != 0) {
         feature.__graphics.anchor.x = feature._anchorX;
     }
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.ANCHORY) != 0) {
         feature.__graphics.anchor.y = feature._anchorY;
+    }
+    if ((feature._mask & C.Geo.Feature.Image.MaskIndex.ROTATION) != 0) {
+        feature.__graphics.rotation = feature._rotation;
+    }
+    if ((feature._mask & C.Geo.Feature.Image.MaskIndex.SCALEMODE) != 0) {
+
+        if (feature.__texture) {
+            feature.__texture.baseTexture.scaleMode = this._scaleModeConvert(feature._scaleMode);
+            feature.__texture.baseTexture.dirty();
+        }
     }
 };
 
@@ -306,8 +322,8 @@ C.Renderer.PIXIRenderer.prototype.updateFeaturePosition = function (feature) {
 
     if (feature.__location !== undefined) { // Circle,Image
         var position = this._viewport.worldToScreen(feature.__location.X, feature.__location.Y);
-        feature.__graphics.position.x = Math.floor(position.X + 0.5);
-        feature.__graphics.position.y = Math.floor(position.Y + 0.5);
+        feature.__graphics.position.x = position.X;//Math.floor(position.X + 0.5);
+        feature.__graphics.position.y = position.Y;//Math.floor(position.Y + 0.5);
         return;
     }
     if (feature.__locations !== undefined) { // Line,Polygon
@@ -437,4 +453,10 @@ C.Renderer.PIXIRenderer.prototype.renderFrame = function () {
     'use strict';
 
     this.updateFeature();
+};
+
+C.Renderer.PIXIRenderer.prototype._scaleModeConvert = function (scaleMode) {
+    if (scaleMode == C.Geo.Feature.Image.ScaleMode.NEAREST)
+        return PIXI.scaleModes.NEAREST;
+    return PIXI.scaleModes.DEFAULT;
 };

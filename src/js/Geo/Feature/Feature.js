@@ -27,7 +27,7 @@ C.Geo.Feature.Feature = C.Utils.Inherit(function (base, type) {
 
 }, EventEmitter, 'C.Geo.Feature.Feature');
 
-C.Geo.Feature.Feature.OpacityMask = 64;
+C.Geo.Feature.Feature.OpacityMask = 1024;
 
 C.Geo.Feature.Feature.EventType = {
     ADDED: 0,

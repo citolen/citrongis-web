@@ -72,6 +72,7 @@ C.System.Viewport.prototype.rotate = function (angle, noEvent) {
     this._schema.rotate(this, angle);
     this._mask |= C.System.Viewport.ActionMask.ROTATE;
     this._update(noEvent);
+    this.emit('rotationChange', this);
 };
 
 C.System.Viewport.prototype.zoom = function (resolution, noEvent) {
@@ -85,7 +86,7 @@ C.System.Viewport.prototype.zoom = function (resolution, noEvent) {
     this._resolution = resolution;
     this._mask |= C.System.Viewport.ActionMask.ZOOM;
     this._update(noEvent);
-    this.emit('resolutionUpdate', this);
+    this.emit('resolutionChange', this);
 };
 
 C.System.Viewport.prototype.resize = function (newWidth, newHeight, noEvent) {

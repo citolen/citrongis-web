@@ -40,13 +40,14 @@ C.Layer.Tile.Schema.SphericalMercator = C.Utils.Inherit(function (base) {
 
 }, C.Layer.Tile.TileSchema, 'C.Layer.Tile.Schema.SphericalMercator');
 
-C.Layer.Tile.Schema.SphericalMercator.prototype.tileToWorld = function (tileIndex, resolution, size) {
+C.Layer.Tile.Schema.SphericalMercator.prototype.tileToWorld = function (tileIndex, resolution, size, anchor) {
 
     'use strict';
 
     size = size || this._tileWidth;
-    var worldX = this._extent._minX + tileIndex._x * size * resolution;
-    var worldY = tileIndex._y * size * resolution;
+    anchor = anchor || 0;
+    var worldX = this._extent._minX + (tileIndex._x + anchor) * size * resolution;
+    var worldY = (tileIndex._y + anchor) * size * resolution;
     if (this.yAxis == C.Layer.Tile.yAxis.NORMAL)
         worldY = this._extent._minY + worldY;
     else
