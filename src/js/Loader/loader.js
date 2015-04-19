@@ -27,6 +27,7 @@ var files = [
     'js/System/Viewport.js',
     'js/Helpers/CoordinatesHelper.js',
     'js/Helpers/ProjectionsHelper.js',
+    'js/Helpers/IntersectionHelper.js',
     'js/Helpers/ResolutionHelper.js',
     'js/Extension/Require.js',
     'js/Extension/UI/include.js',

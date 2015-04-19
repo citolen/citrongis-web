@@ -47,6 +47,10 @@ C.Layer.Tile.TileIndex.createBId = function (x, y, z) {
 
     'use strict';
 
+    if (x < 0)
+        x += 16777216;
+    if (y < 0)
+        y += 16777216;
     return (new Long((x << 24) | (y << 8 >>> 8), (z << 16) | (x >>> 8)));
 };
 

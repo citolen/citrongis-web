@@ -138,11 +138,111 @@ C.Layer.Tile.TileSchema.prototype.isTileInView = function (tileIndex) {
     return (false);
 };
 
+C.Layer.Tile.TileSchema.prototype.tileToPoly = function (tile, resolution, size, rotation) {
+
+    'use strict';
+
+    //TODO: use yAxis
+
+    var x = Math.floor(tile._x);
+    var y = Math.floor(tile._y);
+
+    var tcenter = this.tileToWorld(new C.Layer.Tile.TileIndex(x + 0.5, y + 0.5, tile._z, tile._BId), resolution, size);
+    var half = (size / 2) * resolution;
+    var topLeft = new C.Geometry.Vector2(tcenter.X - half, tcenter.Y + half);
+    var topRight = new C.Geometry.Vector2(tcenter.X + half, tcenter.Y + half);
+    var bottomLeft = new C.Geometry.Vector2(tcenter.X - half, tcenter.Y - half);
+    var bottomRight = new C.Geometry.Vector2(tcenter.X + half, tcenter.Y - half);
+
+    return ([
+        [topLeft.X, topLeft.Y],
+        [topRight.X, topRight.Y],
+        [bottomRight.X, bottomRight.Y],
+        [bottomLeft.X, bottomLeft.Y]
+    ]);
+};
+
 C.Layer.Tile.TileSchema.prototype.computeTiles = function (viewport) {
 
     'use strict';
 
     if (!C.Utils.Comparison.Equals(viewport._rotation, 0)) { // Compute tile with rotation
+
+        var zoom = this.getZoomLevel(viewport._resolution);
+        this._resolution = this._resolutions[zoom];
+
+        var size = this._resolution / viewport._resolution * this._tileWidth;
+        var bound = this._bounds[zoom];
+
+        var center = this.worldToTile(viewport._origin, viewport._resolution, size);
+        center._x = Math.floor(center._x);
+        center._y = Math.floor(center._y);
+
+        var polyBox = [
+            [ viewport._bbox._topLeft.X, viewport._bbox._topLeft.Y ],
+            [ viewport._bbox._topRight.X, viewport._bbox._topRight.Y ],
+            [ viewport._bbox._bottomRight.X, viewport._bbox._bottomRight.Y ],
+            [ viewport._bbox._bottomLeft.X, viewport._bbox._bottomLeft.Y ]
+        ];
+
+        var self = this;
+
+        var explored = {};
+        var cost = 0;
+        var tiles = {};
+        this._mergeTiles();
+        var addedTilesCount = 0;
+        this._addedTiles = {};  // reset added tiles
+        var removedTilesCount = 0;
+        this._removedTiles = {}; // reset removed tiles
+
+        (function rSearch(tile) {
+
+            explored[tile._BId] = 1;
+
+            var tilePoly = self.tileToPoly(tile, viewport._resolution, size, viewport._rotation);
+
+            if (C.Helpers.IntersectionHelper.polygonContainsPolygon(polyBox, tilePoly)) {
+                // tile is in bbox
+
+                if (tile._x >= 0 && tile._x < bound && tile._y >= 0 && tile._y < bound) {
+                    // this is a valid tile in view
+                    tiles[tile._BId] = tile;
+                    if (!(tile._BId in self._unchangedTiles)) { // this is a new tile
+                        self._addedTiles[tile._BId] = tile;
+                        ++addedTilesCount;
+                    }
+                }
+                var x = Math.floor(tile._x);
+                var y = Math.floor(tile._y);
+
+                var neighbours = [
+                    C.Layer.Tile.TileIndex.fromXYZ(x - 1, y     , tile._z),
+                    C.Layer.Tile.TileIndex.fromXYZ(x + 1, y     , tile._z),
+                    C.Layer.Tile.TileIndex.fromXYZ(x    , y - 1 , tile._z),
+                    C.Layer.Tile.TileIndex.fromXYZ(x    , y + 1 , tile._z)
+                ];
+
+                for (var i = 0; i < 4; ++i) {
+                    if (!(neighbours[i]._BId in explored))
+                        rSearch(neighbours[i]);
+                }
+            }
+        })(center);
+
+        /** Compute removed tiles **/
+        for (var key in this._unchangedTiles) {
+            if (!(key in tiles)) { // this is a removed tile
+                this._removedTiles[key] = this._unchangedTiles[key];
+                delete this._unchangedTiles[key];
+                ++removedTilesCount;
+            }
+        }
+
+        if (removedTilesCount > 0)
+            this.emit('removedTiles', this._removedTiles, viewport);
+        if (addedTilesCount > 0)
+            this.emit('addedTiles', this._addedTiles, viewport);
 
     } else {
 

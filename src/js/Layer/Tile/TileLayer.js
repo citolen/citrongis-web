@@ -63,7 +63,6 @@ C.Layer.Tile.TileLayer.prototype.getTileSize = function () {
 C.Layer.Tile.TileLayer.prototype.rotationChange = function (viewport) {
 
     'use strict';
-
     for (var key in this._tileInView) {
         var obj = this._tileInView[key];
         obj.feature.rotation(-viewport._rotation);
@@ -74,21 +73,15 @@ C.Layer.Tile.TileLayer.prototype.rotationChange = function (viewport) {
         }
     }
 
-    /*for (var key in this._substitution) {
+    for (var key in this._substitution) {
         var objs = this._substitution[key].tiles;
 
         for (var i = 0,j = objs.length; i < j; ++i) {
             var obj = objs[i];
-            var trsize = rsize;
-            if (obj.level != undefined) {
-                trsize = rsize / (1 << obj.level);
-            }
-            obj.feature.width(trsize);
-            obj.feature.height(trsize);
-            var location = this._schema.tileToWorld(obj.tile, C.Helpers.viewport._resolution, trsize);
-            obj.feature.location(new C.Geometry.Point(location.X, location.Y, 0, C.Helpers.schema._crs));
+            obj.feature.rotation(-viewport._rotation);
+            obj.feature.scaleMode(C.Geo.Feature.Image.ScaleMode.DEFAULT);
         }
-    }*/
+    }
 };
 
 /*
@@ -167,7 +160,7 @@ C.Layer.Tile.TileLayer.prototype.loadTile = function (tile, callback) {
         anchorX: 0.5,
         anchorY: 0.5,
         source: url,
-        scaleMode: C.Geo.Feature.Image.ScaleMode.NEAREST
+        scaleMode: (C.Utils.Comparison.Equals(C.Helpers.viewport._rotation, 0)) ? C.Geo.Feature.Image.ScaleMode.NEAREST : C.Geo.Feature.Image.ScaleMode.DEFAULT
     });
 
     this.addFeature(feature);
@@ -225,10 +218,11 @@ C.Layer.Tile.TileLayer.prototype.addedTile = function (addedTiles, viewport) {
             this._tileInView[key] = item;
             item.feature.width(rsize);
             item.feature.height(rsize);
+            item.feature.scaleMode((C.Utils.Comparison.Equals(viewport._rotation, 0)) ? C.Geo.Feature.Image.ScaleMode.NEAREST : C.Geo.Feature.Image.ScaleMode.DEFAULT);
             var location = this._schema.tileToWorld(item.tile, C.Helpers.viewport._resolution, rsize, this._anchor);
             item.feature.location(new C.Geometry.Point(location.X, location.Y, 0, C.Helpers.schema._crs));
             this.addFeature(item.feature);
-            this.tileLoaded.call(this, key, true);
+            //this.tileLoaded.call(this, key, true);
             continue;
         } else if (!(key in this._loading)) {
             this._loading[key] = true;

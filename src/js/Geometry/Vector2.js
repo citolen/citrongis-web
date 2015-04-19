@@ -17,6 +17,22 @@ C.Geometry.Vector2 = function (x, y) {
     this.Y = y || 0.0;
 };
 
+C.Geometry.Vector2.prototype.rotateAround = function (rotation, center) {
+
+    'use strict';
+
+    var cosAngle = Math.cos(rotation);
+    var sinAngle = Math.sin(rotation);
+
+    var x = this.X - center.X;
+    var y = this.Y - center.Y;
+    var tmp = x;
+    x = x * cosAngle - y * sinAngle;
+    y = tmp * sinAngle + y * cosAngle;
+    this.X = x + center.X;
+    this.Y = y + center.Y;
+};
+
 ////////////////////////////////////////////////////
 // Distance                                       //
 // Return distance between a Vector2 and this one //

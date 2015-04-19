@@ -65,8 +65,8 @@ C.Schema.SphericalMercator.prototype.update = function (viewport) {
     var halfScreenMY = (viewport._resolution * viewport._height) / 2; // screen height in m;
 
     if (!C.Utils.Comparison.Equals(viewport._rotation, 0)) {
-        var cosAngle = Math.cos(viewport._rotation);
-        var sinAngle = Math.sin(viewport._rotation);
+        var cosAngle = Math.cos(-viewport._rotation);
+        var sinAngle = Math.sin(-viewport._rotation);
 
         var CosX = halfScreenMX * cosAngle;
         var SinX = halfScreenMX * sinAngle;

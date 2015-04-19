@@ -12,6 +12,22 @@ var C = C || {};
 C.CitrongGISDebug = function (citronGIS) {
     console.log('--Debugger--');
 
+   var p1 = [
+        [-141880868.02393836, 60373155.60208068],
+        [157538025.53326428, 34177396.770350076],
+        [150334191.85453838, -48162798.95788067],
+        [-149084701.70266426, -21967040.126150068]
+    ];
+
+    var p2 = [
+        [-418965042.43595386,21707643.496184554],
+        [-379042523.29499346, 18214875.651953805],
+        [-382535291.1392242, -21707643.489006553],
+        [-422457810.28018457, -18214875.644775804]
+    ];
+
+    console.log(C.Helpers.IntersectionHelper.polygonContainsPolygon(p1, p2));
+
     /*citronGIS._layerManager.on('featureChange', function (eventType, feature) {
         console.log(eventType, feature);
     });
@@ -37,12 +53,12 @@ C.CitrongGISDebug = function (citronGIS) {
 
         //http://bcdcspatial.blogspot.com/2012/01/onlineoffline-mapping-map-tiles-and.html
         source: new C.Layer.Tile.Source.TMSSource({
-            //url: 'http://mt3.google.com/vt/lyrs=s,h&z={z}&x={x}&y={y}'/*,
+            url: 'http://mt3.google.com/vt/lyrs=s,h&z={z}&x={x}&y={y}'/*,
             /*server: undefined*/
             /*url: 'http://{server}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             server: ['a', 'b', 'c']*/
             //url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png'
-            url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga'
+            //url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga'
             //url: 'https://a.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q'
         }),
 
@@ -56,6 +72,8 @@ C.CitrongGISDebug = function (citronGIS) {
 
     layerGroup.addLayer(osm);
     layerGroup.addLayer(layer);
+
+    C.toto = layer;
 
     //osm.opacity(0.5);
 
@@ -92,7 +110,7 @@ C.CitrongGISDebug = function (citronGIS) {
         tile.width(size);
         tile.height(size);*/
     });
-
+    C.Layer.Tile.Schema.SphericalMercator.computeTiles(C.Helpers.viewport);
 
     layer.addFeature(new C.Geo.Feature.Line({
         locations: [
@@ -137,6 +155,10 @@ C.CitrongGISDebug = function (citronGIS) {
         location: new C.Geometry.LatLng(46.795288, -71.245136),
         radius: 2
     }));
+
+    //4496053.110931952 11418343.36490527
+
+
 
 
 

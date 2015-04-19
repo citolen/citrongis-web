@@ -44,6 +44,22 @@ C.Geometry.BoundingBox.prototype.Equals = function (b) {
     return (false);
 };
 
+C.Geometry.BoundingBox.prototype.minX = function () {
+    return (Math.min(this._bottomLeft.X, Math.min(this._topLeft.X, Math.min(this._topRight.X, this._bottomRight.X))));
+};
+
+C.Geometry.BoundingBox.prototype.maxX = function () {
+    return (Math.max(this._bottomLeft.X, Math.max(this._topLeft.X, Math.max(this._topRight.X, this._bottomRight.X))));
+};
+
+C.Geometry.BoundingBox.prototype.minY = function () {
+    return (Math.min(this._bottomLeft.Y, Math.min(this._topLeft.Y, Math.min(this._topRight.Y, this._bottomRight.Y))));
+};
+
+C.Geometry.BoundingBox.prototype.maxY = function () {
+    return (Math.max(this._bottomLeft.Y, Math.max(this._topLeft.Y, Math.max(this._topRight.Y, this._bottomRight.Y))));
+};
+
 //////////////////////////////////////////
 // Center                               //
 // Return the center of the BoundingBox //
