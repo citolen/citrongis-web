@@ -308,7 +308,6 @@ C.Renderer.PIXIRenderer.prototype.updateImage = function (feature) {
         feature.__graphics.rotation = feature._rotation;
     }
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.SCALEMODE) != 0) {
-
         if (feature.__texture) {
             feature.__texture.baseTexture.scaleMode = this._scaleModeConvert(feature._scaleMode);
             feature.__texture.baseTexture.dirty();

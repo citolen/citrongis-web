@@ -32,7 +32,6 @@ C.Layer.Tile.TileLayer = C.Utils.Inherit(function (base, options) {
     this._cache = new LRUCache({
         max: 200,
         dispose: function (k, v) {
-            //console.log(v);
             v.feature.__graphics.texture.baseTexture.unloadFromGPU();
         }
     });
@@ -42,7 +41,9 @@ C.Layer.Tile.TileLayer = C.Utils.Inherit(function (base, options) {
     C.Helpers.viewport.on('resolutionChange', this.resolutionChange.bind(this));
     C.Helpers.viewport.on('rotationChange', this.rotationChange.bind(this));
 
-    this.on('added', function () { console.log(this._schema.getCurrentTiles());this.addedTile.call(this, this._schema.getCurrentTiles())});
+    this.on('added', function () {
+        this.addedTile.call(this, this._schema.getCurrentTiles())
+    });
 
     this._anchor = 0.5;
 
@@ -105,7 +106,7 @@ C.Layer.Tile.TileLayer.prototype.resolutionChange = function () {
         obj.feature.height(rsize);
         var location = this._schema.tileToWorld(obj.tile, C.Helpers.viewport._resolution, rsize, this._anchor);
         obj.feature.location(new C.Geometry.Point(location.X, location.Y, 0, C.Helpers.schema._crs));
-        if (C.Utils.Comparison.Equals(rsize, 256))
+        if (C.Utils.Comparison.Equals(rsize, 256) && C.Utils.Comparison.Equals(C.Helpers.viewport._rotation, 0))
             obj.feature.scaleMode(C.Geo.Feature.Image.ScaleMode.NEAREST);
         else
             obj.feature.scaleMode(C.Geo.Feature.Image.ScaleMode.DEFAULT);
@@ -177,6 +178,20 @@ C.Layer.Tile.TileLayer.prototype.loadTile = function (tile, callback) {
         this.tileLoaded.call(this, key);
         callback();
     }).bind(this, key));
+
+    feature.on('error', (function (key) {
+        //this.deleteSubstitute(key);
+        if (key in this._tileInView) {
+            var o = this._tileInView[key];
+            if (o.opacity_animation) {
+                clearTimeout(o.opacity_animation);
+            }
+            this.removeFeature(o.feature);
+            //delete this._tileInView[key];
+        }
+        callback(true);
+    }).bind(this, key));
+
     feature.load();
 };
 
@@ -222,7 +237,6 @@ C.Layer.Tile.TileLayer.prototype.addedTile = function (addedTiles, viewport) {
             var location = this._schema.tileToWorld(item.tile, C.Helpers.viewport._resolution, rsize, this._anchor);
             item.feature.location(new C.Geometry.Point(location.X, location.Y, 0, C.Helpers.schema._crs));
             this.addFeature(item.feature);
-            //this.tileLoaded.call(this, key, true);
             continue;
         } else if (!(key in this._loading)) {
             this._loading[key] = true;
@@ -280,7 +294,8 @@ C.Layer.Tile.TileLayer.prototype.createSubstitute = function (tile, zoomDirectio
                 img._location = new C.Geometry.Point(location.X, location.Y, 0, C.Helpers.schema._crs);
                 img._width = rsize;
                 img._height = rsize;
-                img.scaleMode(C.Geo.Feature.Image.ScaleMode.DEFAULT);
+                img._scaleMode = C.Geo.Feature.Image.ScaleMode.DEFAULT;
+                //img.scaleMode(C.Geo.Feature.Image.ScaleMode.DEFAULT);
                 tiles.push({
                     feature: img,
                     tile: substitute.tile,
@@ -313,9 +328,8 @@ C.Layer.Tile.TileLayer.prototype.createSubstitute = function (tile, zoomDirectio
             tmp._location = new C.Geometry.Point(location.X, location.Y, 0, C.Helpers.schema._crs);
             tmp._width = trsize;
             tmp._height = trsize;
+            tmp._scaleMode = C.Geo.Feature.Image.ScaleMode.DEFAULT;
             this.addFeature(tmp);
-            tmp.scaleMode(C.Geo.Feature.Image.ScaleMode.DEFAULT);
-            //console.log(tmp);
 
             this._substitution[tile._BId] = {
                 tiles: [ {

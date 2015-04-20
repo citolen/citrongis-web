@@ -81,6 +81,9 @@ C.Geo.Feature.Image.prototype.load = function () {
         self.emit('sourceChanged', self._source);
         self.makeDirty();
     });
+    this._loader.on('error', function () {
+        self.emit('error', self);
+    });
     this._loader.load();
 };
 

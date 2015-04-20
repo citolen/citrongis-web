@@ -4,7 +4,7 @@
  * Copyright (c) 2012-2014, Mat Groves
  * http://goodboydigital.com/
  *
- * Compiled: 2015-01-11
+ * Compiled: 2015-04-19
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license.php
@@ -17076,6 +17076,8 @@ PIXI.BaseTexture = function(source, scaleMode)
         };
 
         this.source.onerror = function() {
+
+            scope.hasError = true;
             scope.dispatchEvent( { type: 'error', content: scope } );
         };
     }
@@ -18837,6 +18839,11 @@ PIXI.ImageLoader.prototype.load = function()
     {
         this.onLoaded();
     }
+    if (!this.texture.baseTexture.hasError) {
+        this.texture.baseTexture.on('error', this.onError.bind(this));
+    } else {
+         this.onError();
+    }
 };
 
 /**
@@ -18848,6 +18855,11 @@ PIXI.ImageLoader.prototype.load = function()
 PIXI.ImageLoader.prototype.onLoaded = function()
 {
     this.emit('loaded', { content: this });
+};
+
+PIXI.ImageLoader.prototype.onError = function()
+{
+    this.emit('error', { content: this });
 };
 
 /**
