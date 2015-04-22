@@ -15,20 +15,22 @@ C.Layer.Tile.TileLayer = C.Utils.Inherit(function (base, options) {
 
     base(options);
 
+    // TileSource
     this._source = options.source;
 
+    // TileSchema
     this._schema = options.schema;
 
-
-    this._schema.on('addedTiles', this.addedTile.bind(this));
-    this._schema.on('removedTiles', this.removedTile.bind(this));
-
+    // Tiles in viewport
     this._tileInView = {};
 
+    // Tiles substituing
     this._substitution = {};
 
+    // Tile loading
     this._loading = {};
 
+    // Tile cache
     this._cache = new LRUCache({
         max: 200,
         dispose: function (k, v) {
@@ -36,34 +38,56 @@ C.Layer.Tile.TileLayer = C.Utils.Inherit(function (base, options) {
         }
     });
 
+    // Loading queue
     this._queue = async.queue(this.loadTile.bind(this), 5);
 
+    // Tiles anchor
+    this._anchor = 0.5;
+
+    // Schema events
+    this._schema.on('addedTiles', this.addedTile.bind(this));
+    this._schema.on('removedTiles', this.removedTile.bind(this));
+
+    // Viewport Events
     C.Helpers.viewport.on('resolutionChange', this.resolutionChange.bind(this));
     C.Helpers.viewport.on('rotationChange', this.rotationChange.bind(this));
 
-    this.on('added', function () {
-        this.addedTile.call(this, this._schema.getCurrentTiles())
-    });
-
-    this._anchor = 0.5;
-
+    // Init point, layer has been added
+    this.on('added', this.init.bind(this));
 }, C.Geo.Layer, 'C.Layer.Tile.TileLayer');
 
+////
+//  init
+//
+//  - initialize by loading the current tiles calculate by the schema
+C.Layer.Tile.TileLayer.prototype.init = function () {
+
+    'use strict';
+
+    this.addedTile.call(this, this._schema.getCurrentTiles());
+};
 
 
-/*
-**  getTileSize
-**
-**  Return the current tile size according to the current resolution and the schema resolution
-*/
+
+////
+//  getTileSize
+//
+//  - return the tile size for the current resolution ratio
 C.Layer.Tile.TileLayer.prototype.getTileSize = function () {
     'use strict';
+
     return (this._schema._resolution / C.Helpers.viewport._resolution * this._schema._tileWidth);
 };
 
+////    [Event]
+//  rotationChange
+//
+//  - viewport rotation changed
 C.Layer.Tile.TileLayer.prototype.rotationChange = function (viewport) {
 
     'use strict';
+
+    // update all the tile currently in view
     for (var key in this._tileInView) {
         var obj = this._tileInView[key];
         obj.feature.rotation(-viewport._rotation);
@@ -74,6 +98,7 @@ C.Layer.Tile.TileLayer.prototype.rotationChange = function (viewport) {
         }
     }
 
+    // update all the substitution tiles
     for (var key in this._substitution) {
         var objs = this._substitution[key].tiles;
 
@@ -85,20 +110,17 @@ C.Layer.Tile.TileLayer.prototype.rotationChange = function (viewport) {
     }
 };
 
-/*
-**
-**  Update the result of the tiles
-**  Happen when you change the resolution between zoom level
-**
-**
-**
-*/
+////    [Event]
+//  resolutionChange
+//
+//  - update tiles when the resolution changed, (happens between zoom level)
 C.Layer.Tile.TileLayer.prototype.resolutionChange = function () {
 
     'use strict';
 
     var rsize = this.getTileSize();
 
+    // update all the tile currently in view
     for (var key in this._tileInView) {
         var obj = this._tileInView[key];
 
@@ -112,6 +134,7 @@ C.Layer.Tile.TileLayer.prototype.resolutionChange = function () {
             obj.feature.scaleMode(C.Geo.Feature.Image.ScaleMode.DEFAULT);
     }
 
+    // update all the substitution tiles
     for (var key in this._substitution) {
         var objs = this._substitution[key].tiles;
 
@@ -129,26 +152,22 @@ C.Layer.Tile.TileLayer.prototype.resolutionChange = function () {
     }
 };
 
-/*
-**
-**  Queue function to load a file
-**
-**
-**
-**
-*/
+////    [Queue callback]
+//  loadTile
+//
+//  - load a tile
 C.Layer.Tile.TileLayer.prototype.loadTile = function (tile, callback) {
 
     'use strict';
 
     var key = tile._BId;
-    delete this._loading[key];
-    if (!this._schema.isTileInView(tile)) {
+    delete this._loading[key]; // delete from loading list
+
+    if (!this._schema.isTileInView(tile)) { // if not in view anymore no need to load it
         return callback(true);
     }
 
     var url = this._source.tileIndexToUrl(tile);
-
     var rsize = this.getTileSize();
 
     var location = this._schema.tileToWorld(tile, C.Helpers.viewport._resolution, rsize, this._anchor);
@@ -158,8 +177,8 @@ C.Layer.Tile.TileLayer.prototype.loadTile = function (tile, callback) {
         location: location,
         width: rsize,
         height: rsize,
-        anchorX: 0.5,
-        anchorY: 0.5,
+        anchorX: this._anchor,
+        anchorY: this._anchor,
         source: url,
         scaleMode: (C.Utils.Comparison.Equals(C.Helpers.viewport._rotation, 0)) ? C.Geo.Feature.Image.ScaleMode.NEAREST : C.Geo.Feature.Image.ScaleMode.DEFAULT
     });
@@ -169,25 +188,27 @@ C.Layer.Tile.TileLayer.prototype.loadTile = function (tile, callback) {
         feature: feature,
         tile: tile
     };
+
+    // image was loaded
     feature.on('loaded', (function (key) {
-        if (!(key in this._tileInView)) { // tile is gone
+        if (!(key in this._tileInView)) { // not in view anymore, nothing to do, was already handled
             callback(true);
             return;
         }
+
         this._cache.set(key, this._tileInView[key]);
         this.tileLoaded.call(this, key);
         callback();
     }).bind(this, key));
 
+    // image couldn't be loaded successfully
     feature.on('error', (function (key) {
-        //this.deleteSubstitute(key);
         if (key in this._tileInView) {
             var o = this._tileInView[key];
             if (o.opacity_animation) {
                 clearTimeout(o.opacity_animation);
             }
             this.removeFeature(o.feature);
-            //delete this._tileInView[key];
         }
         callback(true);
     }).bind(this, key));
@@ -195,16 +216,21 @@ C.Layer.Tile.TileLayer.prototype.loadTile = function (tile, callback) {
     feature.load();
 };
 
+////    [Animation]
+//  tileLoaded
+//
+//  - opacity animation when the tile is loaded
 C.Layer.Tile.TileLayer.prototype.tileLoaded = function (key, noanim) {
 
     if (noanim)return;
+
     var self = this;
-    // Opacity animation
+
     var o = this._tileInView[key];
     o.feature.opacity(0);
 
     (function f() {
-        var opacity = o.feature.opacity() + 0.1
+        var opacity = o.feature.opacity() + 0.1;
         o.feature.opacity(opacity);
 
         if (opacity < 1)
@@ -217,6 +243,10 @@ C.Layer.Tile.TileLayer.prototype.tileLoaded = function (key, noanim) {
     })();
 };
 
+////    [Event]
+//  addedTile
+//
+//  - called when the schema found new tile in view
 C.Layer.Tile.TileLayer.prototype.addedTile = function (addedTiles, viewport) {
 
     'use strict';
@@ -229,7 +259,7 @@ C.Layer.Tile.TileLayer.prototype.addedTile = function (addedTiles, viewport) {
 
         var item = this._cache.get(key);
 
-        if (item) {
+        if (item) { // Tile was already in cache
             this._tileInView[key] = item;
             item.feature.width(rsize);
             item.feature.height(rsize);
@@ -238,16 +268,22 @@ C.Layer.Tile.TileLayer.prototype.addedTile = function (addedTiles, viewport) {
             item.feature.location(new C.Geometry.Point(location.X, location.Y, 0, C.Helpers.schema._crs));
             this.addFeature(item.feature);
             continue;
-        } else if (!(key in this._loading)) {
+
+        } else if (!(key in this._loading)) { // Add the tile to the loading queue
             this._loading[key] = true;
             this._queue.push(tile);
         }
-        if (!(key in this._substitution)) {
+
+        if (!(key in this._substitution)) { // create substitution to cover the missing tile
             this.createSubstitute(tile, viewport._zoomDirection);
         }
     }
 };
 
+////
+//  createSubstitute
+//
+//  - create substitution for a tile
 C.Layer.Tile.TileLayer.prototype.createSubstitute = function (tile, zoomDirection) {
 
     'use strict';
@@ -273,7 +309,6 @@ C.Layer.Tile.TileLayer.prototype.createSubstitute = function (tile, zoomDirectio
                     });
                     ++cover;
                 } else if (child._z < self._schema._resolutions.length && level < 3) {
-                    // Go Futher
                     if (explore(child, level + 1) != 4)
                         return 0;
                 }
@@ -295,7 +330,6 @@ C.Layer.Tile.TileLayer.prototype.createSubstitute = function (tile, zoomDirectio
                 img._width = rsize;
                 img._height = rsize;
                 img._scaleMode = C.Geo.Feature.Image.ScaleMode.DEFAULT;
-                //img.scaleMode(C.Geo.Feature.Image.ScaleMode.DEFAULT);
                 tiles.push({
                     feature: img,
                     tile: substitute.tile,
@@ -344,6 +378,10 @@ C.Layer.Tile.TileLayer.prototype.createSubstitute = function (tile, zoomDirectio
     }
 };
 
+////
+//  deleteSubstitute
+//
+//  - remove the substitute tile associate with key
 C.Layer.Tile.TileLayer.prototype.deleteSubstitute = function (key) {
 
     'use strict';
@@ -358,6 +396,10 @@ C.Layer.Tile.TileLayer.prototype.deleteSubstitute = function (key) {
     delete this._substitution[key];
 };
 
+////    [Event]
+//  removedTile
+//
+//  - called when the schema calculated removed tile
 C.Layer.Tile.TileLayer.prototype.removedTile = function (removedTiles, viewport) {
 
     'use strict';
