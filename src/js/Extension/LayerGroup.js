@@ -62,11 +62,11 @@ C.Extension.LayerGroup.prototype.addLayer = function (layer) {
     layer._group = this;
     this._layers.push(layer);
 
-    layer.__added();
     layer.on('dirty', this._layerDirty);
     layer.on('featureChange', this._layerFeatureChange);
     this.notifyLayerChange(C.Geo.Layer.EventType.ADDED, layer);
     this.emit('layerAdded', layer);
+    layer.__added();
     return true;
 };
 

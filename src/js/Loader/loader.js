@@ -19,6 +19,7 @@ var files = [
     'js/Utils/Object.js',
     'js/Utils/Context.js',
     'js/Utils/Path.js',
+    'js/Utils/Event.js',
     'js/Geometry/Point.js',
     'js/Geometry/Vector2.js',
     'js/Geometry/Vector3.js',
@@ -56,6 +57,7 @@ var files = [
     'js/Schema/SchemaBase.js',
     'js/Schema/SphericalMercator.js',
     'js/System/Events.js',
+    'js/System/TileSchemaManager.js',
     'js/CitronGISDebugger.js',
     'js/Renderer/RendererBase.js',
     'js/Renderer/PIXIRenderer.js',
@@ -81,17 +83,6 @@ var map;
     console.log('loading done');
 
     map = new C.CitrongGIS(document.getElementById('citrongis'));
-
-    map.on('viewportMove', function (viewport) {
-
-        //console.log('viewportMove');
-    });
-    map.on('viewportMoved', function (viewport) {
-
-        //console.log('viewportMoved');
-        //console.log(viewport._origin.toString());
-        //console.log(viewport._bbox.toString());
-    });
 });
 
 var fileInput = document.getElementById('file');

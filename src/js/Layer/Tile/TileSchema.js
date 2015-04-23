@@ -49,6 +49,20 @@ C.Layer.Tile.TileSchema = C.Utils.Inherit(function (base, option) {
 
 }, EventEmitter, 'C.Layer.Tile.TileSchema');
 
+C.Layer.Tile.TileSchema.prototype.register = function () {
+
+    'use strict';
+
+    this.emit('register');
+};
+
+C.Layer.Tile.TileSchema.prototype.unregister = function () {
+
+    'use strict';
+
+    this.emit('unregister');
+};
+
 C.Layer.Tile.TileSchema.prototype.tileToWorld = function (tileIndex, resolutionId) {
 
     'use strict';

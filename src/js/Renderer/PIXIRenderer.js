@@ -112,10 +112,10 @@ C.Renderer.PIXIRenderer.prototype.renderImage = function (feature) {
     feature._xRoundWay = sprite.position.x - position.X;
     feature._yRoundWay = sprite.position.y - position.Y;
 
-    sprite.width = feature._width;//Math.floor(feature._width - feature._xRoundWay +0.5);
-    sprite.height = feature._height;//Math.floor(feature._height - feature._yRoundWay +0.5);
+    sprite.width = feature._width;
+    sprite.height = feature._height;
 
-    sprite.rotation = -this._viewport._rotation;
+    sprite.rotation = feature._rotation;
     feature._dirty = false;
 };
 
@@ -293,10 +293,10 @@ C.Renderer.PIXIRenderer.prototype.updateImage = function (feature) {
         feature._mask |= C.Geo.Feature.Image.MaskIndex.SCALEMODE;
     }
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.WIDTH) != 0) {
-        feature.__graphics.width = feature._width;//Math.floor(feature._width - feature._xRoundWay +0.5);
+        feature.__graphics.width = feature._width;
     }
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.HEIGHT) != 0) {
-        feature.__graphics.height = feature._height;//Math.floor(feature._height - feature._yRoundWay +0.5);
+        feature.__graphics.height = feature._height;
     }
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.ANCHORX) != 0) {
         feature.__graphics.anchor.x = feature._anchorX;
@@ -321,8 +321,8 @@ C.Renderer.PIXIRenderer.prototype.updateFeaturePosition = function (feature) {
 
     if (feature.__location !== undefined) { // Circle,Image
         var position = this._viewport.worldToScreen(feature.__location.X, feature.__location.Y);
-        feature.__graphics.position.x = position.X;//Math.floor(position.X + 0.5);
-        feature.__graphics.position.y = position.Y;//Math.floor(position.Y + 0.5);
+        feature.__graphics.position.x = position.X;
+        feature.__graphics.position.y = position.Y;
         return;
     }
     if (feature.__locations !== undefined) { // Line,Polygon
@@ -365,6 +365,7 @@ C.Renderer.PIXIRenderer.prototype.layerAdded = function (layer) {
 
     layer.__graphics = new PIXI.DisplayObjectContainer();
     layer._group.__graphics.addChild(layer.__graphics);
+    //layer.__graphics.cacheAsBitmap = true;
 };
 
 C.Renderer.PIXIRenderer.prototype.layerRemoved = function (layer) {

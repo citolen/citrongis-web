@@ -22,8 +22,6 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
         antialias: false
     });
 
-    /*console.log(this._renderer);
-    this._renderer.renderSession.roundPixels = true;*/
 
     this._renderer.view.id = '__citrongisRenderer';
     this._rootDiv.appendChild(this._renderer.view);
@@ -52,6 +50,8 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     });
 
     C.System.Events.attach(this);
+
+    C.Utils.Event.__initialized();
 
     this._customRenderer = new C.Renderer.PIXIRenderer(this);
     C.CitrongGISDebug(this);

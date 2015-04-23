@@ -44,16 +44,9 @@ C.Layer.Tile.TileLayer = C.Utils.Inherit(function (base, options) {
     // Tiles anchor
     this._anchor = 0.5;
 
-    // Schema events
-    this._schema.on('addedTiles', this.addedTile.bind(this));
-    this._schema.on('removedTiles', this.removedTile.bind(this));
-
-    // Viewport Events
-    C.Helpers.viewport.on('resolutionChange', this.resolutionChange.bind(this));
-    C.Helpers.viewport.on('rotationChange', this.rotationChange.bind(this));
-
     // Init point, layer has been added
     this.on('added', this.init.bind(this));
+    this.on('removed', this.destroy.bind(this));
 }, C.Geo.Layer, 'C.Layer.Tile.TileLayer');
 
 ////
@@ -64,7 +57,39 @@ C.Layer.Tile.TileLayer.prototype.init = function () {
 
     'use strict';
 
-    this.addedTile.call(this, this._schema.getCurrentTiles());
+    // Schema events
+    this._schema.on('addedTiles', this.addedTile.bind(this));
+    this._schema.on('removedTiles', this.removedTile.bind(this));
+
+    // Viewport Events
+    C.Helpers.viewport.on('resolutionChange', this.resolutionChange.bind(this));
+    C.Helpers.viewport.on('rotationChange', this.rotationChange.bind(this));
+
+    this._schema.register();
+    this.addedTile.call(this, this._schema.getCurrentTiles(), C.Helpers.viewport);
+};
+
+////
+//  destroy
+//
+//  -
+C.Layer.Tile.TileLayer.prototype.destroy = function () {
+
+    'use strict';
+
+    // Schema events
+    this._schema.off('addedTiles', this.addedTile.bind(this));
+    this._schema.off('removedTiles', this.removedTile.bind(this));
+
+    // Viewport Events
+    C.Helpers.viewport.off('resolutionChange', this.resolutionChange.bind(this));
+    C.Helpers.viewport.off('rotationChange', this.rotationChange.bind(this));
+
+    this._schema.unregister();
+
+    this.removedTile(this._tileInView, C.Helpers.viewport);
+    this._tileInView = {};
+    this._substitution = {};
 };
 
 
@@ -197,6 +222,7 @@ C.Layer.Tile.TileLayer.prototype.loadTile = function (tile, callback) {
         }
 
         this._cache.set(key, this._tileInView[key]);
+        feature.rotation(-C.Helpers.viewport._rotation);
         this.tileLoaded.call(this, key);
         callback();
     }).bind(this, key));
@@ -263,6 +289,7 @@ C.Layer.Tile.TileLayer.prototype.addedTile = function (addedTiles, viewport) {
             this._tileInView[key] = item;
             item.feature.width(rsize);
             item.feature.height(rsize);
+            item.feature.rotation(-viewport._rotation);
             item.feature.scaleMode((C.Utils.Comparison.Equals(viewport._rotation, 0)) ? C.Geo.Feature.Image.ScaleMode.NEAREST : C.Geo.Feature.Image.ScaleMode.DEFAULT);
             var location = this._schema.tileToWorld(item.tile, C.Helpers.viewport._resolution, rsize, this._anchor);
             item.feature.location(new C.Geometry.Point(location.X, location.Y, 0, C.Helpers.schema._crs));
@@ -330,6 +357,7 @@ C.Layer.Tile.TileLayer.prototype.createSubstitute = function (tile, zoomDirectio
                 img._width = rsize;
                 img._height = rsize;
                 img._scaleMode = C.Geo.Feature.Image.ScaleMode.DEFAULT;
+                img._rotation = -C.Helpers.viewport._rotation;
                 tiles.push({
                     feature: img,
                     tile: substitute.tile,
@@ -363,6 +391,7 @@ C.Layer.Tile.TileLayer.prototype.createSubstitute = function (tile, zoomDirectio
             tmp._width = trsize;
             tmp._height = trsize;
             tmp._scaleMode = C.Geo.Feature.Image.ScaleMode.DEFAULT;
+            tmp._rotation = -C.Helpers.viewport._rotation;
             this.addFeature(tmp);
 
             this._substitution[tile._BId] = {

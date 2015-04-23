@@ -12,34 +12,6 @@ var C = C || {};
 C.CitrongGISDebug = function (citronGIS) {
     console.log('--Debugger--');
 
-   var p1 = [
-        [-141880868.02393836, 60373155.60208068],
-        [157538025.53326428, 34177396.770350076],
-        [150334191.85453838, -48162798.95788067],
-        [-149084701.70266426, -21967040.126150068]
-    ];
-
-    var p2 = [
-        [-418965042.43595386,21707643.496184554],
-        [-379042523.29499346, 18214875.651953805],
-        [-382535291.1392242, -21707643.489006553],
-        [-422457810.28018457, -18214875.644775804]
-    ];
-
-    console.log(C.Helpers.IntersectionHelper.polygonContainsPolygon(p1, p2));
-
-    /*citronGIS._layerManager.on('featureChange', function (eventType, feature) {
-        console.log(eventType, feature);
-    });
-
-    citronGIS._layerManager.on('layerChange', function (eventType, layer) {
-        console.log(eventType, layer);
-    });
-
-    citronGIS._layerManager.on('groupChange', function (eventType, group) {
-        console.log(eventType, group);
-    });*/
-
     var owner = {};
 
     var layer = new C.Geo.Layer({
@@ -73,44 +45,8 @@ C.CitrongGISDebug = function (citronGIS) {
     layerGroup.addLayer(osm);
     layerGroup.addLayer(layer);
 
-    C.toto = layer;
-
-    //osm.opacity(0.5);
-
-
-    /*var tile = new C.Geo.Feature.Image({
-        location: new C.Geometry.LatLng(0, 0),
-        width: 256,
-        height: 256,
-        anchorX: 0.5,
-        anchorY: 0.5,
-        source: 'http://a.basemaps.cartocdn.com/light_all/0/0/0.png'
-    });
-    osm.addFeature(tile);
-    tile.on('loaded', function () {
-        console.log('loaded');
-        tile.__graphics.alpha = 0;
-        (function f() {
-            if (tile.__graphics.alpha < 1)
-                setTimeout(f, 70);
-            tile.__graphics.alpha += 0.1;
-            if (tile.__graphics.alpha > 1)
-                tile.__graphics.alpha = 1;
-        })();
-
-    });
-    tile.load();*/
-
-    citronGIS._viewport.on('move', function (viewport, type) {
-
-        'use strict';
-
-        C.Layer.Tile.Schema.SphericalMercator.computeTiles(viewport);
-        /*var size = (osm._schema._resolutions[0] / viewport._resolution) * 256;
-        tile.width(size);
-        tile.height(size);*/
-    });
-    C.Layer.Tile.Schema.SphericalMercator.computeTiles(C.Helpers.viewport);
+    C.toto = osm;
+    C.tata = layerGroup;
 
     layer.addFeature(new C.Geo.Feature.Line({
         locations: [
@@ -156,37 +92,12 @@ C.CitrongGISDebug = function (citronGIS) {
         radius: 2
     }));
 
-    //4496053.110931952 11418343.36490527
-
-
-
-
-
-    var southAmerica = new C.Geo.Feature.Polygon({
-        locations: [
-            new C.Geometry.LatLng(-55.679726, -68.288577),
-            new C.Geometry.LatLng(-18.316418, -70.573733),
-            new C.Geometry.LatLng(-5.094729, -81.823733),
-            new C.Geometry.LatLng(12.722377, -73.913577),
-            new C.Geometry.LatLng(-6.493759, -34.187013)
-        ],
-        fillColor: 0x6e6eff,
-        outlineWidth: 2
-    });
-
-    C.Helpers.CoordinatesHelper.TransformTo(new C.Geometry.LatLng(-55.679726, -68.288577), C.Helpers.ProjectionsHelper.EPSG3857);
-    //layer.addFeature(southAmerica);
-
-    setTimeout(function () {
-        southAmerica.outlineColor(0x00FF00);
-        southAmerica.fillColor(0xFF0000);
-        southAmerica.outlineWidth(5);
-    }, 3000);
-
-    //43.306426, -0.415039
-
-    /*circle.outlineWidth(2);
-    layer.removeFeature(circle);
-    layerGroup.removeLayer(layer);
-    citronGIS._layerManager.deleteGroup(owner, layerGroup);*/
+    /*for (var i = 0; i < 40; ++i) {
+        for (var j = 0; j < 50; ++j) {
+            layer.addFeature(new C.Geo.Feature.Circle({
+                location: new C.Geometry.LatLng(j, i),
+                radius: 2
+            }));
+        }
+    }*/
 };
