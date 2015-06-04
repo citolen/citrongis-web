@@ -19,12 +19,13 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
 
     this._renderer = new PIXI.autoDetectRenderer($(this._rootDiv).width(), $(this._rootDiv).height(), {
         transparent: true,
-        antialias: false
+        antialias: true
     });
 
 
     this._renderer.view.id = '__citrongisRenderer';
     this._rootDiv.appendChild(this._renderer.view);
+
     this._rendererStage = new PIXI.Stage(0x000000, 10);
     this._rendererStage.setQuadtreeSize(this._renderer.width, this._renderer.height);
 
@@ -39,6 +40,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     C.Helpers.viewport = this._viewport;
     C.Helpers.schema = this._viewport._schema;
 
+    C.UI.PopupManager.init(this._rootDiv);
 
     var self = this;
     $(window).resize(function () {
@@ -47,6 +49,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
         self._renderer.resize(width, height);
         self._rendererStage.setQuadtreeSize(self._renderer.width, self._renderer.height);
         self._viewport.resize(width, height);
+        C.UI.PopupManager.resize(width, height);
     });
 
     C.System.Events.attach(this);

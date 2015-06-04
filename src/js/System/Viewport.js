@@ -79,6 +79,8 @@ C.System.Viewport.prototype.zoom = function (resolution, noEvent) {
 
     'use strict';
 
+    if (resolution < 0) return;
+
     if (resolution > this._resolution)
         this._zoomDirection = C.System.Viewport.zoomDirection.OUT;
     if (resolution < this._resolution)

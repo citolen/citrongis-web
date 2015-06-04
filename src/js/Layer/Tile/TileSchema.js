@@ -182,13 +182,15 @@ C.Layer.Tile.TileSchema.prototype.computeTiles = function (viewport) {
 
     if (!C.Utils.Comparison.Equals(viewport._rotation, 0)) { // Compute tile with rotation
 
-        var zoom = this.getZoomLevel(viewport._resolution);
+        var resolution = viewport._resolution;
+        var rotation = viewport._rotation;
+        var zoom = this.getZoomLevel(resolution);
         this._resolution = this._resolutions[zoom];
 
-        var size = this._resolution / viewport._resolution * this._tileWidth;
+        var size = this._resolution / resolution * this._tileWidth;
         var bound = this._bounds[zoom];
 
-        var center = this.worldToTile(viewport._origin, viewport._resolution, size);
+        var center = this.worldToTile(viewport._origin, resolution, size);
         center._x = Math.floor(center._x);
         center._y = Math.floor(center._y);
 
@@ -214,7 +216,7 @@ C.Layer.Tile.TileSchema.prototype.computeTiles = function (viewport) {
 
             explored[tile._BId] = 1;
 
-            var tilePoly = self.tileToPoly(tile, viewport._resolution, size, viewport._rotation);
+            var tilePoly = self.tileToPoly(tile, resolution, size, rotation);
 
             if (C.Helpers.IntersectionHelper.polygonContainsPolygon(polyBox, tilePoly)) {
                 // tile is in bbox

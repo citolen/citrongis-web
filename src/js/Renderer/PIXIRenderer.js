@@ -56,7 +56,12 @@ C.Renderer.PIXIRenderer.prototype.featureAdded = function (feature, layer) {
             this.renderPolygon(feature);
             break;
     }
+    feature.__graphics.interactive = true;
+    feature.__graphics.click = function (evt, data) {
+        feature.__click(evt, data);
+    };
     layer.__graphics.addChild(feature.__graphics);
+
 };
 
 /*
@@ -364,6 +369,7 @@ C.Renderer.PIXIRenderer.prototype.layerAdded = function (layer) {
     'use strict';
 
     layer.__graphics = new PIXI.DisplayObjectContainer();
+    layer.__graphics.interactive = true;
     layer._group.__graphics.addChild(layer.__graphics);
     //layer.__graphics.cacheAsBitmap = true;
 };
@@ -415,6 +421,7 @@ C.Renderer.PIXIRenderer.prototype.groupAdded = function (group) {
 
     'use strict';
     group.__graphics = new PIXI.DisplayObjectContainer();
+    group.__graphics.interactive = true;
     this._stage.addChild(group.__graphics);
 };
 

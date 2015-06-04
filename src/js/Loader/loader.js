@@ -61,6 +61,8 @@ var files = [
     'js/CitronGISDebugger.js',
     'js/Renderer/RendererBase.js',
     'js/Renderer/PIXIRenderer.js',
+    'js/UI/PopupManager.js',
+    'js/UI/Popup.js',
     'js/CitronGIS.js'
 ];
 

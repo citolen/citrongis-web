@@ -19,6 +19,9 @@ C.CitrongGISDebug = function (citronGIS) {
         owner: owner
     });
 
+    var test = new C.Layer.Tile.TileIndex.fromXYZ(10, 5, 2);
+    console.log('BID', test);
+
     var osm = new C.Layer.Tile.TileLayer({
 
         name: 'Open Street Map',
@@ -27,11 +30,13 @@ C.CitrongGISDebug = function (citronGIS) {
         source: new C.Layer.Tile.Source.TMSSource({
             //url: 'http://mt3.google.com/vt/lyrs=s,h&z={z}&x={x}&y={y}'/*,
             /*server: undefined*/
-            /*url: 'http://{server}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            server: ['a', 'b', 'c']*/
+            url: 'http://{server}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            server: ['a', 'b', 'c']
             //url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png'
-            url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga'
+            //url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga'
             //url: 'https://a.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q'
+            /*url: 'http://{server}.tile.stamen.com/toner/{z}/{x}/{y}.png',
+            server: ['a', 'b', 'c']*/
         }),
 
         schema: C.Layer.Tile.Schema.SphericalMercator
@@ -87,10 +92,41 @@ C.CitrongGISDebug = function (citronGIS) {
         radius: 2
     }));
 
-    layer.addFeature(new C.Geo.Feature.Circle({
+    var c;
+    layer.addFeature((c = new C.Geo.Feature.Circle({
         location: new C.Geometry.LatLng(46.795288, -71.245136),
-        radius: 2
-    }));
+        radius: 5
+    })));
+
+    var contentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
+      '<div id="bodyContent">'+
+      '<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
+      'sandstone rock formation in the southern part of the '+
+      'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) '+
+      'south west of the nearest large town, Alice Springs; 450&#160;km '+
+      '(280&#160;mi) by road. Kata Tjuta and Uluru are the two major '+
+      'features of the Uluru - Kata Tjuta National Park. Uluru is '+
+      'sacred to the Pitjantjatjara and Yankunytjatjara, the '+
+      'Aboriginal people of the area. It has many springs, waterholes, '+
+      'rock caves and ancient paintings. Uluru is listed as a World '+
+      'Heritage Site.</p>'+
+      '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">'+
+      'https://en.wikipedia.org/w/index.php?title=Uluru</a> '+
+      '(last visited June 22, 2009).</p>'+
+      '</div>'+
+      '</div>';
+
+    var p = new C.UI.Popup(c, {
+        content: contentString,
+        auto: true
+    });
+
+    c.on('click', function () {
+        p.open();
+    });
 
     /*for (var i = 0; i < 40; ++i) {
         for (var j = 0; j < 50; ++j) {

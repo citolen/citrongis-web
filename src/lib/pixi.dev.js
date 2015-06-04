@@ -4,7 +4,7 @@
  * Copyright (c) 2012-2014, Mat Groves
  * http://goodboydigital.com/
  *
- * Compiled: 2015-04-19
+ * Compiled: 2015-05-13
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license.php
@@ -2041,6 +2041,10 @@ PIXI.DisplayObjectContainer.prototype.removeChildAt = function(index)
     var child = this.getChildAt( index );
     if(this.stage)
         child.removeStageReference();
+
+    if (this.node !== undefined) {
+            this.node.remove(this);
+       }
 
     child.parent = undefined;
     this.children.splice( index, 1 );
@@ -4476,10 +4480,11 @@ PIXI.InteractionManager.prototype.onMouseDown = function(event)
     for (var i = 0, l = potentialObject.length; i < l; ++i) {
         var obj = potentialObject[i];
         if (!obj._interactive) continue;
-        if (obj.mousedown) {
+        if (obj.mousedown || obj.click) {
             obj.__hit = this.hitTest(obj, this.mouse);
             if (obj.__hit) {
-                obj.mousedown(evt, this.mouse);
+                if (obj.mousedown)
+                    obj.mousedown(evt, this.mouse);
                 obj.__isDown = true;
                 this.itemsDown.push(obj);
                 if (!evt.continue) break;

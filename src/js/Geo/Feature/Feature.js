@@ -25,6 +25,8 @@ C.Geo.Feature.Feature = C.Utils.Inherit(function (base, type) {
 
     this._opacity = 1.0;
 
+    this._events = {};
+
 }, EventEmitter, 'C.Geo.Feature.Feature');
 
 C.Geo.Feature.Feature.OpacityMask = 1024;
@@ -58,4 +60,14 @@ C.Geo.Feature.Feature.prototype.makeDirty = function () {
 
     this._dirty = true;
     this.emit('dirty', this);
+};
+
+C.Geo.Feature.Feature.prototype.__click = function (evt, data) {
+
+    this.emit('click', evt, data);
+
+};
+
+C.Geo.Feature.Feature.prototype.addEventListener = function (event, fct) {
+
 };
