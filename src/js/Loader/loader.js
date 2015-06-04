@@ -30,6 +30,7 @@ var files = [
     'js/Helpers/ProjectionsHelper.js',
     'js/Helpers/IntersectionHelper.js',
     'js/Helpers/ResolutionHelper.js',
+    'js/Extension/URLHandler.js',
     'js/Extension/Require.js',
     'js/Extension/UI/include.js',
     'js/Extension/UI/trigger.js',

@@ -41,6 +41,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     C.Helpers.schema = this._viewport._schema;
 
     C.UI.PopupManager.init(this._rootDiv);
+    this._extDiv = C.Extension.Extension.init(this._rootDiv);
 
     var self = this;
     $(window).resize(function () {

@@ -53,3 +53,12 @@ C.Extension.Extension.prototype.setupEnvironment = function () {
     this.module.global.trigger = C.Extension.UI.trigger.bind(this);
     this.module.global.sendMessage = C.Extension.Manager.sendMessage.bind(this);
 };
+
+C.Extension.Extension.init = function (rootDiv) {
+
+    var container = document.createElement('div');
+    container.className = 'extensions-container';
+
+    rootDiv.appendChild(container);
+    return container;
+};
