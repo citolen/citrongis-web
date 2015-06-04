@@ -88,7 +88,7 @@ C.CitrongGIS.prototype.loadExtension = function (file) {
             container.appendChild(element);
             container.className = "extension-container";
 
-            self._rootDiv.appendChild(container);
+            self._extDiv.appendChild(container);
             $(container).draggable({ containment: "#citrongis", scroll: false });
         });
 

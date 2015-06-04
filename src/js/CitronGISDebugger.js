@@ -16,11 +16,11 @@ function debugExtensionLoader(citronGIS, baseUrl) {
     C.Extension.Manager.register(e);
 
     e.module.ui.on('display', function (element) {
-        var container = document.createElement('DIV');
+        /*var container = document.createElement('DIV');
         container.appendChild(element);
-        container.className = "extension-container";
+        container.className = "extension-container";*/
 
-        citronGIS._extDiv.appendChild(container);
+        citronGIS._extDiv.appendChild(element);
         //$(container).draggable({ containment: "#citrongis", scroll: false });
     });
 

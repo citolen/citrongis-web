@@ -94,8 +94,8 @@ C.System.Events.wheel = function (evt) {
             if (zoomLevel == this._resolutionTarget)
                 return;
 
-            var dx = evt.clientX - this._citronGIS._viewport._width / 2;
-            var dy = evt.clientY - this._citronGIS._viewport._height / 2;
+            var dx = evt.offsetX - this._citronGIS._viewport._width / 2;
+            var dy = evt.offsetY - this._citronGIS._viewport._height / 2;
 
             this._wheeldX = dx;
             this._wheeldY = dy;
@@ -121,8 +121,8 @@ C.System.Events.wheel = function (evt) {
             if (zoomLevel == this._resolutionTarget)
                 return;
 
-            var dx = evt.clientX - this._citronGIS._viewport._width / 2;
-            var dy = evt.clientY - this._citronGIS._viewport._height / 2;
+            var dx = evt.offsetX - this._citronGIS._viewport._width / 2;
+            var dy = evt.offsetY - this._citronGIS._viewport._height / 2;
 
             this._wheeldX = dx;
             this._wheeldY = dy;
