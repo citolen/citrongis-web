@@ -57,6 +57,7 @@ C.Renderer.PIXIRenderer.prototype.featureAdded = function (feature, layer) {
             break;
     }
     feature.__graphics.interactive = true;
+    feature.__graphics.alpha = feature._opacity;
     feature.__graphics.click = function (evt, data) {
         feature.__click(evt, data);
     };

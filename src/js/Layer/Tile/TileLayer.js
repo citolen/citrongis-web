@@ -293,6 +293,7 @@ C.Layer.Tile.TileLayer.prototype.addedTile = function (addedTiles, viewport) {
             item.feature.scaleMode((C.Utils.Comparison.Equals(viewport._rotation, 0)) ? C.Geo.Feature.Image.ScaleMode.NEAREST : C.Geo.Feature.Image.ScaleMode.DEFAULT);
             var location = this._schema.tileToWorld(item.tile, C.Helpers.viewport._resolution, rsize, this._anchor);
             item.feature.location(new C.Geometry.Point(location.X, location.Y, 0, C.Helpers.schema._crs));
+            item.feature.opacity(1);
             this.addFeature(item.feature);
             continue;
 
@@ -395,7 +396,7 @@ C.Layer.Tile.TileLayer.prototype.createSubstitute = function (tile, zoomDirectio
             this.addFeature(tmp);
 
             this._substitution[tile._BId] = {
-                tiles: [ {
+                tiles: [{
                     feature: tmp,
                     tile: tile
                 }]

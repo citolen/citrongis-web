@@ -137,3 +137,8 @@ a.popup-close:hover {
 #citrongis {
     position: relative;
 }
+
+div.citrongisextension-handler {
+    position: absolute;
+    pointer-events: auto;
+}

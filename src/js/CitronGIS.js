@@ -13,7 +13,15 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
 
     'use strict';
 
+    //<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css';
+    $('head').append(link);
+
     this._rootDiv = rootDIV;
+
+    $('body').on('contextmenu', this._rootDiv, function(e){ return false; });
 
     this._layerManager = new C.Extension.LayerManager();
 
@@ -32,9 +40,9 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     this._viewport = new C.System.Viewport({
         width: this._renderer.width,
         height: this._renderer.height,
-        resolution: C.Helpers.ResolutionHelper.Resolutions[0],
+        resolution: C.Helpers.ResolutionHelper.Resolutions[17],
         schema: new C.Schema.SphericalMercator(),
-        origin: new C.Geometry.Vector2(0,0),
+        origin: C.Helpers.CoordinatesHelper.TransformTo(new C.Geometry.LatLng(48.8156, 2.362886), C.Helpers.ProjectionsHelper.EPSG3857),
         rotation: 0 * Math.PI / 180
     });
     C.Helpers.viewport = this._viewport;

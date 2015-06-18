@@ -36,8 +36,8 @@ C.Extension.UI.UI.prototype.display = function (path) {
     };
     var result = new EJS({text: page}).render(this._context.module.global, {}, citrongisCtx);
 
-    var handler = document.createElement('DIV');
-    handler.innerHTML = result;
+    var handler = $.parseHTML(result)[1];
+    handler.classList.add('citrongisextension-handler');
     this.current = handler;
     this.emit('display', handler);
     if (this._context.module.global.onLoaded !== undefined && typeof this._context.module.global.onLoaded === 'function') {

@@ -21,7 +21,7 @@ function debugExtensionLoader(citronGIS, baseUrl) {
         container.className = "extension-container";*/
 
         citronGIS._extDiv.appendChild(element);
-        //$(container).draggable({ containment: "#citrongis", scroll: false });
+        $(element).draggable({ containment: "#citrongis", scroll: false });
     });
 
     e.run();
@@ -29,8 +29,6 @@ function debugExtensionLoader(citronGIS, baseUrl) {
 
 C.CitrongGISDebug = function (citronGIS) {
     console.log('--Debugger--');
-
-    debugExtensionLoader(citronGIS, '/src/modules/scale/');
 
     var owner = {};
 
@@ -156,4 +154,7 @@ C.CitrongGISDebug = function (citronGIS) {
             }));
         }
     }*/
+
+    debugExtensionLoader(citronGIS, '/src/modules/scale/');
+    debugExtensionLoader(citronGIS, '/src/modules/distance/');
 };

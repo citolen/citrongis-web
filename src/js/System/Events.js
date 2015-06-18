@@ -10,24 +10,25 @@
 var C = C || {};
 C.System = C.System || {};
 
-C.System.Events = {
+C.System.Events = new (C.Utils.Inherit(function () {
 
-    _isDown: false,
-    _hasMoved: false,
-    _lastX: undefined,
-    _lastY: undefined,
-    _movedTimer: undefined,
-    _movedTimeout: 500,
-    _wheel: 0,
-    _wheelTrigger: 100,
-    _resolutionTarget: 0,
-    _resolutionStep: 0,
-    _wheeldX: 0,
-    _wheeldY: 0,
-    _zoomAnimation: undefined,
-    _zoomStep: 20,
-    _zoomStepDuration: 25
-};
+    this._isDown = false;
+    this._hasMoved= false;
+    this._lastX= undefined;
+    this._lastY= undefined;
+    this._movedTimer= undefined;
+    this._movedTimeout= 500;
+    this._wheel= 0;
+    this._wheelTrigger= 100;
+    this._resolutionTarget= 0;
+    this._resolutionStep= 0;
+    this._wheeldX= 0;
+    this._wheeldY= 0;
+    this._zoomAnimation= undefined;
+    this._zoomStep= 20;
+    this._zoomStepDuration= 25;
+
+}, EventEmitter, 'C.System.Events'))();
 
 C.System.Events.attach = function (citronGIS) {
 
@@ -173,30 +174,30 @@ C.System.Events.stageDown = function (evt) {
 
     'use strict';
 
+    this.emit('mouseDown', evt);
     this._isDown = true;
     this._hasMoved = false;
     this._lastX = evt.clientX || evt.touches[0].pageX;
     this._lastY = evt.clientY || evt.touches[0].pageY;
 };
 
-C.System.Events.stageUp = function () {
+C.System.Events.stageUp = function (evt) {
 
     'use strict';
 
+    this.emit('mouseUp', evt);
+
     this._isDown = false;
-    /*if (!this._hasMoved) {
-        var zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._citronGIS._viewport._resolution);
-        zoomLevel = C.Helpers.ResolutionHelper.Resolutions[zoomLevel + 1];
-        if (zoomLevel !== undefined) {
-            this._citronGIS._viewport.zoom(zoomLevel);
-        }
-    }*/
+    if (!this._hasMoved) {
+        this.emit('mapClicked', evt);
+    }
 };
 
 C.System.Events.stageMove = function (evt) {
 
     'use strict';
 
+    this.emit('mouseMove', evt);
     if (!this._isDown) return;
 
     var x = evt.clientX || evt.touches[0].pageX;

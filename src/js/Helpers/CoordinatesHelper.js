@@ -17,6 +17,11 @@ C.Helpers.CoordinatesHelper = {};
 /*jslint nomen: true*/
 C.Helpers.CoordinatesHelper.TransformTo = function (point, to) {
     "use strict";
+
+    if (point.CRS == to) {
+        return (new C.Geometry.Point(point.X, point.Y, point.Z, point.CRS));
+    }
+
     var tmp = proj4(point.CRS, to, [point.X, point.Y]);
     return (new C.Geometry.Point(tmp[0], tmp[1], point.Z, C.Helpers.CoordinatesHelper._checkProj(to)));
 };

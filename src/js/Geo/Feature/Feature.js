@@ -11,11 +11,13 @@ var C = C || {};
 C.Geo = C.Geo || {};
 C.Geo.Feature = C.Geo.Feature || {};
 
-C.Geo.Feature.Feature = C.Utils.Inherit(function (base, type) {
+C.Geo.Feature.Feature = C.Utils.Inherit(function (base, type, options) {
 
     'use strict';
 
     base();
+
+    options = options || {};
 
     this._dirty = false;
 
@@ -23,7 +25,7 @@ C.Geo.Feature.Feature = C.Utils.Inherit(function (base, type) {
 
     this._type = type;
 
-    this._opacity = 1.0;
+    this._opacity = (options.opacity != undefined) ? (options.opacity) : 1.0;
 
     this._events = {};
 
