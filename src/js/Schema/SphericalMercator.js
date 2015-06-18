@@ -109,8 +109,8 @@ C.Schema.SphericalMercator.prototype.screenToWorld = function (viewport, px, py)
     dy *= viewport._resolution; // to meter;
 
     if (!C.Utils.Comparison.Equals(viewport._rotation, 0)) {
-        var cosAngle = Math.cos(viewport._rotation);
-        var sinAngle = Math.sin(viewport._rotation);
+        var cosAngle = Math.cos(-viewport._rotation);
+        var sinAngle = Math.sin(-viewport._rotation);
 
         var tmp = dx;
         dx = dx * cosAngle - dy * sinAngle;
