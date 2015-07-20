@@ -112,6 +112,16 @@ C.Geo.Layer.prototype.removeFeature = function (feature) {
     return true;
 };
 
+C.Geo.Layer.prototype.clearLayer = function () {
+
+    'use strict';
+
+    for (var j = this._features.length; j > 0; --j) {
+        this.removeFeature(this._features[0]);
+    }
+
+};
+
 function FeatureDirty(feature) {
     this.notifyFeatureChange(C.Geo.Feature.Feature.EventType.UPDATED, feature);
 }

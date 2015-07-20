@@ -1,3 +1,13 @@
+@font-face {
+    font-family: 'nexa-light'; /*a name to be used later*/
+    src: url('/src/css/fonts/nexa-light.ttf'); /*URL to font*/
+}
+
+@font-face {
+    font-family: 'nexa-bold'; /*a name to be used later*/
+    src: url('/src/css/fonts/nexa-bold.ttf'); /*URL to font*/
+}
+
 body {
     background-color: #f5f5f5 !important;
     height: 100%;

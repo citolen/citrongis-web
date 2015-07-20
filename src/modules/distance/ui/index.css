@@ -2,56 +2,85 @@
     left: 500px;
     top: 500px;
     width: 200px;
-    height: 80px;
-    background-color: #efefef;
-    border-radius: 8px;
+    border: 1px solid rgb(200, 200, 200);
+    border-radius: 0px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;
+    background-color: rgba(247, 247, 247, 0.95);
+    border-bottom: 4px solid rgb(154, 171, 239);
+    box-sizing: border-box;
+    pointer-events: all;
 }
 
 .distance-ui > .header {
-    border: 1px solid #d8d8d8;
-    text-shadow: 0px 1px 0px white;
-    font-family: 'Source Code Pro';
-    font-weight: 400;
-    padding: 10px 20px;
-    border-bottom: 1px solid #d8d8d8;
-    background: #f7f7f7; /* Old browsers */
-    background: -moz-linear-gradient(top, #f7f7f7 0%, #e0e0e0 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f7f7f7), color-stop(100%,#e0e0e0)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top, #f7f7f7 0%,#e0e0e0 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, #f7f7f7 0%,#e0e0e0 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, #f7f7f7 0%,#e0e0e0 100%); /* IE10+ */
-    background: linear-gradient(to bottom, #f7f7f7 0%,#e0e0e0 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7f7f7', endColorstr='#e0e0e0',GradientType=0 );
-    border-radius: 8px 8px 0px 0px;
+    padding: 6px 10px;
+    font-family: 'nexa-light';
+    font-size: 20px;
+    border-bottom: 1px solid rgb(205, 205, 205);
+    background-color: white;
+    color: #1B1B1B;
 }
 
-.distance-ui > .content {
+.distance-ui-cat {
+    padding: 6px 10px;
+    font-family: 'nexa-light';
+    color: #646464;
+    font-size: 16px;
     cursor: pointer;
-    font-family: 'Source Code Pro';
-    font-weight: 400;
-    padding: 10px 20px;
-    border-radius: 0px 0px 8px 8px;
-    background-color: #EF4836;
-    color: white;
 }
 
+.distance-ui-cat > i {
+    margin-right: 10px;
+}
+
+.distance-ui-measure {
+    background-color: #EF4836;
+    font-family: 'nexa-light';
+    color: white;
+    font-size: 16px;
+    text-align: center;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+.distance-ui-info {
+    padding: 6px 10px;
+    text-align: right;
+    font-family: 'nexa-light';
+    font-size: 13px;
+}
+
+
+
+
+/*
+.distance-ui > .content {
+cursor: pointer;
+font-family: 'Source Code Pro';
+font-weight: 400;
+background-color: #EF4836;
+color: white;
+}
+*/
+
+/*
 .distance-ui > .content:hover {
-    background-color: #e74c3c;
+background-color: #e74c3c;
 }
 
 .distance-ui > .content:active {
-    background-color: #D64541;
+background-color: #D64541;
 }
 
 .distance-ui > .processing {
-    background-color: #F89406;
+background-color: #F89406;
 }
 
 .distance-ui > .content > .text {
-    font-size: 15px;
-    margin-left: 10px;
+font-size: 15px;
+margin-left: 10px;
 }
 
 .distance-ui > .content .fa {
-    font-size: 20px;
+font-size: 20px;
 }
+*/

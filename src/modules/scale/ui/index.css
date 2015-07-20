@@ -14,3 +14,8 @@
     background-color: rgba(255, 255, 255, 0.44);
     border-top: none;
 }
+
+.scale-val {
+    font-family: 'Source Code Pro';
+    font-size: 15px;
+}
