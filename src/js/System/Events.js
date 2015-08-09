@@ -50,7 +50,7 @@ C.System.Events.attach = function (citronGIS) {
 
     this._citronGIS._viewport.on('move', C.System.Events.internalUpdate.bind(this));
 
-    window.addEventListener('wheel', C.System.Events.wheel.bind(this));
+    this._citronGIS._renderer.view.addEventListener('wheel', C.System.Events.wheel.bind(this));
 };
 
 C.System.Events.animateZoom = function () {

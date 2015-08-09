@@ -11,6 +11,8 @@ var C = C || {};
 C.Geo = C.Geo || {};
 C.Geo.Feature = C.Geo.Feature || {};
 
+//TODO be able to add metadata
+
 C.Geo.Feature.Feature = C.Utils.Inherit(function (base, type, options) {
 
     'use strict';

@@ -21,9 +21,9 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
 
     this._rootDiv = rootDIV;
 
-    $('body').on('contextmenu', this._rootDiv, function(e){ return false; });
+//    $('body').on('contextmenu', this._rootDiv, function(e){ return false; });
 
-    this._layerManager = new C.Extension.LayerManager();
+    C.Helpers.layermanager = this._layerManager = new C.Extension.LayerManager();
 
     this._renderer = new PIXI.autoDetectRenderer($(this._rootDiv).width(), $(this._rootDiv).height(), {
         transparent: true,
@@ -76,6 +76,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     }
 }, EventEmitter, 'C.CitronGIS');
 
+//TODO FIX repeat code from citronGISDebugger
 C.CitrongGIS.prototype.loadExtension = function (file) {
 
     'use strict';

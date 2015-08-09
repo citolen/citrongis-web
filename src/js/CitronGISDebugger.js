@@ -21,7 +21,11 @@ function debugExtensionLoader(citronGIS, baseUrl) {
         container.className = "extension-container";*/
 
         citronGIS._extDiv.appendChild(element);
-        $(element).draggable({ containment: "#citrongis", scroll: false });
+        $(element).draggable({
+            containment: "#citrongis",
+            scroll: false,
+            handle: '.ui-header'
+        });
     });
 
     e.run();
@@ -51,8 +55,8 @@ C.CitrongGISDebug = function (citronGIS) {
 //            url: 'http://{server}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 //            server: ['a', 'b', 'c']
             //url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png'
-            url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga'
-//            url: 'https://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q'
+//            url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga'
+            url: 'https://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q'
 //            url: 'https://b.tiles.mapbox.com/v3/aj.population-fire/{z}/{x}/{y}.png'
 //            url: 'https://a.tiles.mapbox.com/v3/aj.Sketchy2/{z}/{x}/{y}.png'
             /*url: 'http://{server}.tile.stamen.com/toner/{z}/{x}/{y}.png',
@@ -165,4 +169,6 @@ C.CitrongGISDebug = function (citronGIS) {
 
     debugExtensionLoader(citronGIS, '/src/modules/scale/');
     debugExtensionLoader(citronGIS, '/src/modules/distance/');
+    debugExtensionLoader(citronGIS, '/src/modules/layer-manager/');
+//    debugExtensionLoader(citronGIS, '/tests/velib/');
 };
