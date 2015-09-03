@@ -95,11 +95,11 @@ function loadContract(contract) {
 			});
 			var station = new C.Geo.Feature.Image({
 				location: new C.Geometry.LatLng(contract[i]["position"]["lat"], contract[i]["position"]["lng"]),
-				source:"https://mt0.google.com/vt/icon/name=icons/spotlight/spotlight-poi.png&scale=2",
+				source:"https://mt0.google.com/vt/icon/name=icons/spotlight/spotlight-poi.png&scale=0.5",
 				anchorY:1,
 				anchorX:0.5,
-				width:44,
-				height:80,
+				width:11,
+				height:20,
 				opacity:1,
 				scaleMode: (C.Utils.Comparison.Equals(C.Helpers.viewport._rotation, 0)) ? C.Geo.Feature.Image.ScaleMode.NEAREST : C.Geo.Feature.Image.ScaleMode.DEFAULT
 			});
