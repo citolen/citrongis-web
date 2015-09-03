@@ -170,5 +170,5 @@ C.CitrongGISDebug = function (citronGIS) {
     debugExtensionLoader(citronGIS, '/src/modules/scale/');
     debugExtensionLoader(citronGIS, '/src/modules/distance/');
     debugExtensionLoader(citronGIS, '/src/modules/layer-manager/');
-//    debugExtensionLoader(citronGIS, '/tests/velib/');
+    debugExtensionLoader(citronGIS, '/src/modules/velib/');
 };

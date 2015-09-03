@@ -1,0 +1,44 @@
+#velib_window {
+    left: 200px;
+    top: 500px;
+    width: 200px;
+	height: 50%;
+    border: 1px solid rgb(200, 200, 200);
+    border-radius: 0px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;
+    background-color: rgba(247, 247, 247, 0.95);
+    border-bottom: 4px solid rgb(154, 171, 239);
+    box-sizing: border-box;
+    pointer-events: all;
+}
+
+#velib_title {
+    position: relative;
+    width: 100%;
+    height: 80px;
+	max-height:20%;
+    background-color: #3498db;
+    border-radius: 5px 5px 0px 0px;
+    text-align: center;
+    box-shadow: 0px 1px 2px #888888;
+    margin: 0px;
+    text-shadow: 0px 1px 0px #000000;
+    color: #FFFFFF;
+}
+
+#velib_list {
+	height:80%;
+	overflow: scroll;
+}
+
+.velib-ui-cat {
+    padding: 6px 10px;
+    font-family: 'nexa-light';
+    color: #646464;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.velib-ui-cat > i {
+    margin-right: 10px;
+}
