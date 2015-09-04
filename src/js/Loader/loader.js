@@ -10,7 +10,7 @@ var files = [
     'src/lib/proj4-src.js',
     'src/lib/ejs.js',
     'src/lib/EventEmitter.js',
-    'src/lib/pixi.dev.js',
+    'src/lib/pixi.js',
     'src/lib/lru-cache.js',
     'src/lib/async.js',
     'citrongis-core/src/index.js',

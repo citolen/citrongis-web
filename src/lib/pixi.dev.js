@@ -4475,6 +4475,7 @@ PIXI.InteractionManager.prototype.onMouseDown = function(event)
 
     var potentialObject = this.stage.quadTree.getElementsAt(this.mouse.global.x, this.mouse.global.y);
     potentialObject = PIXI.Quadtree.sort(potentialObject);
+    console.log(potentialObject);
 	potentialObject.push(this.stage);
     var evt = {continue: true};
     for (var i = 0, l = potentialObject.length; i < l; ++i) {

@@ -25,7 +25,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
 
     C.Helpers.layermanager = this._layerManager = new C.Extension.LayerManager();
 
-    this._renderer = new PIXI.autoDetectRenderer($(this._rootDiv).width(), $(this._rootDiv).height(), {
+    this._renderer = new PIXI.CanvasRenderer($(this._rootDiv).width(), $(this._rootDiv).height(), {
         transparent: true,
         antialias: true
     });
@@ -34,8 +34,8 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     this._renderer.view.id = '__citrongisRenderer';
     this._rootDiv.appendChild(this._renderer.view);
 
-    this._rendererStage = new PIXI.Stage(0x000000, 10);
-    this._rendererStage.setQuadtreeSize(this._renderer.width, this._renderer.height);
+    this._rendererStage = new PIXI.Container();
+//    this._rendererStage.setQuadtreeSize(this._renderer.width, this._renderer.height);
 
     this._viewport = new C.System.Viewport({
         width: this._renderer.width,
@@ -56,7 +56,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
         var width = $(self._rootDiv).width();
         var height = $(self._rootDiv).height();
         self._renderer.resize(width, height);
-        self._rendererStage.setQuadtreeSize(self._renderer.width, self._renderer.height);
+//        self._rendererStage.setQuadtreeSize(self._renderer.width, self._renderer.height);
         self._viewport.resize(width, height);
         C.UI.PopupManager.resize(width, height);
     });
@@ -68,9 +68,9 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     this._customRenderer = new C.Renderer.PIXIRenderer(this);
     C.CitrongGISDebug(this);
 
-    requestAnimFrame( animate );
+    requestAnimationFrame( animate );
     function animate() {
-        requestAnimFrame( animate );
+        requestAnimationFrame( animate );
         self._customRenderer.renderFrame();
         self._renderer.render(self._rendererStage);
     }

@@ -58,8 +58,8 @@ C.Renderer.PIXIRenderer.prototype.featureAdded = function (feature, layer) {
     }
     feature.__graphics.interactive = true;
     feature.__graphics.alpha = feature._opacity;
-    feature.__graphics.click = function (evt, data) {
-        feature.__click(evt, data);
+    feature.__graphics.click = function (event) {
+        feature.__click(event);
     };
     layer.__graphics.addChild(feature.__graphics);
 
@@ -293,7 +293,7 @@ C.Renderer.PIXIRenderer.prototype.updateImage = function (feature) {
         feature._yRoundWay = feature.__graphics.position.y - position.Y;
     }
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.SOURCE) != 0) {
-        feature.__graphics.setTexture(feature.__texture);
+        feature.__graphics.texture = feature.__texture;
         feature._mask |= C.Geo.Feature.Image.MaskIndex.WIDTH;
         feature._mask |= C.Geo.Feature.Image.MaskIndex.HEIGHT;
         feature._mask |= C.Geo.Feature.Image.MaskIndex.SCALEMODE;
@@ -316,7 +316,7 @@ C.Renderer.PIXIRenderer.prototype.updateImage = function (feature) {
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.SCALEMODE) != 0) {
         if (feature.__texture) {
             feature.__texture.baseTexture.scaleMode = this._scaleModeConvert(feature._scaleMode);
-            feature.__texture.baseTexture.dirty();
+            feature.__texture.update();
         }
     }
 };
@@ -369,7 +369,7 @@ C.Renderer.PIXIRenderer.prototype.layerAdded = function (layer) {
 
     'use strict';
 
-    layer.__graphics = new PIXI.DisplayObjectContainer();
+    layer.__graphics = new PIXI.Container();
     layer.__graphics.interactive = true;
     layer._group.__graphics.addChild(layer.__graphics);
     //layer.__graphics.cacheAsBitmap = true;
@@ -421,7 +421,7 @@ C.Renderer.PIXIRenderer.prototype.groupChange = function (eventType, group) {
 C.Renderer.PIXIRenderer.prototype.groupAdded = function (group) {
 
     'use strict';
-    group.__graphics = new PIXI.DisplayObjectContainer();
+    group.__graphics = new PIXI.Container();
     group.__graphics.interactive = true;
     this._stage.addChild(group.__graphics);
 };
@@ -465,6 +465,6 @@ C.Renderer.PIXIRenderer.prototype.renderFrame = function () {
 
 C.Renderer.PIXIRenderer.prototype._scaleModeConvert = function (scaleMode) {
     if (scaleMode == C.Geo.Feature.Image.ScaleMode.NEAREST)
-        return PIXI.scaleModes.NEAREST;
-    return PIXI.scaleModes.DEFAULT;
+        return PIXI.SCALE_MODES.NEAREST;
+    return PIXI.SCALE_MODES.DEFAULT;
 };
