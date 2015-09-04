@@ -53,6 +53,10 @@
 }
 
 
+.scrollbar {
+    overflow-y: scroll;
+}
+
 .vertical-align {
     vertical-align: middle;
 }
