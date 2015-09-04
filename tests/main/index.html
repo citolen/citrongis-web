@@ -1,18 +1,20 @@
 <html>
     <head>
         <title>CitronGIS</title>
-        <link rel="stylesheet" href="/src/css/index.css">
-        <link rel="stylesheet" href="index.css">
-        <link rel="stylesheet" href="loader.css">
         <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:200,400' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/css/materialize.min.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <link rel="stylesheet" href="/src/css/index.css">
+        <link rel="stylesheet" href="index.css">
+        <link rel="stylesheet" href="loader.css">
+
     </head>
-    <body style="padding-left:10px;">
+    <body>
         <!-- Menu -->
         <div class="row">
-            <div id="user" class="col s5 m5 l5 hide menu-view" style="background-color: #1ABC9C">
+            <div id="user" class="col s5 m5 l5 hide menu-view" style="background-color: #F2F4F4; overflow-y: scroll;">
                 User view
             </div>
             <div id="store" class="col s5 m5 l5 hide menu-view" style="background-color: #2ECC71">
@@ -29,21 +31,21 @@
             </div>
 
             
-            <div id="left-menu" class="col s1 m1 l1 center-align height-100 no-padding" style="overflow-y: scroll; background-color: #34495E;">
-                <div id="user-menu" class="center-align" style="background-color: #1ABC9C;">
-                  <img  class="vertical-padding-10 padding-left-10 width-40" src="ressources/menu/menu_user.png"/>
+            <div id="left-menu" class="col s1 m1 l1 center-align height-100 no-padding bg-dark-blue" style="overflow-y: scroll;">
+                <div id="user-menu" class="bg-green-blue">
+                  <img  class="vertical-padding-10 width-40" src="ressources/menu/menu_user.png"/>
                 </div>
-                <div id="store-menu" style="background-color: #2ECC71;">
-                  <img class="vertical-padding-10 padding-left-10 width-40" src="ressources/menu/menu_bag.png" class="responsive-img"/>
+                <div id="store-menu" class="bg-green">
+                  <img class="vertical-padding-10 width-40" src="ressources/menu/menu_bag.png" class="responsive-img"/>
                 </div>
-                <div id="search-menu"style="background-color: #F1C40F;">
-                  <img class="vertical-padding-10 padding-left-10 width-40" src="ressources/menu/menu_search.png" class="responsive-img"/>
+                <div id="search-menu" class="bg-yellow">
+                  <img class="vertical-padding-10 width-40" src="ressources/menu/menu_search.png" class="responsive-img"/>
                 </div>
-                <div id="settings-menu"style="background-color: #E67E22;">
-                  <img class="vertical-padding-10 padding-left-10 width-40" src="ressources/menu/menu_settings.png" class="responsive-img" />
+                <div id="settings-menu" class="bg-orange">
+                  <img class="vertical-padding-10 width-40" src="ressources/menu/menu_settings.png" class="responsive-img" />
                 </div>
-                <div id="applications-menu" style="background-color: #3498DB;">
-                  <img class="vertical-padding-10 padding-left-10 width-40" src="ressources/menu/menu_applications.png" class="responsive-img"/>
+                <div id="applications-menu" class="bg-blue">
+                  <img class="vertical-padding-10 width-40" src="ressources/menu/menu_applications.png" class="responsive-img"/>
                 </div>
                 <div style="background-color: red;">
                   <span class="hide-on-med-and-up">S</span>
@@ -64,67 +66,12 @@
         <script src="../../src/js/Loader/loader.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js"></script>
         <!-- Menu JS -->
+        <script src="js/menu.js"></script>
+        
+        <!-- Test -->
         <script>
-            
-            
-            function is_open() {
-                var menus = $(".menu-view");
-
-                for (i = 0; i < menus.length; i++) {
-                    if ($(menus[i]).data("open") == "1") {
-                        return (true);
-                    }
-                }
-                return (false);
-            }
-                
-            
-            function open_menu(module) {
-                
-                
-                var open = $("#" + module).data("open");
-                if (!is_open() && (open == undefined || open == "0")) {
-                    $("#left-menu").removeClass("s1 m1 l1"); 
-                    $("#left-menu").addClass("s1 m1 l1");
-                    
-                    $("#citrongis-side").removeClass("s11 m11 l11"); 
-                    $("#citrongis-side").addClass("s6 m6 l6");
-
-                    $("#" + module).removeClass("hide");
-                    $("#" + module).data("open", "1");
-                }
-                else if (open == "1") {
-                    $("#left-menu").removeClass("s6 m6 l6"); 
-                    $("#left-menu").addClass("s1 m1 l1");
-
-                    $("#citrongis-side").removeClass("s6 m6 l6"); 
-                    $("#citrongis-side").addClass("s11 m11 l11");                
-
-                    $("#" + module).addClass("hide");
-                    $("#" + module).data("open", "0");
-                }
-            }
-            
-            $("#user-menu").click(function() {
-                open_menu("user");
-            });
-            
-            $("#store-menu").click(function(){
-                open_menu("store");
-            });
-            
-            $("#search-menu").click(function(){
-                open_menu("search");
-            });
-            $("#settings-menu").click(function(){
-                open_menu("settings");
-            });
-            $("#applications-menu").click(function(){
-                open_menu("applications");
-            });
-            
+            $("#user").load("view/user.html");
         </script>
-
         
     </body>
 </html>
