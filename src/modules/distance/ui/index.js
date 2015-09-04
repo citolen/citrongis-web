@@ -109,8 +109,8 @@ function emptyLayers() {
 
 function mapClicked(evt) {
 
-    var x = evt.clientX;
-    var y = evt.clientY;
+    var x = evt.offsetX;
+    var y = evt.offsetY;
 
     var world = C.Helpers.viewport.screenToWorld(x, y);
 
@@ -193,8 +193,8 @@ function mapClicked(evt) {
 }
 
 function mouseMove(evt) {
-    var x = evt.clientX;
-    var y = evt.clientY;
+    var x = evt.offsetX;
+    var y = evt.offsetY;
 
     var world = C.Helpers.viewport.screenToWorld(x, y);
 
