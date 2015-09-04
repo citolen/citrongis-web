@@ -126,6 +126,7 @@ div.popup-wrapper {
 div.popup-container {
     pointer-events: all;
     max-width: 600px;
+    position: absolute;
 }
 
 a.popup-close {
