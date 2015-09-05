@@ -1,4 +1,3 @@
-
 $("#sign-in").click(function(){    
     $.ajax({
         url:"http://52.10.137.45:8080/auth/login",
@@ -26,3 +25,13 @@ $("#sign-in").click(function(){
       }
     });
 });
+
+$("#sign-up").click(function() {
+    $("#sign-in-view").addClass("hide");
+    $("#sign-up-view").removeClass("hide");
+});
+
+  $(document).ready(function(){
+    // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+    $('.modal-trigger').leanModal();
+  });
