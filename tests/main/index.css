@@ -53,6 +53,7 @@
 }
 
 
+/* Other */
 .scrollbar {
     overflow-y: scroll;
 }
@@ -64,6 +65,13 @@
 .menu-view {
     height: 100%;
 }
+
+.underline {
+    text-decoration: underline;
+}
+
+
+
 
 #citrongis {
     width: 100%;

@@ -4,41 +4,47 @@
     </div>
 </div>
 <div class="row">
-    <div class="col l2 offset-l5 ">
+    <div class="col s4 m4 l4 offset-s4 offset-m4 offset-l4 ">
         <img class="circle responsive-img z-depth-3" src="ressources/menu/menu_user.png" style="border: solid;"/>
     </div>
 </div>
 <div class="row">
-    <form class="col s12">
+    <form class="col s12 m12 l12">
         <div class="row">
-            <div class="input-field col s12">
+            <div class="input-field col s12 m12 l12">
                 <input id="email" type="email" class="validate">
                 <label for="email">Email</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12">
+            <div class="input-field col s12 m12 l12">
                 <input id="password" type="password" class="validate">
                 <label for="password">Password</label>
             </div>
         </div>
         <div class="row">
-            <div class="switch col l12 center-align">
+            <div class="switch col s12 m12 l12 center-align">
                 <label>
-                    <input type="checkbox">
-                    <span class="lever"></span>
-                    Remember me
+                    <input id="remember" type="checkbox">
+                    <span class="lever"></span><span>Remember me</span>
                 </label>
             </div>
         </div>
         <div class="row">
-            <p class="btn-large waves-effect waves-light col l4 offset-l4 bg-green-blue dark-blue">Sign In <span  class="material-icons vertical-align padding-left-10">send</span></p>
+            <a id="sign-in" class="btn waves-effect waves-light col s12 m10 l6 offset-m1 offset-l3 bg-green-blue dark-blue">Sign In <span  class="material-icons vertical-align padding-left-10 hide-on-small-only">send</span></a>
         </div>
         
         <div class="row">
-            <p class="btn waves-effect waves-light col l4 offset-l4 bg-green-blue dark-blue">I don't remember<span  class="material-icons vertical-align padding-left-10">send</span></p>
+            <a id="dont-remember" class="btn waves-effect waves-light col s12 m10 l6 offset-m1 offset-l3 bg-green-blue dark-blue">I don't remember</a>
         </div>
-
     </form>
 </div>
+<footer>
+    <div class="footer-copyright">
+        <div class="container">
+            <a class="dark-blue text-lighten-4 right underline" href="#!">Sign Up</a>
+    </div>
+</footer>
 
+                <script src="js/log-in.js"></script>
+    

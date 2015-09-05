@@ -40,16 +40,16 @@ $("#user-menu").click(function() {
     open_menu("user");
 });
 
-$("#store-menu").click(function(){
+$("#store-menu").click(function() {
     open_menu("store");
 });
 
-$("#search-menu").click(function(){
+$("#search-menu").click(function() {
     open_menu("search");
 });
-$("#settings-menu").click(function(){
+$("#settings-menu").click(function() {
     open_menu("settings");
 });
-$("#applications-menu").click(function(){
+$("#applications-menu").click(function() {
     open_menu("applications");
 });
