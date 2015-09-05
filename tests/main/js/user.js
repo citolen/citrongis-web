@@ -1,29 +1,38 @@
-$("#sign-in").click(function(){    
-    $.ajax({
-        url:"http://52.10.137.45:8080/auth/login",
-        data:{
-            "username": "romain.gabilan@epitech.eu",
-            "password": "Romain31",
-            "grant_type": "password",
-            "client_id": "key",
-            "client_secret": "secret"
-        },
-        type:"POST",
-        crossDomain: true,
-        dataType: 'json',
-        headers: {
-            "Content-Type": "application/json"
-        },
-        success: function(result, status, xhr){
-            alert(result);
-            alert(status);
-            alert(xhr);
-        },
-        error: function (xhr, ajaxOptions, thrownError) {
-            alert(xhr.status);
-            alert(thrownError);
-      }
-    });
+$("#sign-in-send").click(function(){
+    
+    username = $("#email").val();
+    password = $("#password").val();
+    
+    if (username != "" && password != "") {
+        $.post("http://52.10.137.45:8080/auth/login/",
+            {
+               username: username,
+               password: password,
+               grant_type: "password",
+               client_id: "key",
+               client_secret: "secret"
+            }, function(result, status, xhr){
+                console.log(result);
+            });
+    }
+});
+
+
+$("#sign-up-send").click(function() {
+    username = $("#email-sign-up").val();
+    password = $("#password-sign-up").val();
+
+    console.log(username);
+    if (username != "" && password != "") {
+        alert("aaa");
+        $.post("http://52.10.137.45:8080/auth/subscribe",
+        {
+           email: username,
+           password: password
+        }, function(result, status, xhr){
+            console.log(result);
+        });
+    }
 });
 
 $("#sign-up").click(function() {
@@ -31,7 +40,6 @@ $("#sign-up").click(function() {
     $("#sign-up-view").removeClass("hide");
 });
 
-  $(document).ready(function(){
-    // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+$(document).ready(function(){
     $('.modal-trigger').leanModal();
-  });
+});
