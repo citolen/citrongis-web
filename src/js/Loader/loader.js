@@ -26,6 +26,7 @@ var files = [
     'citrongis-core/src/geometry/Vector3.js',
     'citrongis-core/src/geometry/BoundingBox.js',
     'citrongis-core/src/geometry/Extent.js',
+    'citrongis-core/src/geometry/Rectangle.js',
     'citrongis-core/src/system/Viewport.js',
     'citrongis-core/src/helpers/CoordinatesHelper.js',
     'citrongis-core/src/helpers/ProjectionsHelper.js',
