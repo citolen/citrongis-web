@@ -468,3 +468,54 @@ C.Renderer.PIXIRenderer.prototype._scaleModeConvert = function (scaleMode) {
         return PIXI.SCALE_MODES.NEAREST;
     return PIXI.SCALE_MODES.DEFAULT;
 };
+
+C.Helpers.RendererHelper.Image.load = function (feature) {
+
+    feature._loader = new PIXI.loaders.Loader().add('image', feature._source, {
+        loadType: 2
+    });
+
+    feature._loader.once('complete', function (loader, resources) {
+
+        feature.__texture = resources.image.texture;
+
+        feature.emit('loaded', self);
+        feature._mask |= C.Geo.Feature.Image.MaskIndex.SOURCE;
+        feature.emit('sourceChanged', self._source);
+        feature.makeDirty();
+
+    });
+
+    feature._loader.once('error', function () {
+        self.emit('error', self);
+    });
+
+    feature._loader.load();
+};
+
+C.Helpers.RendererHelper.Image.crop = function (feature, crop) {
+    var img = new C.Geo.Feature.Image({
+        location: feature._location,
+        width: feature._width,
+        height: feature._height,
+        anchorX: feature._anchorX,
+        anchorY: feature._anchorY
+    });
+
+    img.__texture = new PIXI.Texture(feature.__texture, crop);
+    return img;
+};
+
+C.Helpers.RendererHelper.Image.copy = function (feature) {
+
+    var img = new C.Geo.Feature.Image({
+        location: feature._location,
+        width: feature._width,
+        height: feature._height,
+        anchorX: feature._anchorX,
+        anchorY: feature._anchorY
+    });
+
+    img.__texture = new PIXI.Texture(feature.__texture);
+    return (img);
+};

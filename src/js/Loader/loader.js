@@ -31,6 +31,7 @@ var files = [
     'citrongis-core/src/helpers/ProjectionsHelper.js',
     'citrongis-core/src/helpers/IntersectionHelper.js',
     'citrongis-core/src/helpers/ResolutionHelper.js',
+    'citrongis-core/src/helpers/RendererHelper.js',
     'citrongis-core/src/extension/URLHandler.js',
     'citrongis-core/src/extension/Require.js',
     'citrongis-core/src/extension/ui/Include.js',
@@ -89,12 +90,12 @@ var map;
     map = new C.CitrongGIS(document.getElementById('citrongis'));
 });
 
-var fileInput = document.getElementById('file');
-
+//var fileInput = document.getElementById('file');
 //
-
-function fileChanged() {
-    map.loadExtension(this.files[0]);
-};
-
-fileInput.onchange = fileChanged;
+////
+//
+//function fileChanged() {
+//    map.loadExtension(this.files[0]);
+//};
+//
+//fileInput.onchange = fileChanged;
