@@ -10,6 +10,11 @@
         </div>
     </div>
     <div class="row">
+        <div class="col s12 m12 l12 center-align">
+            <div id="create-account-success" class="card-panel bg-green-blue hide">Account created, please sign in.</div>
+        </div>
+    </div>
+    <div class="row">
         <form class="col s12 m12 l12">
             <div class="row">
                 <div class="input-field col s12 m12 l12">
@@ -34,9 +39,8 @@
             <div class="row">
                 <a id="sign-in-send" class="btn waves-effect waves-light col s12 m10 l6 offset-m1 offset-l3 bg-green-blue dark-blue">Sign In <span  class="material-icons vertical-align padding-left-10 hide-on-small-only">send</span></a>
             </div>
-
             <div class="row">
-                <a id="dont-remember" class="btn waves-effect waves-light col s12 m10 l6 offset-m1 offset-l3 bg-green-blue dark-blue">I don't remember</a>
+                <a id="dont-remember" class="btn waves-effect waves-light col s12 m10 l6 offset-m1 offset-l3 bg-green-blue dark-blue modal-trigger" href="#forget-password-modal">I don't remember</a>
             </div>
         </form>
     </div>
@@ -48,6 +52,7 @@
         </div>
     </footer>
 </div>
+
 <!------------------------------------------------------------------------------------>
 <div id="sign-up-view" class="hide">
     <div class="row">
@@ -65,19 +70,19 @@
             <div class="row">
                 <div class="input-field col s12 m12 l12">
                     <input id="email-sign-up" type="email" class="validate">
-                    <label for="email">Email</label>
+                    <label id="label-email-sign-up" for="email-sign-up">Email</label>
                 </div>
             </div>
             <div class="row">
                 <div class="input-field col s12 m12 l12">
                     <input id="password-sign-up" type="password" class="validate">
-                    <label for="password">Password</label>
+                    <label id="label-password-sign-up" for="password-sign-up">Password</label>
                 </div>
             </div>
              <div class="row">
                 <div class="input-field col s12 m12 l12">
-                    <input type="checkbox" class="filled-in" id="filled-in-box" required/>
-                    <label for="filled-in-box">I accept the <a class="modal-trigger" href="#cg-modal">general conditions</a></label>
+                    <input type="checkbox" id="cg-checkbox"/>
+                    <label for="cg-checkbox">I accept the <a class="modal-trigger" href="#cg-modal">general conditions</a></label>
                 </div>
             </div>
             <div class="row padding-top-20">
@@ -85,10 +90,17 @@
             </div>
         </form>
     </div>
+    <footer>
+        <div class="footer-copyright">
+            <div class="container">
+                <a id="back-to-sign-in" class="dark-blue text-lighten-4 right underline" href="#!">Sign In</a>
+            </div>
+        </div>
+    </footer>
 </div>
 
 
-<!-- CG Modal-->
+<!-- CG Modal -->
 <div id="cg-modal" class="modal">
     <div class="modal-content">
         <h4>General Conditions</h4>
@@ -98,6 +110,24 @@
         <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
     </div>
 </div>
+
+<!-- Forget password Modal -->
+<div id="forget-password-modal" class="modal">
+    <div class="modal-content">
+        <h4>Forget password</h4>
+        <p>If  you forget your password, enter your email : </p>
+        <div>
+            <div class="input-field col s12 m12 l12">
+                <input id="email-sign-up" type="email" class="validate">
+                <label id="label-email-sign-up" for="email-sign-up">Email</label>
+            </div>
+        </div>    
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+    </div>
+</div>
+
 
 <script src="js/user.js"></script>
     
