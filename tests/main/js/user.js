@@ -1,5 +1,5 @@
+/* Send sign-in form */
 $("#sign-in-send").click(function(){
-    
     username = $("#email").val();
     password = $("#password").val();
     
@@ -27,6 +27,7 @@ $("#sign-in-send").click(function(){
     }
 });
 
+/* Send sign-up form */
 $("#sign-up-send").click(function() {
     username = $("#email-sign-up").val();
     password = $("#password-sign-up").val();
@@ -73,6 +74,40 @@ $("#sign-up-send").click(function() {
     }
     else {
         Materialize.toast("Enter email and password", 4000, '');
+    }
+});
+   
+$("#forget-password-send").click(function() {
+    email = $("#email-forget-password").val();
+
+    if (email != "") {
+        if ($("#email-forget-password").hasClass("invalid")) {
+            $("#invalid-email-forget-password").removeClass("hide");
+            setTimeout(function () {$("#invalid-email-forget-password").fadeToggle('slow', function (){$("#invalid-email-forget-password").addClass("hide");})},4000);
+        }
+        else {
+            $.post("http://52.10.137.45:8080/auth/forgetPassword/",
+            {
+               email: email
+            })
+            .done(function(result) {
+                console.log(result);
+                //TO DO
+            })
+            .fail(function(xhr, textStatus, errorThrown) {
+                code = JSON.parse(xhr.responseText).code;
+                
+                console.log(xhr);
+                if (code == "6") {
+                    $("#not-found-email-forget-password").removeClass("hide");
+                    setTimeout(function () {$("#not-found-email-forget-password").fadeToggle('slow', function (){$("#not-found-email-forget-password").addClass("hide");})},4000);
+                }
+            });
+        }
+    }
+    else {
+        $("#no-email-forget-password").removeClass("hide");
+        setTimeout(function () {$("#no-email-forget-password").fadeToggle('slow', function (){$("#no-email-forget-password").addClass("hide");})},4000);
     }
 });
 
