@@ -105,11 +105,6 @@
                 $(div).html("");
                 $(div).load(file);
             }
-
-
-            function utf8_to_b64(str) {
-                return window.btoa(unescape(encodeURIComponent(str)));
-            }
             
             function check_log_in() {
                 access_token = get_cookie("citrongis_access_token");
