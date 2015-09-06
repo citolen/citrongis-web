@@ -15,17 +15,74 @@
 }
 
 .padding-left-10 {
-    padding-left: 0px;
+    padding-left: 10px;
 }
 .no-padding {
     padding: 0;
+}
+
+.padding-top-20 {
+    padding-top: 20px;
+}
+
+/* background colors */
+.bg-green-blue {
+    background-color: #1ABC9C;
+}
+
+.bg-green {
+    background-color: #2ECC71;
+}
+
+.bg-yellow {
+    background-color: #F1C40F;
+}
+
+.bg-orange {
+    background-color: #E67E22;
+}
+
+.bg-blue {
+    background-color: #3498DB;
+}
+
+.bg-dark-blue {
+    background-color: #34495E;
+}
+
+
+/* Font colors */
+.dark-blue {
+    color: #34495E;
+}
+
+
+/* Other */
+.scrollbar {
+    overflow-y: scroll;
+}
+
+.vertical-align {
+    vertical-align: middle;
 }
 
 .menu-view {
     height: 100%;
 }
 
+.underline {
+    text-decoration: underline;
+}
+
+
+
+
 #citrongis {
     width: 100%;
     height: 100%;
+}
+
+body {
+    color: #34495E;
+    padding-left: 10px;
 }
