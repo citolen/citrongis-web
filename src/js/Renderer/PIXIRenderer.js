@@ -487,7 +487,7 @@ C.Helpers.RendererHelper.Image.load = function (feature) {
     });
 
     feature._loader.once('error', function () {
-        self.emit('error', self);
+        feature.emit('error', self);
     });
 
     feature._loader.load();
