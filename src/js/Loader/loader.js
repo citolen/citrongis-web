@@ -26,11 +26,13 @@ var files = [
     'citrongis-core/src/geometry/Vector3.js',
     'citrongis-core/src/geometry/BoundingBox.js',
     'citrongis-core/src/geometry/Extent.js',
+    'citrongis-core/src/geometry/Rectangle.js',
     'citrongis-core/src/system/Viewport.js',
     'citrongis-core/src/helpers/CoordinatesHelper.js',
     'citrongis-core/src/helpers/ProjectionsHelper.js',
     'citrongis-core/src/helpers/IntersectionHelper.js',
     'citrongis-core/src/helpers/ResolutionHelper.js',
+    'citrongis-core/src/helpers/RendererHelper.js',
     'citrongis-core/src/extension/URLHandler.js',
     'citrongis-core/src/extension/Require.js',
     'citrongis-core/src/extension/ui/Include.js',
@@ -89,12 +91,12 @@ var map;
     map = new C.CitrongGIS(document.getElementById('citrongis'));
 });
 
-var fileInput = document.getElementById('file');
-
+//var fileInput = document.getElementById('file');
 //
-
-function fileChanged() {
-    map.loadExtension(this.files[0]);
-};
-
-fileInput.onchange = fileChanged;
+////
+//
+//function fileChanged() {
+//    map.loadExtension(this.files[0]);
+//};
+//
+//fileInput.onchange = fileChanged;
