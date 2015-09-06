@@ -37,6 +37,7 @@ function open_menu(module) {
 }
 
 $("#user-menu").click(function() {
+    check_log_in();
     open_menu("user");
 });
 

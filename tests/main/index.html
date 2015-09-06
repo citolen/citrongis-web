@@ -14,8 +14,23 @@
     <body>
         <!-- Menu -->
         <div class="row">
-            <div id="user" class="col s5 m5 l5 hide menu-view scrollbar">
-                User view
+            <div id="user" class="col s5 m5 l5 hide menu-view scrollbar center-align">
+                <!-- Loader -->
+                <div style="padding-top: 50%;">
+                    <div class="preloader-wrapper big active">
+                        <div class="spinner-layer spinner-blue">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div id="store" class="col s5 m5 l5 hide menu-view" style="background-color: #2ECC71">
                 Store view
@@ -65,16 +80,83 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
         <script src="../../src/js/Loader/loader.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js"></script>
-        <!-- Menu JS -->
-        <script src="js/menu.js"></script>
+
 
              
 
         <!-- Test -->
         <script>
-            $("#user").load("view/user.html");
+            /* Log-in user ? */
+            function get_cookie(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)==' ') c = c.substring(1);
+                        if (c.indexOf(name) == 0) {
+                            return c.substring(name.length, c.length);
+                        }
+                }
+                return "";
+            };
+            
+            
+            function load_html(div, file) {
+                $(div).html("");
+                $(div).load(file);
+            }
+
+
+            function utf8_to_b64(str) {
+                return window.btoa(unescape(encodeURIComponent(str)));
+            }
+            
+            function check_log_in() {
+                access_token = get_cookie("citrongis_access_token");
+                refresh_token = get_cookie("citrongis_refresh_token");
+                
+                if (access_token == "") {
+                    load_html("#user", "view/user.html");
+                }
+                else {                                        
+                    $.ajax({
+                        url: "http://52.10.137.45:8080/account/get",
+                        method: "GET",
+                        headers : {
+                            Authorization: "Bearer " + access_token
+                        },
+                        success: function (data) {
+                            load_html("#user", "view/profile.html");
+                        },
+                        error: function(xhr, textStatus, errorThrown) {
+                            console.log("Mauvais token");
+                            
+                            $.post("http://52.10.137.45:8080/auth/login", 
+                            {
+                                "grant_type": "refresh_token",
+                                "client_id": "key",
+                                "client_secret": "secret",
+                                "refresh_token": refresh_token
+                            }).done(function(result) {
+                                document.cookie="citrongis_access_token=" + result.access_token + "; expires=Thu, 30 Dec 2016 12:00:00 UTC";
+                                document.cookie="citrongis_refresh_token=" + result.refresh_token + "; expires=Thu, 30 Dec 2016 12:00:00 UTC";
+                                load_html("#user", "view/profile.html");
+                                console.log("Nouveau refresh token");
+                            })
+                            .fail(function(xhr, textStatus, errorThrown){
+                                load_html("#user", "view/user.html");
+                                console.log("mauvais refresh token, GO LOGIN");
+                            });
+                        }
+                    });
+                }
+            }
+
+        
         </script>
 
+        <!-- Menu JS -->
+        <script src="js/menu.js"></script>
 
     </body>
 </html>
