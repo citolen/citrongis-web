@@ -1,8 +1,126 @@
 <div class="row">
     <div class="col s12 m12 l12 center-align">
-        <div class="card-panel bg-green-blue"><h5>Profile</h5></div>
+        <div class="card-panel bg-green-blue"><h5><span id="firstname"></span> <span id="lastname"></span></h5></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col s4 m4 l4 offset-s4 offset-m4 offset-l4 ">
+        <img class="circle responsive-img z-depth-3" src="ressources/menu/menu_user.png" style="border: solid;"/>
+    </div>
+</div>
+<div class="row center-align">
+    <div class="col s12 m12 l9 offset-l2">
+        <table>
+            <tbody>
+                <tr>
+                    <td class="hide-on-small-only">Username</td>
+                    <td id="username">-</td>
+                </tr>
+                <tr>
+                    <td class="hide-on-small-only">Email</td>
+                    <td id="email">-</td>
+                </tr>
+                <tr>
+                    <td class="hide-on-small-only">Profile type</td>
+                    <td id="profile-type">-</td>
+                </tr>
+                <tr>
+                    <td class="hide-on-small-only">Language</td>
+                    <td id="language">-</td>
+                </tr>
+                <tr>
+                    <td class="hide-on-small-only">Location</td>
+                    <td id="location">-</td>
+                </tr>
+                <tr>
+                    <td class="hide-on-small-only">Phone number</td>
+                    <td id="phone-number">-</td>
+                </tr>
+                <tr>
+                    <td class="hide-on-small-only">Date of birth</td>
+                    <td id="date-of-birth">-</td>
+                </tr>
+                <tr>
+                    <td class="hide-on-small-only">Company</td>
+                    <td id="company">-</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col s6 m6 l6 offset-s3 offset-m3 offset-l3">
+        <a id="open-edit-profile-modal" class="waves-effect waves-light btn modal-trigger" href="#edit-profile-modal">Edit</a>
     </div>
 </div>
 
+
+<!-- Modale Edit profile -->
+<div id="edit-profile-modal" class="modal">
+    <div class="modal-content">
+        <h6>Edit Profile</h6>
+        <div class="row">
+            <form class="col s12">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input id="firstname-edit" type="text">
+                        <label id="label-firstname-edit" for="firstname-edit">First name</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input id="lastname-edit" type="text">
+                        <label id="label-lastname-edit" for="lastname-edit">Last name</label>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input id="username-edit" type="text">
+                        <label id="label-username-edit" for="username-edit">Username</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input id="email-edit" type="email" class="validate">
+                        <label id="label-email-edit" for="email-edit">Email</label>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input id="profile-type-edit" type="text">
+                        <label id="label-profile-type-edit" for="profile-type-edit">Profile type</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input id="language-edit" type="text">
+                        <label id="label-language-edit" for="language-edit">Language</label>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input id="location-edit" type="text">
+                        <label id="label-location-edit" for="location-edit">Location</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input id="phone-number-edit" type="text">
+                        <label id="label-phone-number-edit" for="phone-number-edit">Phone number</label>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input id="date-of-birth-edit" type="text">
+                        <label id="label-date-of-birth-edit" for="date-of-birth-edit">Date of birth</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input id="company-edit" type="text">
+                        <label id="label-company-edit" for="company-edit">Company</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+    </div>
+</div>
 
 <script src="js/profile.js"></script>
