@@ -18,6 +18,7 @@
     border-bottom: 1px solid rgb(205, 205, 205);
     background-color: white;
     color: #1B1B1B;
+    cursor: move;
 }
 
 .distance-ui-cat {

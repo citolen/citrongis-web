@@ -1,0 +1,40 @@
+.what3words-ui {
+    left: 100px;
+    top: 100px;
+    width: 200px;
+    border: 1px solid rgb(200, 200, 200);
+    border-radius: 0px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;
+    background-color: rgba(247, 247, 247, 0.95);
+    border-bottom: 4px solid rgb(240, 81, 92);
+    box-sizing: border-box;
+    pointer-events: all;
+}
+
+.what3words-ui > .ui-header {
+    padding: 6px 10px;
+    font-family: 'nexa-light';
+    font-size: 20px;
+    border-bottom: 1px solid rgb(205, 205, 205);
+    background-color: white;
+    color: #1B1B1B;
+    cursor: move;
+}
+
+.what3words-content {
+    height: 40px;
+    line-height: 40px;
+    background-color: rgb(230, 50, 62);
+    color: white;
+    text-align: center;
+}
+
+.what3words-content > .fa-spinner {
+    margin-top: 13px;
+}
+
+.what3words-position {
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+}
