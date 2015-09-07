@@ -16,6 +16,7 @@ $("#sign-in-send").click(function(){
                 console.log(result.access_token);
                 document.cookie="citrongis_access_token=" + result.access_token + "; expires=Thu, 30 Dec 2016 12:00:00 UTC";
                 document.cookie="citrongis_refresh_token=" + result.refresh_token + "; expires=Thu, 30 Dec 2016 12:00:00 UTC";
+                load_html("#user", "view/profile.html");
             })
             .fail(function(xhr, textStatus, errorThrown){
                 error = JSON.parse(xhr.responseText).error;
