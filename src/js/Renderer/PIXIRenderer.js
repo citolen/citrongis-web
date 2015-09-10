@@ -148,7 +148,7 @@ C.Renderer.PIXIRenderer.prototype.renderLine = function (feature, layer) {
 
     g.clear();
     g.lineStyle(feature._lineWidth, feature._lineColor);
-    g.beginFill(feature._lineColor);
+//    g.beginFill(/*feature._lineColor*/0xffffff);
 
     var origin;
 
@@ -164,6 +164,7 @@ C.Renderer.PIXIRenderer.prototype.renderLine = function (feature, layer) {
     }
     g.position = new PIXI.Point(origin.X, origin.Y);
     g.endFill();
+    g.currentPath.shape.closed = false;
     feature._dirty = false;
 };
 
@@ -255,19 +256,21 @@ C.Renderer.PIXIRenderer.prototype.updateFeature = function () {
 
     for (var i = 0; i < this._dirtyFeatures.length; ++i) {
         var feature = this._dirtyFeatures[i];
-        switch (feature._type) {
-            case C.Geo.Feature.Feature.FeatureType.CIRCLE:
-                this.renderCircle(feature);
-                break;
-            case C.Geo.Feature.Feature.FeatureType.IMAGE:
-                this.updateImage(feature);
-                break;
-            case C.Geo.Feature.Feature.FeatureType.LINE:
-                this.renderLine(feature);
-                break;
-            case C.Geo.Feature.Feature.FeatureType.POLYGON:
-                this.renderPolygon(feature);
-                break;
+        if (feature.__graphics) {
+            switch (feature._type) {
+                case C.Geo.Feature.Feature.FeatureType.CIRCLE:
+                    this.renderCircle(feature);
+                    break;
+                case C.Geo.Feature.Feature.FeatureType.IMAGE:
+                    this.updateImage(feature);
+                    break;
+                case C.Geo.Feature.Feature.FeatureType.LINE:
+                    this.renderLine(feature);
+                    break;
+                case C.Geo.Feature.Feature.FeatureType.POLYGON:
+                    this.renderPolygon(feature);
+                    break;
+            }
         }
         feature._noted = undefined;
         feature._mask = 0;

@@ -52,14 +52,16 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     this._extDiv = C.Extension.Extension.init(this._rootDiv);
 
     var self = this;
-    $(window).resize(function () {
+
+    function resize() {
         var width = $(self._rootDiv).width();
         var height = $(self._rootDiv).height();
         self._renderer.resize(width, height);
-//        self._rendererStage.setQuadtreeSize(self._renderer.width, self._renderer.height);
         self._viewport.resize(width, height);
         C.UI.PopupManager.resize(width, height);
-    });
+    }
+
+    $(window).resize(resize);
 
     C.System.Events.attach(this);
 

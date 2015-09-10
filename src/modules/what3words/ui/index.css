@@ -1,7 +1,7 @@
 .what3words-ui {
     left: 100px;
     top: 100px;
-    width: 200px;
+    min-width: 230px;
     border: 1px solid rgb(200, 200, 200);
     border-radius: 0px;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;
@@ -9,6 +9,7 @@
     border-bottom: 4px solid rgb(240, 81, 92);
     box-sizing: border-box;
     pointer-events: all;
+    font-family: 'nexa-light';
 }
 
 .what3words-ui > .ui-header {
@@ -23,8 +24,10 @@
 
 .what3words-content {
     height: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
     line-height: 40px;
-    background-color: rgb(230, 50, 62);
+    background-color: #E6323D;
     color: white;
     text-align: center;
 }
@@ -37,4 +40,72 @@
     height: 40px;
     line-height: 40px;
     text-align: center;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.what3words-lang {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #E6323D;
+    color: white;
+    text-align: center;
+}
+
+.what3words-input {
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+}
+
+.what3words-input-field {
+    min-width: 80px;
+    width: 80px;
+    border: none;
+    background-color: #D8D8D8;
+    border-radius: 3px;
+    outline: none;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    text-align: center;
+    color: #1B1B1B;
+}
+
+.what3words-width-calculator {
+    position: absolute;
+    top: 0;
+    /*    opacity: 0;*/
+    visibility:collapse;
+    /*    display: none;*/
+}
+
+#what3words-search, #what3words-itinary {
+    float:right;
+    width: 60px;
+    border: none;
+    border-radius: 3px;
+    background-color: #E6323D;
+    padding: 5px 8px;
+    color: white;
+    margin-top: 3px;
+    margin-right: 3px;
+    cursor: pointer;
+}
+
+.what3words-input-container {
+    display: inline-block;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 4px;
+}
+
+.what3words-to {
+    text-align: center;
+}
+
+#what3words-load1, #what3words-load2 {
+    float: left;
+    margin-right: 3px;
+    margin-left: 4px;
+    margin-top: 4px;
 }

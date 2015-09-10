@@ -3,86 +3,91 @@
         <title>CitronGIS</title>
         <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:200,400' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/css/materialize.min.css">
+        <link rel="stylesheet" href="materialize.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-        <link rel="stylesheet" href="/src/css/index.css">
+        <link rel="stylesheet" href="../../src/css/index.css">
         <link rel="stylesheet" href="index.css">
         <link rel="stylesheet" href="loader.css">
 
     </head>
     <body>
-        <!-- Menu -->
-        <div class="row">
-            <div id="user" class="col s5 m5 l5 hide menu-view scrollbar center-align">
-                <!-- Loader -->
-                <div style="padding-top: 50%;">
-                    <div class="preloader-wrapper big active">
-                        <div class="spinner-layer spinner-blue">
-                            <div class="circle-clipper left">
-                                <div class="circle"></div>
+        <div class="main-screen">
+            <div class="left-side">
+                <div class="materialize-noconflict citrongis-menu">
+                    <div class="row">
+                        <div id="user" class="col s12 m12 l12 hide menu-view center-align">
+                            Loader
+                            <div style="padding-top: 50%;">
+                                <div class="preloader-wrapper big active">
+                                    <div class="spinner-layer spinner-blue">
+                                        <div class="circle-clipper left">
+                                            <div class="circle"></div>
+                                        </div>
+                                        <div class="gap-patch">
+                                            <div class="circle"></div>
+                                        </div>
+                                        <div class="circle-clipper right">
+                                            <div class="circle"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="gap-patch">
-                                <div class="circle"></div>
+                        </div>
+                        <!--
+<div id="store" class="col s12 m12 l12 hide menu-view" style="background-color: #2ECC71">
+Store view
+</div>
+<div id="search" class="col s5 m5 l5 hide menu-view" style="background-color: #F1C40F">
+Search view
+</div>
+<div id="settings" class="col s5 m5 l5 hide menu-view" style="background-color: #E67E22">
+Setting view
+</div>
+<div id="applications" class="col s5 m5 l5 hide menu-view" style="background-color: #3498DB">
+Applications view
+</div>
+-->
+
+
+                        <div id="left-menu" class="center-align height-100 no-padding bg-dark-blue">
+                            <div id="user-menu" class="bg-green-blue">
+                                <img  class="vertical-padding-10 width-40" src="ressources/menu/menu_user.png"/>
                             </div>
-                            <div class="circle-clipper right">
-                                <div class="circle"></div>
+                            <div id="store-menu" class="bg-green">
+                                <img class="vertical-padding-10 width-40" src="ressources/menu/menu_bag.png" class="responsive-img"/>
+                            </div>
+                            <div id="search-menu" class="bg-yellow">
+                                <img class="vertical-padding-10 width-40" src="ressources/menu/menu_search.png" class="responsive-img"/>
+                            </div>
+                            <div id="settings-menu" class="bg-orange">
+                                <img class="vertical-padding-10 width-40" src="ressources/menu/menu_settings.png" class="responsive-img" />
+                            </div>
+                            <div id="applications-menu" class="bg-blue">
+                                <img class="vertical-padding-10 width-40" src="ressources/menu/menu_applications.png" class="responsive-img"/>
+                            </div>
+                            <div style="background-color: red;">
+                                <span class="hide-on-med-and-up">S</span>
+                                <span class="hide-on-small-only hide-on-large-only">M</span>
+                                <span class="hide-on-med-and-down">L</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="store" class="col s5 m5 l5 hide menu-view" style="background-color: #2ECC71">
-                Store view
-            </div>
-            <div id="search" class="col s5 m5 l5 hide menu-view" style="background-color: #F1C40F">
-                Search view
-            </div>
-            <div id="settings" class="col s5 m5 l5 hide menu-view" style="background-color: #E67E22">
-                Setting view
-            </div>
-            <div id="applications" class="col s5 m5 l5 hide menu-view" style="background-color: #3498DB">
-                Applications view
-            </div>
-
-            
-            <div id="left-menu" class="col s1 m1 l1 center-align height-100 no-padding bg-dark-blue scrollbar">
-                <div id="user-menu" class="bg-green-blue">
-                  <img  class="vertical-padding-10 width-40" src="ressources/menu/menu_user.png"/>
-                </div>
-                <div id="store-menu" class="bg-green">
-                  <img class="vertical-padding-10 width-40" src="ressources/menu/menu_bag.png" class="responsive-img"/>
-                </div>
-                <div id="search-menu" class="bg-yellow">
-                  <img class="vertical-padding-10 width-40" src="ressources/menu/menu_search.png" class="responsive-img"/>
-                </div>
-                <div id="settings-menu" class="bg-orange">
-                  <img class="vertical-padding-10 width-40" src="ressources/menu/menu_settings.png" class="responsive-img" />
-                </div>
-                <div id="applications-menu" class="bg-blue">
-                  <img class="vertical-padding-10 width-40" src="ressources/menu/menu_applications.png" class="responsive-img"/>
-                </div>
-                <div style="background-color: red;">
-                  <span class="hide-on-med-and-up">S</span>
-                  <span class="hide-on-small-only hide-on-large-only">M</span>
-                  <span class="hide-on-med-and-down">L</span>
-                </div>
-            </div>
-
-              
-            <!-- CitronGIS side -->
-            <div id="citrongis-side" class="col s11 m11 l11 no-padding">
+            <div class="right-side">
                 <div id="citrongis"></div>
             </div>
         </div>
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDzjriTT6cz9Cp6E8sLd8YFKNpMxtZNpd4&libraries=places"></script>
         <script src="../../src/js/Loader/loader.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js"></script>
 
 
-             
+
 
         <!-- Test -->
         <script>
@@ -93,23 +98,23 @@
                 for(var i=0; i<ca.length; i++) {
                     var c = ca[i];
                     while (c.charAt(0)==' ') c = c.substring(1);
-                        if (c.indexOf(name) == 0) {
-                            return c.substring(name.length, c.length);
-                        }
+                    if (c.indexOf(name) == 0) {
+                        return c.substring(name.length, c.length);
+                    }
                 }
                 return "";
             };
-            
-            
+
+
             function load_html(div, file) {
                 $(div).html("");
                 $(div).load(file);
             }
-            
+
             function check_log_in() {
                 access_token = get_cookie("citrongis_access_token");
                 refresh_token = get_cookie("citrongis_refresh_token");
-                
+
                 if (access_token == "") {
                     load_html("#user", "view/user.html");
                 }
@@ -125,9 +130,9 @@
                         },
                         error: function(xhr, textStatus, errorThrown) {
                             console.log("Mauvais token");
-                            
+
                             $.post("http://52.10.137.45:8080/auth/login", 
-                            {
+                                   {
                                 "grant_type": "refresh_token",
                                 "client_id": "key",
                                 "client_secret": "secret",
@@ -138,7 +143,7 @@
                                 load_html("#user", "view/profile.html");
                                 console.log("Nouveau refresh token");
                             })
-                            .fail(function(xhr, textStatus, errorThrown){
+                                .fail(function(xhr, textStatus, errorThrown){
                                 load_html("#user", "view/user.html");
                                 console.log("mauvais refresh token, GO LOGIN");
                             });
@@ -147,7 +152,7 @@
                 }
             }
 
-        
+
         </script>
 
         <!-- Menu JS -->

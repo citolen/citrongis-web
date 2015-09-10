@@ -3,7 +3,7 @@ $('#citrongis').html('<div class="main"><div id="background-citrongis">CitronGIS
 
 
 var it = 0;
-var prefix = "http://127.0.0.1:8080/";
+var prefix = "../../";
 var files = [
     'src/lib/Long.js',
     'src/lib/jszip.js',
