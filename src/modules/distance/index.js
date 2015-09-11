@@ -1,1 +1,1 @@
-module.ui.display('ui/index.tmpl');
+E.ui.display('ui/index.tmpl');

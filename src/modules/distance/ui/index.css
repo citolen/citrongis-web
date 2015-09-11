@@ -1,26 +1,3 @@
-.distance-ui {
-    left: 500px;
-    top: 500px;
-    width: 200px;
-    border: 1px solid rgb(200, 200, 200);
-    border-radius: 0px;
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;
-    background-color: rgba(247, 247, 247, 0.95);
-    border-bottom: 4px solid rgb(154, 171, 239);
-    box-sizing: border-box;
-    pointer-events: all;
-}
-
-.distance-ui > .ui-header {
-    padding: 6px 10px;
-    font-family: 'nexa-light';
-    font-size: 20px;
-    border-bottom: 1px solid rgb(205, 205, 205);
-    background-color: white;
-    color: #1B1B1B;
-    cursor: move;
-}
-
 .distance-ui-cat {
     padding: 6px 10px;
     font-family: 'nexa-light';
@@ -50,38 +27,6 @@
     font-size: 13px;
 }
 
-
-
-
-/*
-.distance-ui > .content {
-cursor: pointer;
-font-family: 'Source Code Pro';
-font-weight: 400;
-background-color: #EF4836;
-color: white;
+.content {
+    width: 200px;
 }
-*/
-
-/*
-.distance-ui > .content:hover {
-background-color: #e74c3c;
-}
-
-.distance-ui > .content:active {
-background-color: #D64541;
-}
-
-.distance-ui > .processing {
-background-color: #F89406;
-}
-
-.distance-ui > .content > .text {
-font-size: 15px;
-margin-left: 10px;
-}
-
-.distance-ui > .content .fa {
-font-size: 20px;
-}
-*/
