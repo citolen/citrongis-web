@@ -1,0 +1,44 @@
+#flight_window {
+    left: 400px;
+    top: 500px;
+    width: 250px;
+    border: 1px solid rgb(200, 200, 200);
+    border-radius: 0px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;
+    background-color: rgba(247, 247, 247, 0.95);
+    border-bottom: 4px solid rgb(154, 171, 239);
+    box-sizing: border-box;
+    pointer-events: all;
+}
+
+#flight_title {
+    padding: 6px 10px;
+    font-family: 'nexa-light';
+    font-size: 20px;
+    border-bottom: 1px solid rgb(205, 205, 205);
+    background-color: white;
+    color: #1B1B1B;
+    cursor: move;
+}
+
+.flight-ui-search {
+    border-bottom: 1px solid rgb(205, 205, 205);
+    background-color: #EF4836;
+    font-family: 'nexa-light';
+    color: white;
+    font-size: 16px;
+    text-align: center;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+.flight-ui-cat {
+    font-family: 'nexa-light';
+    color: #646464;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.flight-ui-cat > i {
+    margin-right: 10px;
+}
