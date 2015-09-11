@@ -62,10 +62,10 @@ function loadContract(contract) {
 
 		var width = 11;
 		var height = 20;
-		if (C.Helpers.viewport._resolution < 20) {
+		if (C.Helpers.viewport._resolution < 20 && C.Helpers.viewport._resolution > 5) {
 			width = 22;
 			height = 40;
-		} else {
+		} else if (C.Helpers.viewport._resolution < 5){
 			width = 44;
 			height = 80;
 		}
