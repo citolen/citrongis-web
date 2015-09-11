@@ -10,25 +10,32 @@
 var C = C || {};
 
 function debugExtensionLoader(citronGIS, baseUrl) {
-    var e = new C.Extension.Extension(new URLHandler({
+
+    new C.Extension.Extension(new URLHandler({
         baseUrl: baseUrl
-    }), citronGIS._layerManager);
-    C.Extension.Manager.register(e);
+    }), citronGIS._layerManager, function (err, extension) {
 
-    e.module.ui.on('display', function (element) {
-        /*var container = document.createElement('DIV');
-        container.appendChild(element);
-        container.className = "extension-container";*/
+        if (err) {
+            return console.log(err);
+        }
 
-        citronGIS._extDiv.appendChild(element);
-        $(element).draggable({
-            containment: "#citrongis",
-            scroll: false,
-            handle: '.ui-header'
+        C.Extension.Manager.register(extension);
+
+        extension._module.ui.on('display', function (element, nowindow) {
+
+            citronGIS._extDiv.appendChild(element);
+
+            if (!nowindow) {
+                $(element).draggable({
+                    containment: "#citrongis",
+                    scroll: false,
+                    handle: '.citrongisextension-header'
+                });
+            }
         });
-    });
 
-    e.run();
+        extension.run();
+    });
 }
 
 C.CitrongGISDebug = function (citronGIS) {
@@ -50,15 +57,15 @@ C.CitrongGISDebug = function (citronGIS) {
 
         //http://bcdcspatial.blogspot.com/2012/01/onlineoffline-mapping-map-tiles-and.html
         source: new C.Layer.Tile.Source.TMSSource({
-//            url: 'http://mt3.google.com/vt/lyrs=s,h&z={z}&x={x}&y={y}',
+            //            url: 'http://mt3.google.com/vt/lyrs=s,h&z={z}&x={x}&y={y}',
             /*server: undefined*/
-//            url: 'http://{server}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-//            server: ['a', 'b', 'c']
+            //            url: 'http://{server}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            //            server: ['a', 'b', 'c']
             //url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png'
             url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga'
             //url: 'https://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q'
-//            url: 'https://b.tiles.mapbox.com/v3/aj.population-fire/{z}/{x}/{y}.png'
-//            url: 'https://a.tiles.mapbox.com/v3/aj.Sketchy2/{z}/{x}/{y}.png'
+            //            url: 'https://b.tiles.mapbox.com/v3/aj.population-fire/{z}/{x}/{y}.png'
+            //            url: 'https://a.tiles.mapbox.com/v3/aj.Sketchy2/{z}/{x}/{y}.png'
             /*url: 'http://{server}.tile.stamen.com/toner/{z}/{x}/{y}.png',
             server: ['a', 'b', 'c']*/
         }),
@@ -83,56 +90,56 @@ C.CitrongGISDebug = function (citronGIS) {
     C.toto = osm;
     C.tata = layerGroup;
 
-//    layer.addFeature(new C.Geo.Feature.Line({
-//        locations: [
-//            new C.Geometry.LatLng(48.851913, 2.346030),
-//            new C.Geometry.LatLng(33.790271, -118.136604)
-//        ],
-//        lineColor: 0xff0000
-//    }));
-//
-//    layer.addFeature(new C.Geo.Feature.Line({
-//        locations: [
-//            new C.Geometry.LatLng(48.851913, 2.346030),
-//            new C.Geometry.LatLng(33.154932, -117.157433)
-//        ],
-//        lineColor: 0xff0000
-//    }));
-//
+    //    layer.addFeature(new C.Geo.Feature.Line({
+    //        locations: [
+    //            new C.Geometry.LatLng(48.851913, 2.346030),
+    //            new C.Geometry.LatLng(33.790271, -118.136604)
+    //        ],
+    //        lineColor: 0xff0000
+    //    }));
+    //
+    //    layer.addFeature(new C.Geo.Feature.Line({
+    //        locations: [
+    //            new C.Geometry.LatLng(48.851913, 2.346030),
+    //            new C.Geometry.LatLng(33.154932, -117.157433)
+    //        ],
+    //        lineColor: 0xff0000
+    //    }));
+    //
     var c;
     layer.addFeature(c = new C.Geo.Feature.Polygon({
-    locations: [
-        new C.Geometry.LatLng(-55.679726, -68.288577),
-        new C.Geometry.LatLng(-18.316418, -70.573733),
-        new C.Geometry.LatLng(-5.094729, -81.823733),
-        new C.Geometry.LatLng(12.722377, -73.913577),
-        new C.Geometry.LatLng(-6.493759, -34.187013)
-    ],
-    fillColor: 0x6e6eff,
-    outlineWidth: 5
-}));
-//
-//    layer.addFeature(new C.Geo.Feature.Circle({
-//        location: new C.Geometry.LatLng(38.94232099793376, -76.99218751775437),
-//        radius: 2
-//    }));
-//
-//    layer.addFeature(new C.Geo.Feature.Circle({
-//        location: new C.Geometry.LatLng(33.790271, -118.136604),
-//        radius: 2
-//    }));
-//
-//    layer.addFeature(new C.Geo.Feature.Circle({
-//        location: new C.Geometry.LatLng(33.154932, -117.157433),
-//        radius: 2
-//    }));
-//
+        locations: [
+            new C.Geometry.LatLng(-55.679726, -68.288577),
+            new C.Geometry.LatLng(-18.316418, -70.573733),
+            new C.Geometry.LatLng(-5.094729, -81.823733),
+            new C.Geometry.LatLng(12.722377, -73.913577),
+            new C.Geometry.LatLng(-6.493759, -34.187013)
+        ],
+        fillColor: 0x6e6eff,
+        outlineWidth: 5
+    }));
+    //
+    //    layer.addFeature(new C.Geo.Feature.Circle({
+    //        location: new C.Geometry.LatLng(38.94232099793376, -76.99218751775437),
+    //        radius: 2
+    //    }));
+    //
+    //    layer.addFeature(new C.Geo.Feature.Circle({
+    //        location: new C.Geometry.LatLng(33.790271, -118.136604),
+    //        radius: 2
+    //    }));
+    //
+    //    layer.addFeature(new C.Geo.Feature.Circle({
+    //        location: new C.Geometry.LatLng(33.154932, -117.157433),
+    //        radius: 2
+    //    }));
+    //
     var c1;
     layer.addFeature((c1 = new C.Geo.Feature.Circle({
         location: new C.Geometry.LatLng(46.795288, -71.245136),
         radius: 5
     })));
-//
+    //
     var contentString = '<div id="content">'+
         '<div id="siteNotice">'+
         '</div>'+
@@ -183,15 +190,15 @@ C.CitrongGISDebug = function (citronGIS) {
         content: contentString1,
         auto: false
     });
-//
+    //
 
     c.bindPopup(p);
     c1.bindPopup(p1);
 
-//    c.on('click', function () {
-//        console.log(arguments);
-//        //p.open();
-//    });
+    //    c.on('click', function () {
+    //        console.log(arguments);
+    //        //p.open();
+    //    });
 
     /*for (var i = 0; i < 40; ++i) {
         for (var j = 0; j < 50; ++j) {
@@ -204,7 +211,10 @@ C.CitrongGISDebug = function (citronGIS) {
 
     debugExtensionLoader(citronGIS, '/src/modules/scale/');
     debugExtensionLoader(citronGIS, '/src/modules/distance/');
-//    debugExtensionLoader(citronGIS, '/src/modules/layer-manager/');
+    //    debugExtensionLoader(citronGIS, '/src/modules/layer-manager/');
+    //    debugExtensionLoader(citronGIS, '/src/modules/layer-manager/');
+    debugExtensionLoader(citronGIS, '/src/modules/velib/');
     debugExtensionLoader(citronGIS, '/src/modules/flight/');
     debugExtensionLoader(citronGIS, '/src/modules/what3words/');
+    //    debugExtensionLoader(citronGIS, '/src/modules/extensionTest/');
 };

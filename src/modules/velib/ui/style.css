@@ -27,7 +27,7 @@
 }
 
 #velib_list {
-	height:80%;
+	height: 300px;
 	overflow: scroll;
 }
 

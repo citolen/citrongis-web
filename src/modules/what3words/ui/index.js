@@ -1,13 +1,13 @@
-var apiUrl = 'https://api.what3words.com/position?key='+ module.strings.api_key + '&position=$lat,$long&lang=$lang';
-var apiUrlLang = 'https://api.what3words.com/get-languages?key=' + module.strings.api_key;
-var apiUrlWords = 'https://api.what3words.com/w3w?key=' + module.strings.api_key + '&lang=$lang&string=$words';
+var apiUrl = 'https://api.what3words.com/position?key='+ E.strings.api_key + '&position=$lat,$long&lang=$lang';
+var apiUrlLang = 'https://api.what3words.com/get-languages?key=' + E.strings.api_key;
+var apiUrlWords = 'https://api.what3words.com/w3w?key=' + E.strings.api_key + '&lang=$lang&string=$words';
 
-var directionAPI = 'https://maps.googleapis.com/maps/api/directions/json?key=' + module.strings.google_key + '&origin=$origin&destination=$destination';
+var directionAPI = 'https://maps.googleapis.com/maps/api/directions/json?key=' + E.strings.google_key + '&origin=$origin&destination=$destination';
 
 var lang = 'en';
 var currentWords = [];
 
-var group = module.layerHelper.createGroup({
+var group = E.layerHelper.createGroup({
     name: 'what3words'
 });
 

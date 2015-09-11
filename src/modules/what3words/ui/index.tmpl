@@ -1,38 +1,33 @@
-<% include('ui/index.css') %>
-<% include('lib/simplify.js') %>
-<% include('ui/index.js') %>
+{@include src="ui/index.css" /}
+{@include src="lib/simplify.js" /}
+{@include src="ui/index.js" /}
 
-<div class="what3words-ui">
-    <div class="ui-header">
-        what3words
-    </div>
-    <div class="what3words-content">
-        ...
-    </div>
-    <div class="what3words-position">
-        ...
-    </div>
-    <div class="what3words-lang">
-        <select id="what3words-lang-select">
-        </select>
-    </div>
-    <div class="what3words-itinary">
-        <div class="what3words-input">
-            <button id="what3words-load1"><i class="fa fa-arrow-circle-right"></i></button>
-            <div class="what3words-input-container">
-                <input type="text" class="what3words-input-field" id="i1-f1" value="index.home.raft"/>
-                <!--.<input type="text" class="what3words-input-field" id="i1-f2" maxlength="18" value="home"/>.<input type="text" class="what3words-input-field" id="i1-f3" maxlength="18" value="raft"/>-->
-            </div>
-            <button id="what3words-search"><i class="fa fa-search"></i></button>
-        </div>
-        <div class="what3words-to">To</div>
-        <div class="what3words-input">
-            <button id="what3words-load2"><i class="fa fa-arrow-circle-right"></i></button>
-            <div class="what3words-input-container"> 
-                <input type="text" class="what3words-input-field" id="i2-f1" value="habit.joggers.restriction"/><!--.<input type="text" class="what3words-input-field" id="i2-f2" maxlength="18" value="joggers"/>.<input type="text" class="what3words-input-field" id="i2-f3" maxlength="18" value="restriction"/>-->
-            </div>
-            <button id="what3words-itinary">itinerary</button>
-        </div>
-    </div>
-    <div class="what3words-width-calculator"></div>
+<div class="what3words-content">
+    ...
 </div>
+<div class="what3words-position">
+    ...
+</div>
+<div class="what3words-lang">
+    <select id="what3words-lang-select">
+    </select>
+</div>
+<div class="what3words-itinary">
+    <div class="what3words-input">
+        <button id="what3words-load1"><i class="fa fa-arrow-circle-right"></i></button>
+        <div class="what3words-input-container">
+            <input type="text" class="what3words-input-field" id="i1-f1" value="index.home.raft"/>
+            <!--.<input type="text" class="what3words-input-field" id="i1-f2" maxlength="18" value="home"/>.<input type="text" class="what3words-input-field" id="i1-f3" maxlength="18" value="raft"/>-->
+        </div>
+        <button id="what3words-search"><i class="fa fa-search"></i></button>
+    </div>
+    <div class="what3words-to">To</div>
+    <div class="what3words-input">
+        <button id="what3words-load2"><i class="fa fa-arrow-circle-right"></i></button>
+        <div class="what3words-input-container"> 
+            <input type="text" class="what3words-input-field" id="i2-f1" value="habit.joggers.restriction"/><!--.<input type="text" class="what3words-input-field" id="i2-f2" maxlength="18" value="joggers"/>.<input type="text" class="what3words-input-field" id="i2-f3" maxlength="18" value="restriction"/>-->
+        </div>
+        <button id="what3words-itinary">itinerary</button>
+    </div>
+</div>
+<div class="what3words-width-calculator"></div>

@@ -1,6 +1,6 @@
 var measuring = false;
 var aire = false;
-var group = module.layerHelper.createGroup({
+var group = E.layerHelper.createGroup({
     name: 'Invisible_distance_ui'
 });
 
