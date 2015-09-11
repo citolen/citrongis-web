@@ -10,12 +10,16 @@ var baseLayer = new C.Geo.Layer({
 
 group.addLayer(baseLayer);
 
+var createReference = function (context, func) {
+    return function () { return func.call(context); }
+};
+
+var velibImage = "https://mt0.google.com/vt/icon/name=icons/spotlight/spotlight-poi.png&scale=2";
 
 
 function removeContract(contract) {
 	var currentContract = contracts[contract];
 	for (var i = 0; i < currentContract.length; ++i) {
-//		alert('YES' + i + " " + currentContract.length);
 		baseLayer.removeFeature(currentContract[i]["station"]);
 	}
 }
@@ -56,56 +60,50 @@ function loadContract(contract) {
 		var contract = JSON.parse(req.responseText);
 		for (var i = 0; i < contract.length; ++i) {
 
-
-			var station = new C.Geo.Feature.Circle({
-				radius: 5,
-				location: new C.Geometry.LatLng(contract[i]["position"]["lat"], contract[i]["position"]["lng"]),
-				outlineColor: 0xBF4E6C,
-				backgroundColor: 0xffffff,
-				outlineWidth: 3
-			});
+		var width = 11;
+		var height = 20;
+		if (C.Helpers.viewport._resolution < 20) {
+			width = 22;
+			height = 40;
+		} else {
+			width = 44;
+			height = 80;
+		}
 			
-			station.set("number", contract[i]["number"]);
-			station.set("contract", contract[i]["contract_name"]);
-			baseLayer.addFeature(station);
-			station.on('click', function() {
-				
-				var popup = this.get("popup");
-				
-				if (popup == null) {
-					console.log(this);
-					console.log(this.get("contract"));
-					
-					var contentString = loadStation(this.get("contract"), this.get("number"));
-					
-					contentString = '<div><h1>Station ' + contentString["name"] + '</h1><div>Nombre de vélo libres: ' + contentString["available_bikes"] + '<br/>Nombre de places libres: ' + contentString["available_bike_stands"] + '<br/>Status: ' + contentString["status"] + '<br/>Dernière mise à jour: ' + timeConverter(contentString["last_update"]) + '<br/></div></div>';
-					var p = new C.UI.Popup(this, {
-						content: contentString,
-						auto: false
-					});
-					this.set("popup", p);
-					p.open();
-				} else {
-					if (popup.isOpen()) {
-						popup.close();
-					} else {
-						popup.open();
-					}
-				}
-			});
 			var station = new C.Geo.Feature.Image({
 				location: new C.Geometry.LatLng(contract[i]["position"]["lat"], contract[i]["position"]["lng"]),
-				source:"https://mt0.google.com/vt/icon/name=icons/spotlight/spotlight-poi.png&scale=0.5",
+				source:"https://mt0.google.com/vt/icon/name=icons/spotlight/spotlight-poi.png&scale=2",
 				anchorY:1,
 				anchorX:0.5,
-				width:11,
-				height:20,
+				width:width,
+				height:height,
 				opacity:1,
 				scaleMode: (C.Utils.Comparison.Equals(C.Helpers.viewport._rotation, 0)) ? C.Geo.Feature.Image.ScaleMode.NEAREST : C.Geo.Feature.Image.ScaleMode.DEFAULT
 			});
+
 			station.load();
-//			currentContract.push({"name" : contract[i]["name"], "station" : station});
+			station.set("number", contract[i]["number"]);
+			station.set("contract", contract[i]["contract_name"]);
 			baseLayer.addFeature(station);
+					
+			station.on("click", function(feature, event) {
+				
+
+				if (C.Helpers.viewport._resolution >= 100)
+					return ;
+				if (this.get("popup")) {
+					this.get("popup").close();
+				}
+				var contentString = loadStation(this.get("contract"), this.get("number"));
+				
+				contentString = '<div><h1>Station ' + contentString["name"] + '</h1><div>Nombre de vélo libres: ' + contentString["available_bikes"] + '<br/>Nombre de places libres: ' + contentString["available_bike_stands"] + '<br/>Status: ' + contentString["status"] + '<br/>Dernière mise à jour: ' + timeConverter(contentString["last_update"]) + '<br/></div></div>';
+					var p = new C.UI.Popup(this, {
+					content: contentString,
+					auto: false
+				});
+				p.open(event);
+				this.set("popup", p);
+			});
 			currentContract.push({"name" : contract[i]["name"], "station" : station});
 		}
 	}
@@ -140,15 +138,52 @@ $(document).ready(function() {
 		}
 	});
 
-	var tile = new C.Geo.Feature.Image({
-	location: new C.Geometry.LatLng(0, 0),
-	width: 256,
-	height: 256,
-	scaleY: 0.5,
+	var previousRes = C.Helpers.viewport._resolution;
+	
+    C.Helpers.viewport.on('resolutionChange', function () {
+		if (C.Helpers.viewport._resolution > 5 && previousRes <= 5)
+			for (var j = baseLayer._features.length - 1; j >= 0; --j) {
+				console.log(baseLayer._features[j])
+				
+				baseLayer._features[j]._width = 22;
+				baseLayer._features[j]._height = 40;
+				baseLayer._features[j].load();
+			} 
 
-	scaleMode: (C.Utils.Comparison.Equals(C.Helpers.viewport._rotation, 0)) ? C.Geo.Feature.Image.ScaleMode.NEAREST : C.Geo.Feature.Image.ScaleMode.DEFAULT,
-	source: 'http://c.tile.openstreetmap.org/0/0/0.png'
+		else if (C.Helpers.viewport._resolution < 20 && previousRes >= 20)
+			for (var j = baseLayer._features.length - 1; j >= 0; --j) {
+				console.log(baseLayer._features[j])
+				
+				baseLayer._features[j]._width = 22;
+				baseLayer._features[j]._height = 40;
+				baseLayer._features[j].load();
+			} 
+
+		else if (C.Helpers.viewport._resolution < 5 && previousRes >= 5)
+			for (var j = baseLayer._features.length - 1; j >= 0; --j) {
+				console.log(baseLayer._features[j])
+				
+				baseLayer._features[j]._width = 44;
+				baseLayer._features[j]._height = 80;
+				baseLayer._features[j].load();
+			} 
+
+		else if (C.Helpers.viewport._resolution > 20 && previousRes <= 20)
+			for (var j = baseLayer._features.length - 1; j >= 0; --j) {
+				console.log(baseLayer._features[j])
+				
+				baseLayer._features[j]._width = 11;
+				baseLayer._features[j]._height = 20;
+				baseLayer._features[j].load();
+			}
+
+		if (C.Helpers.viewport._resolution > 100 && previousRes <= 100) {
+			baseLayer.opacity(0);
+		} else if (C.Helpers.viewport._resolution < 100 && previousRes >= 100){
+			baseLayer.opacity(1);
+		}
+
+		previousRes = C.Helpers.viewport._resolution;
 	});
-
-	baseLayer.addFeature(tile);
 });
+
