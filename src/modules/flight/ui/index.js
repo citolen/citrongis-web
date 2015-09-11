@@ -1582,12 +1582,9 @@ function showFlight(flight) {
 }
 
 this.onLoaded = function () {
-alert("oops1");
-alert("oops124");
 	var shown = false;
 
     $('#flight-searchall').click(function () {
-		alert("oops3");
 		if (shown == true) {
 			$(this).html("Masquer les vols");
 			shown = false;
@@ -1601,7 +1598,6 @@ alert("oops124");
 	});
 
     $('#flight-search').on('click', function () {
-		alert("oops4");
 		baseLayer.clearLayer();
 		showFlight($('#flight-info').val());
 		shown = false;
@@ -1614,8 +1610,6 @@ alert("oops124");
 	$(".nosub").on('change', function(event){ 
         event.preventDefault(); 
     });
-
-alert("oops1235");
 
 //	$.GET(url: "http://lhr.data.fr24.com/zones/fcgi/feed.js?bounds=42.985833123856764,26.085770352950913,-54.62332734374968,-29.1796875&faa=1&mlat=1&flarm=1&adsb=1&gnd=1&air=1&vehicles=1&estimated=1&maxage=900&gliders=1&stats=1&selected=764adc1&");
 	
