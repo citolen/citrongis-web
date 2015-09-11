@@ -1,12 +1,11 @@
-<% include('ui/style.css') %>
-<% include('ui/bootstrap.min.css') %>
+{@include src="ui/style.css" /}
 
-
-<div class="flight-ui" id="flight_window">
+<div class="content">
     <h1 id="flight_title" class="ui-header">Chercher un vol</h1>
     <div id="flight_list">
-		<form class="nosub"><input id="flight-info" type='text'></form>
+		<form class="nosub"><input id="flight-info" type='text'/></form>
         <div id="flight-search" class="flight-ui-search">Lancer la recherche</div>
         <div id="flight-searchall" class="flight-ui-search">Afficher tous les vols</div>
     </div>
 </div>
+{@include src="ui/index.js" /}

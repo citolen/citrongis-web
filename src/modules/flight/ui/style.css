@@ -1,7 +1,5 @@
 #flight_window {
-    left: 400px;
-    top: 500px;
-    width: 250px;
+    width: 200px;
     border: 1px solid rgb(200, 200, 200);
     border-radius: 0px;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;
@@ -37,8 +35,4 @@
     color: #646464;
     font-size: 16px;
     cursor: pointer;
-}
-
-.flight-ui-cat > i {
-    margin-right: 10px;
 }
