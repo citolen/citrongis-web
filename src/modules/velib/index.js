@@ -1,4 +1,5 @@
 var contracts = {};
+var farContracts = {};
 
 var group = module.layerHelper.createGroup({
     name: 'Invisible_distance_ui'
@@ -8,7 +9,12 @@ var baseLayer = new C.Geo.Layer({
 
 });
 
+var farLayer = new C.Geo.Layer({
+
+});
+
 group.addLayer(baseLayer);
+group.addLayer(farLayer);
 
 var createReference = function (context, func) {
     return function () { return func.call(context); }
@@ -22,6 +28,7 @@ function removeContract(contract) {
 	for (var i = 0; i < currentContract.length; ++i) {
 		baseLayer.removeFeature(currentContract[i]["station"]);
 	}
+	farLayer.removeFeature(farContracts[contract]);
 }
 
 function timeConverter(UNIX_timestamp){
@@ -54,12 +61,29 @@ function loadContract(contract) {
 		for (var i = 0; i < currentContract.length; ++i) {
 			baseLayer.addFeature(currentContract[i]["station"]);
 		}
+		farLayer.addFeature(farContracts[contract]);
 	} else {
 		contracts[contract] = [];
+		var oldContract = contract;
 		var currentContract = contracts[contract];
 		var contract = JSON.parse(req.responseText);
 		for (var i = 0; i < contract.length; ++i) {
 
+		if (i == 0) {
+			farContracts[oldContract] = new C.Geo.Feature.Image({
+				location: new C.Geometry.LatLng(contract[i]["position"]["lat"], contract[i]["position"]["lng"]),
+				source:"https://mt0.google.com/vt/icon/name=icons/spotlight/spotlight-poi.png&scale=4",
+				anchorY:1,
+				anchorX:0.5,
+				width:44,
+				height:80,
+				opacity:1,
+				scaleMode: (C.Utils.Comparison.Equals(C.Helpers.viewport._rotation, 0)) ? C.Geo.Feature.Image.ScaleMode.NEAREST : C.Geo.Feature.Image.ScaleMode.DEFAULT
+			});
+			farContracts[oldContract].load();
+			farLayer.addFeature(farContracts[oldContract]);
+		}
+		
 		var width = 11;
 		var height = 20;
 		if (C.Helpers.viewport._resolution < 20 && C.Helpers.viewport._resolution > 5) {
@@ -179,8 +203,10 @@ $(document).ready(function() {
 
 		if (C.Helpers.viewport._resolution > 100 && previousRes <= 100) {
 			baseLayer.opacity(0);
+			farLayer.opacity(1);
 		} else if (C.Helpers.viewport._resolution < 100 && previousRes >= 100){
 			baseLayer.opacity(1);
+			farLayer.opacity(0);
 		}
 
 		previousRes = C.Helpers.viewport._resolution;
