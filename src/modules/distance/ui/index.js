@@ -1,73 +1,63 @@
 var measuring = false;
 var aire = false;
-var group = E.layerHelper.createGroup({
-    name: 'Invisible_distance_ui'
+
+var group = C.LayerGroup({
+    name: 'distance-group'
 });
 
-var lineLayer = new C.Geo.Layer({
+var lineLayer = C.Layer();
+var baseLayer = C.Layer();
 
-});
+lineLayer.addTo(group);
+baseLayer.addTo(group);
 
-var baseLayer = new C.Geo.Layer({
-
-});
-
-group.addLayer(lineLayer);
-group.addLayer(baseLayer);
-
-var distanceDot = new C.Geo.Feature.Circle({
+var distanceDot = C.Circle({
     radius: 5,
-    location: new C.Geometry.LatLng(0, 0),
+    location: C.LatLng(0, 0),
     opacity: 0,
     outlineColor: 0xF2676B,
     backgroundColor: 0xffffff,
     outlineWidth: 3
 });
 
-baseLayer.addFeature(distanceDot);
+distanceDot.addTo(baseLayer);
 
 var measurePoints = [];
 var measureLines = [];
 
-this.onLoaded = function () {
 
-    $('.distance-ui-cat').click(function (e) {
-        if (e.currentTarget.id == 'distance-ui-aire' &&  !aire) {
+this.onLoaded = function () {
+    E.$('.cat').click(function (e) {
+        if (e.currentTarget.id == 'aire' &&  !aire) {
             aire = true;
-            $('i', '#distance-ui-aire').addClass('fa-check-square-o');
-            $('i', '#distance-ui-aire').removeClass('fa-square-o');
-            $('i', '#distance-ui-distance').addClass('fa-square-o');
-            $('i', '#distance-ui-distance').removeClass('fa-check-square-o');
+            E.$('#aire i').addClass('fa-check-square-o');
+            E.$('#aire i').removeClass('fa-square-o');
+            E.$('#distance i').addClass('fa-square-o');
+            E.$('#distance i').removeClass('fa-check-square-o');
             reset();
         }
-        if (e.currentTarget.id == 'distance-ui-distance' && aire) {
-
+        if (e.currentTarget.id == 'distance' && aire) {
             aire = false;
-            $('i', '#distance-ui-aire').addClass('fa-square-o');
-            $('i', '#distance-ui-aire').removeClass('fa-check-square-o');
-            $('i', '#distance-ui-distance').addClass('fa-check-square-o');
-            $('i', '#distance-ui-distance').removeClass('fa-square-o');
+            E.$('#aire i').addClass('fa-square-o');
+            E.$('#aire i').removeClass('fa-check-square-o');
+            E.$('#distance i').addClass('fa-check-square-o');
+            E.$('#distance i').removeClass('fa-square-o');
             reset();
         }
     });
 
-    $('.distance-ui-measure').click(function () {
-
+    E.$('.measure').click(function () {
         if (!measuring) {
-
             reset();
-            $('.distance-ui-measure').text('terminer la mesure');
+            E.$('.measure').text('terminer la mesure');
             measuring = true;
-
         } else {
             reset()
-            $('.distance-ui-measure').text('mesurer');
+            E.$('.measure').text('mesurer');
             measuring = false;
             emptyLayers();
         }
-
         setEvent(measuring);
-
     });
 
     reset();
@@ -76,20 +66,20 @@ this.onLoaded = function () {
 function reset() {
     emptyLayers();
     if (aire) {
-        $('.distance-ui-info').text('0 m²');
+        E.$('.info').text('0 m²');
     } else {
-        $('.distance-ui-info').text('0 m');
+        E.$('.info').text('0 m');
     }
 }
 
 function setEvent(toggle) {
     if (toggle) {
-        C.System.Events.on('mapClicked', mapClicked);
-        C.System.Events.on('mouseMove', mouseMove);
+        C.Events.on('mapClicked', mapClicked);
+        C.Events.on('mouseMove', mouseMove);
         distanceDot.opacity(1);
     } else {
-        C.System.Events.off('mapClicked', mapClicked);
-        C.System.Events.off('mouseMove', mouseMove);
+        C.Events.off('mapClicked', mapClicked);
+        C.Events.off('mouseMove', mouseMove);
         distanceDot.opacity(0);
     }
 }
@@ -112,23 +102,23 @@ function mapClicked(evt) {
     var x = evt.offsetX;
     var y = evt.offsetY;
 
-    var world = C.Helpers.viewport.screenToWorld(x, y);
+    var world = C.Viewport.screenToWorld(x, y);
 
-    var measurePoint = new C.Geo.Feature.Circle({
+    var measurePoint = C.Circle({
         radius: 5,
-        location: new C.Geometry.Point(world.X, world.Y, 0, C.Helpers.viewport._schema._crs),
+        location: C.Point(world.X, world.Y, 0, C.Viewport._schema._crs),
         outlineColor: 0xBF4E6C,
         backgroundColor: 0xffffff,
         outlineWidth: 3
     });
 
     measurePoints.push(measurePoint);
-    baseLayer.addFeature(measurePoint);
+    measurePoint.addTo(baseLayer);
 
     if (measurePoints.length > 1) {
 
         if (!aire) {
-            var measureLine = new C.Geo.Feature.Line({
+            var measureLine = C.Line({
                 locations: [
                     measurePoints[measurePoints.length-2].location(),
                     measurePoints[measurePoints.length-1].location()
@@ -136,7 +126,7 @@ function mapClicked(evt) {
                 lineColor: 0xBF4E6C,
                 lineWidth: 8
             });
-            var measureLineInner = new C.Geo.Feature.Line({
+            var measureLineInner = C.Line({
                 locations: [
                     measurePoints[measurePoints.length-2].location(),
                     measurePoints[measurePoints.length-1].location()
@@ -147,8 +137,8 @@ function mapClicked(evt) {
 
             measureLines.push(measureLine);
             measureLines.push(measureLineInner);
-            lineLayer.addFeature(measureLine);
-            lineLayer.addFeature(measureLineInner);
+            measureLine.addTo(lineLayer);
+            measureLineInner.addTo(lineLayer);
         } else if (aire && measurePoints.length > 2) {
 
             var points = [];
@@ -156,7 +146,7 @@ function mapClicked(evt) {
                 points.push(measurePoints[i].location());
             }
 
-            var polygon = new C.Geo.Feature.Polygon({
+            var polygon = C.Polygon({
                 locations: points,
                 fillColor: 0xF2676B,
                 outlineWidth: 3,
@@ -165,8 +155,7 @@ function mapClicked(evt) {
             });
 
             lineLayer.clearLayer();
-            lineLayer.addFeature(polygon);
-
+            polygon.addTo(lineLayer);
         }
     }
 
@@ -189,16 +178,16 @@ function mapClicked(evt) {
     } else {
         val = Math.floor(val);
     }
-    $('.distance-ui-info').text((val + units).replace('.', ', '));
+    E.$('.info').text((val + units).replace('.', ', '));
 }
 
 function mouseMove(evt) {
     var x = evt.offsetX;
     var y = evt.offsetY;
 
-    var world = C.Helpers.viewport.screenToWorld(x, y);
+    var world = C.Viewport.screenToWorld(x, y);
 
-    distanceDot.location(new C.Geometry.Point(world.X, world.Y, 0, C.Helpers.viewport._schema._crs));
+    distanceDot.location(C.Point(world.X, world.Y, 0, C.Viewport._schema._crs));
 }
 
 function distanceBetween2Points(p1, p2) {
@@ -227,8 +216,8 @@ function calculateArea() {
             p1 = measurePoints[i].location();
             p2 = measurePoints[(i + 1) % pointsCount].location();
 
-            p1 = C.Helpers.CoordinatesHelper.TransformTo(p1, C.Helpers.ProjectionsHelper.WGS84);
-            p2 = C.Helpers.CoordinatesHelper.TransformTo(p2, C.Helpers.ProjectionsHelper.WGS84);
+            p1 = C.CoordinatesHelper.TransformTo(p1, C.ProjectionsHelper.WGS84);
+            p2 = C.CoordinatesHelper.TransformTo(p2, C.ProjectionsHelper.WGS84);
             area += ((p2.X - p1.X) * d2r) *
                 (2 + Math.sin(p1.Y * d2r) + Math.sin(p2.Y * d2r));
         }
@@ -246,10 +235,10 @@ function calculateDistance() {
         var prev = measurePoints[i-1].location();
         var cur = measurePoints[i].location();
 
-//        dist += Math.sqrt(Math.pow((cur.X - prev.X), 2) + Math.pow((cur.Y - prev.Y), 2));
+        //        dist += Math.sqrt(Math.pow((cur.X - prev.X), 2) + Math.pow((cur.Y - prev.Y), 2));
 
-        prev = C.Helpers.CoordinatesHelper.TransformTo(prev, C.Helpers.ProjectionsHelper.WGS84);
-        cur = C.Helpers.CoordinatesHelper.TransformTo(cur, C.Helpers.ProjectionsHelper.WGS84);
+        prev = C.CoordinatesHelper.TransformTo(prev, C.ProjectionsHelper.WGS84);
+        cur = C.CoordinatesHelper.TransformTo(cur, C.ProjectionsHelper.WGS84);
 
         dist += distanceBetween2Points(prev, cur);
     }

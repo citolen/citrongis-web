@@ -1,1 +1,1 @@
-E.ui.display('ui/index.tmpl');
+E.Display('ui/index.tmpl');

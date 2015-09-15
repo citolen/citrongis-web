@@ -213,7 +213,7 @@ C.CitrongGISDebug = function (citronGIS) {
     debugExtensionLoader(citronGIS, '/src/modules/distance/');
     //    debugExtensionLoader(citronGIS, '/src/modules/layer-manager/');
     //    debugExtensionLoader(citronGIS, '/src/modules/layer-manager/');
-    debugExtensionLoader(citronGIS, '/src/modules/velib/');
+//    debugExtensionLoader(citronGIS, '/src/modules/velib/');
     debugExtensionLoader(citronGIS, '/src/modules/what3words/');
     //    debugExtensionLoader(citronGIS, '/src/modules/extensionTest/');
 };

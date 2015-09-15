@@ -6,7 +6,7 @@
     padding: 0px 10px;
 }
 
-.scale-bar {
+.bar {
     width: 10px;
     height: 8px;
     display: inline-block;
@@ -15,7 +15,7 @@
     border-top: none;
 }
 
-.scale-val {
+.val {
     font-family: 'Source Code Pro';
     font-size: 15px;
 }
