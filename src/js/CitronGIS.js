@@ -21,7 +21,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
 
     this._rootDiv = rootDIV;
 
-//    $('body').on('contextmenu', this._rootDiv, function(e){ return false; });
+    //    $('body').on('contextmenu', this._rootDiv, function(e){ return false; });
 
     C.Helpers.layermanager = this._layerManager = new C.Extension.LayerManager();
 
@@ -35,7 +35,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     this._rootDiv.appendChild(this._renderer.view);
 
     this._rendererStage = new PIXI.Container();
-//    this._rendererStage.setQuadtreeSize(this._renderer.width, this._renderer.height);
+    //    this._rendererStage.setQuadtreeSize(this._renderer.width, this._renderer.height);
 
     this._viewport = new C.System.Viewport({
         width: this._renderer.width,
@@ -79,7 +79,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
 }, EventEmitter, 'C.CitronGIS');
 
 //TODO FIX repeat code from citronGISDebugger
-C.CitrongGIS.prototype.loadExtension = function (file) {
+C.CitrongGIS.prototype.loadExtension = function (file, citronGIS) {
 
     'use strict';
 
@@ -91,19 +91,43 @@ C.CitrongGIS.prototype.loadExtension = function (file) {
         var extZip = new JSZip();
         extZip.load(reader.result);
 
-        var e = new C.Extension.Extension(extZip, self._layerManager);
-        C.Extension.Manager.register(e);
+        new C.Extension.Extension(extZip, citronGIS._layerManager, function (err, extension) {
 
-        e.module.ui.on('display', function (element) {
-            var container = document.createElement('DIV');
-            container.appendChild(element);
-            container.className = "extension-container";
+            if (err) {
+                return console.log(err);
+            }
 
-            self._extDiv.appendChild(container);
-            $(container).draggable({ containment: "#citrongis", scroll: false });
+            C.Extension.Manager.register(extension);
+
+            extension._module.ui.on('display', function (element, nowindow) {
+
+                citronGIS._extDiv.appendChild(element);
+
+                if (!nowindow) {
+                    $(element).draggable({
+                        containment: "#citrongis",
+                        scroll: false,
+                        handle: '.citrongisextension-header'
+                    });
+                }
+            });
+
+            extension.run();
         });
 
-        e.run();
+//        var e = new C.Extension.Extension(extZip, self._layerManager);
+//        C.Extension.Manager.register(e);
+//
+//        e.module.ui.on('display', function (element) {
+//            var container = document.createElement('DIV');
+//            container.appendChild(element);
+//            container.className = "extension-container";
+//
+//            self._extDiv.appendChild(container);
+//            $(container).draggable({ containment: "#citrongis", scroll: false });
+//        });
+//
+//        e.run();
     };
 
     reader.readAsArrayBuffer(file);

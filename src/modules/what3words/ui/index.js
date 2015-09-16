@@ -267,4 +267,6 @@ this.onLoaded = function () {
     }
 
     E.$('.input-field').keyup(resizeField);
+
+    refresh(C.Viewport);
 };
