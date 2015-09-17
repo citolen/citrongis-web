@@ -1,11 +1,11 @@
 @font-face {
     font-family: 'nexa-light'; /*a name to be used later*/
-    src: url('/src/css/fonts/nexa-light.ttf'); /*URL to font*/
+    src: url('../../src/css/fonts/nexa-light.ttf'); /*URL to font*/
 }
 
 @font-face {
     font-family: 'nexa-bold'; /*a name to be used later*/
-    src: url('/src/css/fonts/nexa-bold.ttf'); /*URL to font*/
+    src: url('../../src/css/fonts/nexa-bold.ttf'); /*URL to font*/
 }
 
 body {
@@ -48,7 +48,7 @@ body {
 #testextension {
     position: absolute;
     top: 20px;
-    left: 220px;
+    right: 20px;
     width: 300px;
     height: 40px;
     background-color: #d8d8d8;
