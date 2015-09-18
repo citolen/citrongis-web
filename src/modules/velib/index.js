@@ -1,19 +1,13 @@
 var contracts = {};
 var farContracts = {};
 
-var group = E.layerHelper.createGroup({
-    name: 'Invisible_distance_ui'
+var group = C.LayerGroup({
+    name: 'Velib'
 });
 
-var baseLayer = new C.Geo.Layer({
+var baseLayer = C.Layer();
 
-});
-
-//var farLayer = new C.Geo.Layer({
-//
-//});
-
-group.addLayer(baseLayer);
+baseLayer.addTo(group);
 //group.addLayer(farLayer);
 
 var createReference = function (context, func) {
@@ -78,20 +72,19 @@ function loadContract(contract) {
 //                    width:44,
 //                    height:80,
 //                    opacity:1,
-//                    scaleMode: (C.Utils.Comparison.Equals(C.Helpers.viewport._rotation, 0)) ? C.Geo.Feature.Image.ScaleMode.NEAREST : C.Geo.Feature.Image.ScaleMode.DEFAULT
+//                    scaleMode: (C.Utils.Comparison.Equals(C.Viewport._rotation, 0)) ? C.Geo.Feature.Image.ScaleMode.NEAREST : C.Geo.Feature.Image.ScaleMode.DEFAULT
 //                });
 //                farContracts[oldContract].load();
 //                farLayer.addFeature(farContracts[oldContract]);
             }
 
-            var station = new C.Geo.Feature.Image({
-                location: new C.Geometry.LatLng(contract[i]["position"]["lat"], contract[i]["position"]["lng"]),
+            var station = C.Image({
+                location: C.LatLng(contract[i]["position"]["lat"], contract[i]["position"]["lng"]),
                 source:"https://mt0.google.com/vt/icon/name=icons/spotlight/spotlight-poi.png&scale=2",
                 anchorY:1,
                 anchorX:0.5,
                 width:22,
                 height:40,
-                opacity:1
             });
 
             station.load();
@@ -109,15 +102,16 @@ function loadContract(contract) {
             station.on("click", function(feature, event) {
 
 
-                if (C.Helpers.viewport._resolution >= 100)
+                if (C.Viewport._resolution >= 100) {
                     return ;
+                }
                 if (this.get("popup")) {
                     this.get("popup").close();
                 }
                 var contentString = loadStation(this.get("contract"), this.get("number"));
 
                 contentString = '<div><h1>Station ' + contentString["name"] + '</h1><div>Nombre de vélo libres: ' + contentString["available_bikes"] + '<br/>Nombre de places libres: ' + contentString["available_bike_stands"] + '<br/>Status: ' + contentString["status"] + '<br/>Dernière mise à jour: ' + timeConverter(contentString["last_update"]) + '<br/></div></div>';
-                var p = new C.UI.Popup(this, {
+                var p = C.Popup(this, {
                     content: contentString,
                     auto: false
                 });
@@ -141,7 +135,7 @@ function loadContracts() {
 }
 
 
-E.ui.display('ui/index.tmpl');
+E.Display('ui/index.tmpl');
 
 this.onLoaded = function() {
     loadContracts();
@@ -157,10 +151,10 @@ this.onLoaded = function() {
         }
     });
 
-    var previousRes = C.Helpers.viewport._resolution;
+    var previousRes = C.Viewport._resolution;
 
-    //    C.Helpers.viewport.on('resolutionChange', function () {
-    //		if (C.Helpers.viewport._resolution > 5 && previousRes <= 5)
+    //    C.Viewport.on('resolutionChange', function () {
+    //		if (C.Viewport._resolution > 5 && previousRes <= 5)
     //			for (var j = baseLayer._features.length - 1; j >= 0; --j) {
     //				console.log(baseLayer._features[j])
     //
@@ -169,7 +163,7 @@ this.onLoaded = function() {
     //				baseLayer._features[j].load();
     //			}
     //
-    //		else if (C.Helpers.viewport._resolution < 20 && previousRes >= 20)
+    //		else if (C.Viewport._resolution < 20 && previousRes >= 20)
     //			for (var j = baseLayer._features.length - 1; j >= 0; --j) {
     //				console.log(baseLayer._features[j])
     //
@@ -178,7 +172,7 @@ this.onLoaded = function() {
     //				baseLayer._features[j].load();
     //			}
     //
-    //		else if (C.Helpers.viewport._resolution < 5 && previousRes >= 5)
+    //		else if (C.Viewport._resolution < 5 && previousRes >= 5)
     //			for (var j = baseLayer._features.length - 1; j >= 0; --j) {
     //				console.log(baseLayer._features[j])
     //
@@ -187,7 +181,7 @@ this.onLoaded = function() {
     //				baseLayer._features[j].load();
     //			}
     //
-    //		else if (C.Helpers.viewport._resolution > 20 && previousRes <= 20)
+    //		else if (C.Viewport._resolution > 20 && previousRes <= 20)
     //			for (var j = baseLayer._features.length - 1; j >= 0; --j) {
     //				console.log(baseLayer._features[j])
     //
@@ -196,15 +190,15 @@ this.onLoaded = function() {
     //				baseLayer._features[j].load();
     //			}
     //
-    //		if (C.Helpers.viewport._resolution > 100 && previousRes <= 100) {
+    //		if (C.Viewport._resolution > 100 && previousRes <= 100) {
     //			baseLayer.opacity(0);
     //			farLayer.opacity(1);
-    //		} else if (C.Helpers.viewport._resolution < 100 && previousRes >= 100){
+    //		} else if (C.Viewport._resolution < 100 && previousRes >= 100){
     //			baseLayer.opacity(1);
     //			farLayer.opacity(0);
     //		}
     //
-    //		previousRes = C.Helpers.viewport._resolution;
+    //		previousRes = C.Viewport._resolution;
     //	});
 };
 
