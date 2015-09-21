@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <title>CitronGIS</title>
+        <link rel="stylesheet" href="index.css">
+        <link rel="stylesheet" href="css/index.css">
+        <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:500' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
+    </head>
+    <body>
+        <div id="citrongis"></div>
+        <div id="testextension">
+            <input type="file" id="file">
+        </div>
+        <div id="select_tilelayer">
+            <select id="select_tilelayer_drop">
+                <option value="0">Google maps</option>
+                <option value="1">Google satellite</option>
+                <option value="2">ArcGIS</option>
+                <option value="3">OpenStreetMap</option>
+                <option value="4">Mapbox population</option>
+                <option value="5">Mapbox sketchy</option>
+            </select>
+        </div>
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+        <script src="./citrongis.js"></script>
+        <script src="./index.js"></script>
+    </body>
+</html>

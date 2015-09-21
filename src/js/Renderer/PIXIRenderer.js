@@ -148,7 +148,7 @@ C.Renderer.PIXIRenderer.prototype.renderLine = function (feature, layer) {
 
     g.clear();
     g.lineStyle(feature._lineWidth, feature._lineColor);
-//    g.beginFill(/*feature._lineColor*/0xffffff);
+    //    g.beginFill(/*feature._lineColor*/0xffffff);
 
     var origin;
 
@@ -466,7 +466,7 @@ C.Renderer.PIXIRenderer.prototype.renderFrame = function () {
     this.updateFeature();
 };
 
-C.Renderer.PIXIRenderer.prototype._scaleModeConvert = function (scaleMode) {
+C.Renderer.PIXIRenderer.scaleModeConvert = C.Renderer.PIXIRenderer.prototype._scaleModeConvert = function (scaleMode) {
     if (scaleMode == C.Geo.Feature.Image.ScaleMode.NEAREST)
         return PIXI.SCALE_MODES.NEAREST;
     return PIXI.SCALE_MODES.DEFAULT;
@@ -474,26 +474,64 @@ C.Renderer.PIXIRenderer.prototype._scaleModeConvert = function (scaleMode) {
 
 C.Helpers.RendererHelper.Image.load = function (feature) {
 
-    feature._loader = new PIXI.loaders.Loader().add('image', feature._source, {
-        loadType: 2
-    });
+    var self = feature;
 
-    feature._loader.once('complete', function (loader, resources) {
+    switch (C.Utils.Path.getType(feature._source)) {
+        case 0:
+            /*
+             *  HTTP
+             */
+            feature._loader = new PIXI.loaders.Loader().add('image', feature._source, {
+                loadType: 2
+            });
 
-        feature.__texture = resources.image.texture;
+            feature._loader.once('complete', function (loader, resources) {
 
-        feature.emit('loaded', self);
-        feature._mask |= C.Geo.Feature.Image.MaskIndex.SOURCE;
-        feature.emit('sourceChanged', self._source);
-        feature.makeDirty();
+                feature.__texture = resources.image.texture;
 
-    });
+                feature.emit('loaded', self);
+                feature._mask |= C.Geo.Feature.Image.MaskIndex.SOURCE;
+                feature.emit('sourceChanged', self._source);
+                feature.makeDirty();
 
-    feature._loader.once('error', function () {
-        feature.emit('error', self);
-    });
+            });
 
-    feature._loader.load();
+            feature._loader.once('error', function () {
+                feature.emit('error', self);
+            });
+
+            feature._loader.load();
+            break;
+        case 1:
+            /*
+             *  In-app resource
+             */
+            if (feature._context) {
+                feature._context._resources.file(feature._source, function (err, handle) {
+
+                    if (err) {
+                        return feature.emit('error', self);
+                    }
+
+                    var bytes = handle.asUint8Array();
+                    var binary = '';
+                    for (var i = 0; i < bytes.byteLength; i++) {
+                        binary += String.fromCharCode(bytes[i])
+                    }
+                    var imageb64 = 'data:image/png;base64,' + window.btoa(binary);
+                    var img = new Image();
+                    img.onload = function () {
+                        feature.__texture = new PIXI.Texture(new PIXI.BaseTexture(img, C.Renderer.PIXIRenderer.scaleModeConvert(feature._scaleMode)));
+                        feature.emit('loaded', self);
+                        feature._mask |= C.Geo.Feature.Image.MaskIndex.SOURCE;
+                        feature.emit('sourceChanged', self._source);
+                        feature.makeDirty();
+                    };
+                    img.src = imageb64;
+                });
+            }
+            break;
+    }
 };
 
 C.Helpers.RendererHelper.Image.crop = function (feature, crop) {

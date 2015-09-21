@@ -134,9 +134,6 @@ function loadContracts() {
     }
 }
 
-
-E.Display('ui/index.tmpl');
-
 this.onLoaded = function() {
     loadContracts();
     $('.velib-ui-cat').on('click', function (e) {
@@ -202,3 +199,4 @@ this.onLoaded = function() {
     //	});
 };
 
+E.Display('ui/index.tmpl');

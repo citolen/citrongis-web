@@ -25,7 +25,7 @@ var marker = C.Image({
     height: 112,
     anchorX: 0.5,
     anchorY: 1,
-    source: '../../src/modules/what3words/assets/marker.png',
+    source: 'assets/marker.png',
     scaleMode: C.ImageScaleMode.DEFAULT
 });
 
