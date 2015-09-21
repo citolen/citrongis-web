@@ -4,18 +4,19 @@ module.exports = function(grunt) {
         //    pkg: grunt.file.readJSON('package.json'),
         concat: {
             options: {
-                separator: ';'
+                separator: ';\n'
             },
             dist: {
                 src: [
-                    'src/lib/Long.js',
-                    'src/lib/jszip.js',
-                    'src/lib/proj4-src.js',
-                    'src/lib/ejs.js',
-                    'src/lib/EventEmitter.js',
+                    'src/lib/jszip.min.js',
                     'src/lib/pixi.js',
-                    'src/lib/lru-cache.js',
-                    'src/lib/async.js',
+                    'citrongis-core/lib/Long.min.js',
+                    'citrongis-core/lib/EventEmitter.min.js',
+                    'citrongis-core/lib/proj4.js',
+                    'citrongis-core/lib/lru-cache.js',
+                    'citrongis-core/lib/async.min.js',
+                    'citrongis-core/lib/dust-full.min.js',
+                    'citrongis-core/lib/less.min.js',
                     'citrongis-core/src/index.js',
                     'citrongis-core/src/utils/Comparison.js',
                     'citrongis-core/src/utils/Intersection.js',
@@ -37,26 +38,28 @@ module.exports = function(grunt) {
                     'citrongis-core/src/helpers/ResolutionHelper.js',
                     'citrongis-core/src/helpers/RendererHelper.js',
                     'citrongis-core/src/extension/URLHandler.js',
+                    'citrongis-core/src/extension/API.js',
                     'citrongis-core/src/extension/Require.js',
-                    'citrongis-core/src/extension/ui/Include.js',
-                    'citrongis-core/src/extension/ui/trigger.js',
-                    'citrongis-core/src/extension/ui/Bridge.js',
-                    'citrongis-core/src/extension/ui/UI.js',
+                    'citrongis-core/src/extension/UI/Include.js',
+                    'citrongis-core/src/extension/UI/Trigger.js',
+                    'citrongis-core/src/extension/UI/Bridge.js',
+                    'citrongis-core/src/extension/UI/UI.js',
                     'citrongis-core/src/extension/Module.js',
+                    'citrongis-core/src/extension/ExtensionResources.js',
                     'citrongis-core/src/extension/Extension.js',
                     'citrongis-core/src/extension/Manager.js',
                     'citrongis-core/src/geometry/LatLng.js',
-                    'citrongis-core/src/geo/feature/Feature.js',
-                    'citrongis-core/src/geo/feature/Circle.js',
-                    'citrongis-core/src/geo/feature/Image.js',
-                    'citrongis-core/src/geo/feature/Line.js',
-                    'citrongis-core/src/geo/feature/Polygon.js',
+                    'citrongis-core/src/geo/Feature/Feature.js',
+                    'citrongis-core/src/geo/Feature/Circle.js',
+                    'citrongis-core/src/geo/Feature/Image.js',
+                    'citrongis-core/src/geo/Feature/Line.js',
+                    'citrongis-core/src/geo/Feature/Polygon.js',
                     'citrongis-core/src/geo/Layer.js',
                     'citrongis-core/src/layer/tile/TileIndex.js',
                     'citrongis-core/src/layer/tile/TileSchema.js',
-                    'citrongis-core/src/layer/tile/Schema/SphericalMercator.js',
-                    'citrongis-core/src/layer/tile/Source/TileSource.js',
-                    'citrongis-core/src/layer/tile/Source/TMSSource.js',
+                    'citrongis-core/src/layer/tile/schema/SphericalMercator.js',
+                    'citrongis-core/src/layer/tile/source/TileSource.js',
+                    'citrongis-core/src/layer/tile/source/TMSSource.js',
                     'citrongis-core/src/layer/tile/TileLayer.js',
                     'citrongis-core/src/extension/LayerGroup.js',
                     'citrongis-core/src/extension/LayerManager.js',
@@ -65,11 +68,14 @@ module.exports = function(grunt) {
                     'citrongis-core/src/schema/SphericalMercator.js',
                     'citrongis-core/src/system/Events.js',
                     'citrongis-core/src/system/TileSchemaManager.js',
+                    'src/js/CitronGISDebugger.js',
                     'citrongis-core/src/renderer/RendererBase.js',
+                    'src/js/Renderer/PIXIRenderer.js',
                     'citrongis-core/src/ui/PopupManager.js',
-                    'citrongis-core/src/ui/Popup.js'
+                    'citrongis-core/src/ui/Popup.js',
+                    'src/js/CitronGIS.js'
                 ],
-                dest: 'build/citrongis-core.js'
+                dest: 'build/citrongis.js'
             }
         },
         uglify: {
@@ -78,10 +84,18 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    'build/citrongis-core.min.js': ['build/citrongis-core.js']
+                    'build/citrongis.min.js': ['build/citrongis.js']
                 }
             }
         },
+        copy: {
+            main: {
+                files: [
+                    {expand: true, cwd: 'src/css/', src: ['**'], dest: 'build/css/'},
+                    {expand: true, cwd: 'tests/build/', src: ['*'], dest: 'build/'},
+                ],
+            }
+        }
         //    qunit: {
         //      files: ['test/**/*.html']
         //    },
@@ -108,9 +122,10 @@ module.exports = function(grunt) {
     //  grunt.loadNpmTasks('grunt-contrib-qunit');
     //  grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
     //  grunt.registerTask('test', ['jshint', 'qunit']);
 
-    grunt.registerTask('default', [/*'jshint', 'qunit', */'concat', 'uglify']);
+    grunt.registerTask('default', ['copy', 'concat', 'uglify']);
 
 };

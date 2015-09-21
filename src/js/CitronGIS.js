@@ -16,7 +16,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     //<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     var link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css';
+    link.href = 'https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css';
     $('head').append(link);
 
     this._rootDiv = rootDIV;

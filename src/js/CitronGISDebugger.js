@@ -49,7 +49,7 @@ C.CitrongGISDebug = function (citronGIS) {
     });
 
     var test = new C.Layer.Tile.TileIndex.fromXYZ(10, 5, 2);
-    console.log('BID', test);
+    //    console.log('BID', test);
 
     var osm = new C.Layer.Tile.TileLayer({
 
@@ -266,8 +266,8 @@ C.CitrongGISDebug = function (citronGIS) {
     //    debugExtensionLoader(citronGIS, '/src/modules/scale/');
     //    debugExtensionLoader(citronGIS, '/src/modules/distance/');
     //    debugExtensionLoader(citronGIS, '/src/modules/layer-manager/');
-//        debugExtensionLoader(citronGIS, '/src/modules/velib/');
+    //        debugExtensionLoader(citronGIS, '/src/modules/velib/');
     //    debugExtensionLoader(citronGIS, '/src/modules/flight/');
-    //    debugExtensionLoader(citronGIS, '/src/modules/what3words/');
+    //        debugExtensionLoader(citronGIS, '/src/modules/what3words/');
     //    debugExtensionLoader(citronGIS, '/src/modules/extensionTest/');
 };
