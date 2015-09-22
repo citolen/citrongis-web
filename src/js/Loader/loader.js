@@ -1,4 +1,4 @@
-$('#citrongis').html('<div class="main"><div id="background-citrongis">CitronGIS<div class="loader"><div class="bar"></div><div class="info"></div></div></div></div>');
+$('#citrongis').html('<div class="main"><div id="background-citrongis"><div class="loader"><div class="bar"></div><div class="info"></div></div></div></div>');
 
 
 
@@ -63,7 +63,7 @@ var files = [
     'citrongis-core/src/extension/LayerHelper.js',
     'citrongis-core/src/schema/SchemaBase.js',
     'citrongis-core/src/schema/SphericalMercator.js',
-    'citrongis-core/src/system/Events.js',
+    'src/js/system/Events.js',
     'citrongis-core/src/system/TileSchemaManager.js',
     'src/js/CitronGISDebugger.js',
     'citrongis-core/src/renderer/RendererBase.js',

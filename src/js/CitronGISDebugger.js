@@ -48,31 +48,31 @@ C.CitrongGISDebug = function (citronGIS) {
         owner: owner
     });
 
-    var test = new C.Layer.Tile.TileIndex.fromXYZ(10, 5, 2);
-    //    console.log('BID', test);
-
-    var osm = new C.Layer.Tile.TileLayer({
-
-        name: 'Open Street Map',
-
-        //http://bcdcspatial.blogspot.com/2012/01/onlineoffline-mapping-map-tiles-and.html
-        source: new C.Layer.Tile.Source.TMSSource({
-            //            url: 'http://mt3.google.com/vt/lyrs=s,h&z={z}&x={x}&y={y}',
-            /*server: undefined*/
-            //            url: 'http://{server}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            //            server: ['a', 'b', 'c']
-            //url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png'
-            url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga'
-            //url: 'https://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q'
-            //            url: 'https://b.tiles.mapbox.com/v3/aj.population-fire/{z}/{x}/{y}.png'
-            //            url: 'https://a.tiles.mapbox.com/v3/aj.Sketchy2/{z}/{x}/{y}.png'
-            /*url: 'http://{server}.tile.stamen.com/toner/{z}/{x}/{y}.png',
-            server: ['a', 'b', 'c']*/
-        }),
-
-        schema: C.Layer.Tile.Schema.SphericalMercator
-
-    });
+    //    var test = new C.Layer.Tile.TileIndex.fromXYZ(10, 5, 2);
+    //    //    console.log('BID', test);
+    //
+    //    var osm = new C.Layer.Tile.TileLayer({
+    //
+    //        name: 'Open Street Map',
+    //
+    //        //http://bcdcspatial.blogspot.com/2012/01/onlineoffline-mapping-map-tiles-and.html
+    //        source: new C.Layer.Tile.Source.TMSSource({
+    //            //            url: 'http://mt3.google.com/vt/lyrs=s,h&z={z}&x={x}&y={y}',
+    //            /*server: undefined*/
+    //            //            url: 'http://{server}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    //            //            server: ['a', 'b', 'c']
+    //            //url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png'
+    //            url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga'
+    //            //url: 'https://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q'
+    //            //            url: 'https://b.tiles.mapbox.com/v3/aj.population-fire/{z}/{x}/{y}.png'
+    //            //            url: 'https://a.tiles.mapbox.com/v3/aj.Sketchy2/{z}/{x}/{y}.png'
+    //            /*url: 'http://{server}.tile.stamen.com/toner/{z}/{x}/{y}.png',
+    //            server: ['a', 'b', 'c']*/
+    //        }),
+    //
+    //        schema: C.Layer.Tile.Schema.SphericalMercator
+    //
+    //    });
 
     var tilelayers =[
         new C.Layer.Tile.TileLayer({
@@ -129,6 +129,7 @@ C.CitrongGISDebug = function (citronGIS) {
     });
 
     tilelayers[0].addTo(layerGroup);
+    layer.addTo(layerGroup);
 
 
 
@@ -173,10 +174,17 @@ C.CitrongGISDebug = function (citronGIS) {
     //        outlineWidth: 5
     //    }));
     //
-    //    layer.addFeature(new C.Geo.Feature.Circle({
-    //        location: new C.Geometry.LatLng(38.94232099793376, -76.99218751775437),
-    //        radius: 2
-    //    }));
+    var f = new C.Geo.Feature.Circle({
+        location: new C.Geometry.LatLng(48.8156, 2.362886),
+        radius: 10
+    });
+    f.on('mousedown', function (f, e) {
+        e.data.originalEvent.stopPropagation();
+    });
+    f.on('mouseup', function () {
+        console.log('up');
+    });
+    f.addTo(layer);
     //
     //    layer.addFeature(new C.Geo.Feature.Circle({
     //        location: new C.Geometry.LatLng(33.790271, -118.136604),
@@ -268,6 +276,6 @@ C.CitrongGISDebug = function (citronGIS) {
     //    debugExtensionLoader(citronGIS, '/src/modules/layer-manager/');
     //        debugExtensionLoader(citronGIS, '/src/modules/velib/');
     //    debugExtensionLoader(citronGIS, '/src/modules/flight/');
-//            debugExtensionLoader(citronGIS, '/src/modules/what3words/');
+    //            debugExtensionLoader(citronGIS, '/src/modules/what3words/');
     //    debugExtensionLoader(citronGIS, '/src/modules/extensionTest/');
 };

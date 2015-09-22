@@ -56,11 +56,14 @@ C.Renderer.PIXIRenderer.prototype.featureAdded = function (feature, layer) {
             this.renderPolygon(feature);
             break;
     }
-    feature.__graphics.interactive = true;
+    feature.__graphics.interactive = feature._interactive;
     feature.__graphics.alpha = feature._opacity;
-    feature.__graphics.click = function (event) {
-        feature.__click(event);
-    };
+
+    feature.__graphics.mousedown = function (event) { feature.__mousedown(event); }
+    feature.__graphics.mousemove = function (event) { feature.__mousemove(event); }
+    feature.__graphics.mouseup = function (event) { feature.__mouseup(event); }
+    feature.__graphics.click = function (event) { feature.__click(event); }
+
     layer.__graphics.addChild(feature.__graphics);
 
 };
@@ -241,6 +244,13 @@ C.Renderer.PIXIRenderer.prototype.featureUpdated = function (feature) {
         if (feature.__graphics)
             feature.__graphics.alpha = feature._opacity;
         feature._mask -= C.Geo.Feature.Feature.OpacityMask;
+        if (feature._mask == 0)
+            return;
+    }
+    if ((feature._mask & C.Geo.Feature.Feature.InteractiveMask) != 0) {
+        if (feature.__graphics)
+            feature.__graphics.interactive = feature._interactive;
+        feature._mask -= C.Geo.Feature.Feature.InteractiveMask;
         if (feature._mask == 0)
             return;
     }
