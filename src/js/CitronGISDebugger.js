@@ -278,4 +278,5 @@ C.CitrongGISDebug = function (citronGIS) {
     //    debugExtensionLoader(citronGIS, '/src/modules/flight/');
     //            debugExtensionLoader(citronGIS, '/src/modules/what3words/');
     //    debugExtensionLoader(citronGIS, '/src/modules/extensionTest/');
+        debugExtensionLoader(citronGIS, '/src/modules/csv/');
 };

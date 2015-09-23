@@ -1,0 +1,14 @@
+{@include src="ui/index.css" /}
+{@include src="lib/papaparse.min.js" /}
+{@include src="ui/index.js" /}
+
+<div id="drop_zone">drop csv or click to browse <input type="file" /></div>
+<div id="csv_zone">
+    <div id="select_latitude_box">
+        <span>Latitude field: </span><select id="select_latitude"></select>
+    </div>
+    <div id="select_longitude_box">
+        <span>Longitude field: </span><select id="select_longitude"></select>
+    </div>
+    <button id="display_btn">display</button>
+</div>
