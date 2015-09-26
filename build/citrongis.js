@@ -28748,7 +28748,7 @@ C.Extension.API = function (context) {
             Layer: C.Geo.Layer_new_ctr,
             LayerGroup: C.Helpers.layermanager.createGroup.bind(C.Helpers.layermanager, context),
 
-            Popup: C.UI.Popup_new_ctr,
+            Popup: C.UI.Popup_new_ctr.bind(context),
 
             /*
              *  Geometry
@@ -28766,7 +28766,8 @@ C.Extension.API = function (context) {
             Select: context._module.ui.select.bind(context._module.ui),
             '$': context._module.ui.select.bind(context._module.ui),
             Strings: context._module.strings
-        }
+        },
+        window: context._module.global
     };
 };
 ;
@@ -29318,9 +29319,13 @@ C.Geo.Feature.Feature = C.Utils.Inherit(function (base, type, options) {
 
     this._metadata = options.metadata || {};
 
+    this._interactive = options.interactive || false;
+
 }, EventEmitter, 'C.Geo.Feature.Feature');
 
 C.Geo.Feature.Feature.OpacityMask = 1024;
+C.Geo.Feature.Feature.InteractiveMask = 2048;
+C.Geo.Feature.Feature.InteractiveEvents = ['click', 'mousedown', 'mousemove', 'mouseup'];
 
 C.Geo.Feature.Feature.EventType = {
     ADDED: 0,
@@ -29333,6 +29338,24 @@ C.Geo.Feature.Feature.FeatureType = {
     IMAGE: 1,
     LINE: 2,
     POLYGON: 3
+};
+
+C.Geo.Feature.Feature.prototype.on = function (eventName) {
+    if (!this._interactive && C.Geo.Feature.Feature.InteractiveEvents.indexOf(eventName) != -1) {
+        this._mask |= C.Geo.Feature.Feature.InteractiveMask;
+        this._interactive = true;
+        this.makeDirty();
+    }
+    EventEmitter.prototype.on.apply(this, arguments);
+};
+
+C.Geo.Feature.Feature.prototype.once = function (eventName) {
+    if (!this._interactive && C.Geo.Feature.Feature.InteractiveEvents.indexOf(eventName) != -1) {
+        this._mask |= C.Geo.Feature.Feature.InteractiveMask;
+        this._interactive = true;
+        this.makeDirty();
+    }
+    EventEmitter.prototype.once.apply(this, arguments);
 };
 
 C.Geo.Feature.Feature.prototype.addTo = function (container) {
@@ -29367,6 +29390,18 @@ C.Geo.Feature.Feature.prototype.opacity = function (opacity) {
 C.Geo.Feature.Feature.prototype.makeDirty = function () {
     this._dirty = true;
     this.emit('dirty', this);
+};
+
+C.Geo.Feature.Feature.prototype.__mousedown = function (event) {
+    this.emit('mousedown', this, event);
+};
+
+C.Geo.Feature.Feature.prototype.__mousemove = function (event) {
+    this.emit('mousemove', this, event);
+};
+
+C.Geo.Feature.Feature.prototype.__mouseup = function (event) {
+    this.emit('mouseup', this, event);
 };
 
 C.Geo.Feature.Feature.prototype.__click = function (event) {
@@ -30141,14 +30176,10 @@ C.Layer.Tile.TileSchema.prototype.fitToBounds = function (point, bound, floor) {
         point._x = Math.floor(point._x);
         point._y = Math.floor(point._y);
     }
-    if (point._x < 0)
-        point._x = 0;
-    if (point._y < 0)
-        point._y = 0;
-    if (point._x > bound)
-        point._x = bound;
-    if (point._y > bound)
-        point._y = bound;
+    if (point._x < 0) { point._x = 0; }
+    if (point._y < 0) { point._y = 0; }
+    if (point._x > bound) { point._x = bound; }
+    if (point._y > bound) { point._y = bound; }
 };
 
 C.Layer.Tile.TileSchema.prototype._mergeTiles = function () {
@@ -30170,10 +30201,11 @@ C.Layer.Tile.TileSchema.prototype.getCurrentTiles = function () {
 };
 
 C.Layer.Tile.TileSchema.prototype.isTileInView = function (tileIndex) {
-    if (tileIndex._BId in this._unchangedTiles)
+    if (tileIndex._BId in this._unchangedTiles ||
+        tileIndex._BId in this._addedTiles)
+    {
         return (true);
-    if (tileIndex._BId in this._addedTiles)
-        return (true);
+    }
     return (false);
 };
 
@@ -30183,18 +30215,18 @@ C.Layer.Tile.TileSchema.prototype.tileToPoly = function (tile, resolution, size,
     var x = Math.floor(tile._x);
     var y = Math.floor(tile._y);
 
-    var tcenter = this.tileToWorld(new C.Layer.Tile.TileIndex(x + 0.5, y + 0.5, tile._z, tile._BId), resolution, size);
+    var tcenter = this.tileToWorld(new C.Layer.Tile.TileIndex(x + 0.5,
+                                                              y + 0.5,
+                                                              tile._z,
+                                                              tile._BId),
+                                   resolution,
+                                   size);
     var half = (size / 2) * resolution;
-    var topLeft = new C.Geometry.Vector2(tcenter.X - half, tcenter.Y + half);
-    var topRight = new C.Geometry.Vector2(tcenter.X + half, tcenter.Y + half);
-    var bottomLeft = new C.Geometry.Vector2(tcenter.X - half, tcenter.Y - half);
-    var bottomRight = new C.Geometry.Vector2(tcenter.X + half, tcenter.Y - half);
-
     return ([
-        [topLeft.X, topLeft.Y],
-        [topRight.X, topRight.Y],
-        [bottomRight.X, bottomRight.Y],
-        [bottomLeft.X, bottomLeft.Y]
+        [tcenter.X - half, tcenter.Y + half],
+        [tcenter.X + half, tcenter.Y + half],
+        [tcenter.X - half, tcenter.Y - half],
+        [tcenter.X + half, tcenter.Y - half]
     ]);
 };
 
@@ -30290,24 +30322,20 @@ C.Layer.Tile.TileSchema.prototype.computeTiles = function (viewport) {
 
         var topLeft = this.worldToTile(viewport._bbox._topLeft, viewport._resolution, size);
         var topRight = this.worldToTile(viewport._bbox._topRight, viewport._resolution, size);
-        var bottomRight = this.worldToTile(viewport._bbox._bottomRight, viewport._resolution, size);
         var bottomLeft = this.worldToTile(viewport._bbox._bottomLeft, viewport._resolution, size);
 
         var bound = this._bounds[zoom];
 
         this.fitToBounds(topLeft, bound, true);
         this.fitToBounds(topRight, bound);
-        this.fitToBounds(bottomRight, bound);
         this.fitToBounds(bottomLeft, bound);
-
-
 
         var tiles = {};
 
         this._mergeTiles();
         var addedTilesCount = 0;
-        this._addedTiles = {};  // reset added tiles
         var removedTilesCount = 0;
+        this._addedTiles = {};  // reset added tiles
         this._removedTiles = {}; // reset removed tiles
 
         for (var y = topLeft._y; y < bottomLeft._y; ++y) {
@@ -30373,24 +30401,27 @@ C.Layer.Tile.Schema.SphericalMercator = C.Utils.Inherit(function (base) {
 C.Layer.Tile.Schema.SphericalMercator.prototype.tileToWorld = function (tileIndex, resolution, size, anchor) {
     size = size || this._tileWidth;
     anchor = anchor || 0;
-    var worldX = this._extent._minX + (tileIndex._x + anchor) * size * resolution;
-    var worldY = (tileIndex._y + anchor) * size * resolution;
-    if (this.yAxis == C.Layer.Tile.yAxis.NORMAL)
+    var sizeInMeter = size * resolution;
+    var worldX = this._extent._minX + (tileIndex._x + anchor) * sizeInMeter;
+    var worldY = (tileIndex._y + anchor) * sizeInMeter
+    if (this.yAxis == C.Layer.Tile.yAxis.NORMAL) {
         worldY = this._extent._minY + worldY;
-    else
+    } else {
         worldY = this._extent._maxY - worldY;
+    }
     return (new C.Geometry.Vector2(worldX, worldY));
 };
 
 C.Layer.Tile.Schema.SphericalMercator.prototype.worldToTile = function (world, resolution, size) {
     size = size || this._tileWidth;
-    var tileX = (world.X - this._extent._minX) / resolution / size;
+    var sizeInPixel = resolution * size;
+    var tileX = (world.X - this._extent._minX) / sizeInPixel;
     var tileY = world.Y;
     if (this._yAxis == C.Layer.Tile.yAxis.NORMAL)
         tileY = tileY - this._extent._minY;
     else
         tileY = this._extent._maxY - tileY;
-    tileY = tileY / resolution / size;
+    tileY = tileY / sizeInPixel;
     var tileZ = this.getZoomLevel(resolution);
     return (C.Layer.Tile.TileIndex.fromXYZ(tileX, tileY, tileZ));
 };
@@ -30487,10 +30518,24 @@ C.Layer.Tile.TileLayer = C.Utils.Inherit(function (base, options) {
     this._removedTiles = this.removedTile.bind(this);
     this._resolutionChange = this.resolutionChange.bind(this);
     this._rotationChange = this.rotationChange.bind(this);
+    this.loadRootTile();
 
 }, C.Geo.Layer, 'C.Layer.Tile.TileLayer');
 
+/*
+ *  init - initialization when added to the map
+ */
 C.Layer.Tile.TileLayer.prototype.init = function () {
+    /* BENCHMARK */
+    //
+    //    var ti = C.Layer.Tile.TileIndex.fromXYZ(15, 26, 10);
+    //    var start = Date.now();
+    //    for (var i = 0; i < 1000000; ++i) {
+    //        var r = this._schema.tileToWorld(ti, 305.748113086);
+    //    }
+    //    var end = Date.now();
+    //    console.log('time', end-start, 'ms');
+
     // Schema events
     this._schema.on('addedTiles', this._addedTiles);
     this._schema.on('removedTiles', this._removedTiles);
@@ -30503,6 +30548,9 @@ C.Layer.Tile.TileLayer.prototype.init = function () {
     this.addedTile.call(this, this._schema.getCurrentTiles(), C.Helpers.viewport);
 };
 
+/*
+ *  destroy - when removed from the map
+ */
 C.Layer.Tile.TileLayer.prototype.destroy = function () {
     // Schema events
     this._schema.off('addedTiles', this._addedTiles);
@@ -30519,10 +30567,49 @@ C.Layer.Tile.TileLayer.prototype.destroy = function () {
     this._substitution = {};
 };
 
+C.Layer.Tile.TileLayer.prototype.loadRootTile = function (cb) {
+    var tile = C.Layer.Tile.TileIndex.fromXYZ(0,0,0);
+    var url = this._source.tileIndexToUrl(tile);
+    var rsize = this.getTileSize();
+
+    var location = new C.Geometry.Point(0, 0, 0, C.Helpers.schema._crs);
+
+    var feature = new C.Geo.Feature.Image({
+        location: location,
+        width: rsize,
+        height: rsize,
+        anchorX: this._anchor,
+        anchorY: this._anchor,
+        source: url,
+        scaleMode: (C.Utils.Comparison.Equals(C.Helpers.viewport._rotation, 0)) ? C.Geo.Feature.Image.ScaleMode.NEAREST : C.Geo.Feature.Image.ScaleMode.DEFAULT
+    });
+
+    // image was loaded
+    feature.on('loaded', (function (key) {
+        this._cache.set(key, {
+            feature: feature,
+            tile: tile
+        });
+        //        cb();
+    }).bind(this, tile._BId));
+
+    feature.on('error', function () {
+        //        cb();
+    });
+
+    feature.load();
+};
+
+/*
+ *  getTileSize - size according to layer resolution and viewport resolution
+ */
 C.Layer.Tile.TileLayer.prototype.getTileSize = function () {
     return (this._schema._resolution / C.Helpers.viewport._resolution * this._schema._tileWidth);
 };
 
+/*
+ *  rotationChange - when the viewport is rotated
+ */
 C.Layer.Tile.TileLayer.prototype.rotationChange = function (viewport) {
     // update all the tile currently in view
     for (var key in this._tileInView) {
@@ -30547,6 +30634,9 @@ C.Layer.Tile.TileLayer.prototype.rotationChange = function (viewport) {
     }
 };
 
+/*
+ *  resolutionChange - when the viewport's resolution is changed
+ */
 C.Layer.Tile.TileLayer.prototype.resolutionChange = function () {
     var rsize = this.getTileSize();
 
@@ -30582,7 +30672,11 @@ C.Layer.Tile.TileLayer.prototype.resolutionChange = function () {
     }
 };
 
+/*
+ *  loadTile - callback for the async queue, load a tile
+ */
 C.Layer.Tile.TileLayer.prototype.loadTile = function (tile, callback) {
+
     var key = tile._BId;
     delete this._loading[key]; // delete from loading list
 
@@ -30593,7 +30687,10 @@ C.Layer.Tile.TileLayer.prototype.loadTile = function (tile, callback) {
     var url = this._source.tileIndexToUrl(tile);
     var rsize = this.getTileSize();
 
-    var location = this._schema.tileToWorld(tile, C.Helpers.viewport._resolution, rsize, this._anchor);
+    var location = this._schema.tileToWorld(tile,
+                                            C.Helpers.viewport._resolution,
+                                            rsize,
+                                            this._anchor);
     location = new C.Geometry.Point(location.X, location.Y, 0, C.Helpers.schema._crs);
 
     var feature = new C.Geo.Feature.Image({
@@ -30640,12 +30737,14 @@ C.Layer.Tile.TileLayer.prototype.loadTile = function (tile, callback) {
     feature.load();
 };
 
+/*
+ *  tileLoaded - when a tile is successfully loaded
+ */
 C.Layer.Tile.TileLayer.prototype.tileLoaded = function (key, noanim) {
 
-    if (noanim)return;
+    if (noanim) { return; }
 
     var self = this;
-
     var o = this._tileInView[key];
     o.feature.opacity(0);
 
@@ -30653,9 +30752,9 @@ C.Layer.Tile.TileLayer.prototype.tileLoaded = function (key, noanim) {
         var opacity = o.feature.opacity() + 0.1;
         o.feature.opacity(opacity);
 
-        if (opacity < 1)
-            o.opacity_animation = setTimeout(f, 30);
-        else {
+        if (opacity < 1) {
+            o.opacity_animation = setTimeout(f, 25);
+        } else {
             o.feature.opacity(1);
             delete o.opacity_animation;
             self.deleteSubstitute(key);
@@ -30663,6 +30762,9 @@ C.Layer.Tile.TileLayer.prototype.tileLoaded = function (key, noanim) {
     })();
 };
 
+/*
+ *  addedTile - schema callback when tiles are added to the viewport
+ */
 C.Layer.Tile.TileLayer.prototype.addedTile = function (addedTiles, viewport) {
     var self = this;
     var rsize = this.getTileSize();
@@ -30672,6 +30774,10 @@ C.Layer.Tile.TileLayer.prototype.addedTile = function (addedTiles, viewport) {
 
         var item = this._cache.get(key);
 
+        if (!(key in this._substitution)) { // create substitution to cover the missing tile
+            this.createSubstitute(tile, viewport._zoomDirection);
+        }
+
         if (item) { // Tile was already in cache
             this._tileInView[key] = item;
             item.feature.width(rsize);
@@ -30680,21 +30786,23 @@ C.Layer.Tile.TileLayer.prototype.addedTile = function (addedTiles, viewport) {
             item.feature.scaleMode((C.Utils.Comparison.Equals(viewport._rotation, 0)) ? C.Geo.Feature.Image.ScaleMode.NEAREST : C.Geo.Feature.Image.ScaleMode.DEFAULT);
             var location = this._schema.tileToWorld(item.tile, C.Helpers.viewport._resolution, rsize, this._anchor);
             item.feature.location(new C.Geometry.Point(location.X, location.Y, 0, C.Helpers.schema._crs));
-            item.feature.opacity(1);
+            item.feature.opacity(0);
             this.addFeature(item.feature);
-            continue;
+            this.tileLoaded.call(this, key);
+            //            continue;
 
         } else if (!(key in this._loading)) { // Add the tile to the loading queue
             this._loading[key] = true;
             this._queue.push(tile);
         }
 
-        if (!(key in this._substitution)) { // create substitution to cover the missing tile
-            this.createSubstitute(tile, viewport._zoomDirection);
-        }
+
     }
 };
 
+/*
+ *  createSubstitute - create tile to replace one that's not yet loaded
+ */
 C.Layer.Tile.TileLayer.prototype.createSubstitute = function (tile, zoomDirection) {
     var trsize = this.getTileSize();
 
@@ -30716,9 +30824,13 @@ C.Layer.Tile.TileLayer.prototype.createSubstitute = function (tile, zoomDirectio
                         level: level
                     });
                     ++cover;
-                } else if (child._z < self._schema._resolutions.length && level < 3) {
+                }
+                else if (child._z < self._schema._resolutions.length && level < 3) {
                     if (explore(child, level + 1) != 4)
                         return 0;
+                    //                    if (explore(child, level + 1) > 0) {
+                    //                        ++cover;
+                    //                    }
                 }
             }
             return cover;
@@ -30760,6 +30872,7 @@ C.Layer.Tile.TileLayer.prototype.createSubstitute = function (tile, zoomDirectio
         var parent = current.levelUp();
 
         var parentObj = this._cache.get(parent._BId);
+
         if (parentObj) {
             var position = parent.positionInTile(tile);
             var size = this._schema._tileWidth / position.pZ;
@@ -30788,6 +30901,9 @@ C.Layer.Tile.TileLayer.prototype.createSubstitute = function (tile, zoomDirectio
     }
 };
 
+/*
+ *  deleteSubstitution - remove a substitution tile
+ */
 C.Layer.Tile.TileLayer.prototype.deleteSubstitute = function (key) {
     if (!(key in this._substitution)) {
         return;
@@ -30799,6 +30915,9 @@ C.Layer.Tile.TileLayer.prototype.deleteSubstitute = function (key) {
     delete this._substitution[key];
 };
 
+/*
+ *  removedTile - schema callback when tiles are removed from viewport
+ */
 C.Layer.Tile.TileLayer.prototype.removedTile = function (removedTiles, viewport) {
     for (var key in removedTiles) {
         this.deleteSubstitute(key);
@@ -31272,6 +31391,7 @@ C.Schema.SphericalMercator.prototype.worldToScreen = function (viewport, wx, wy)
 ;
 /*
  *  C.System.Events //TODO description
+ *  Inertia from Leaflet (https://github.com/Leaflet/Leaflet/)
  */
 
 'use strict';
@@ -31284,8 +31404,13 @@ C.System.Events = new (C.Utils.Inherit(function () {
     this._hasMoved= false;
     this._lastX= undefined;
     this._lastY= undefined;
-    this._movedTimer= undefined;
     this._movedTimeout= 500;
+
+    this._velocityX = 0;
+    this._velocityY = 0;
+    this._lastTime;
+
+
     this._wheel= 0;
     this._wheelTrigger= 100;
     this._resolutionTarget= 0;
@@ -31296,6 +31421,8 @@ C.System.Events = new (C.Utils.Inherit(function () {
     this._zoomStep= 20;
     this._zoomStepDuration= 25;
 
+    this._currentAnimation;
+
 }, EventEmitter, 'C.System.Events'))();
 
 C.System.Events.attach = function (citronGIS) {
@@ -31304,19 +31431,69 @@ C.System.Events.attach = function (citronGIS) {
 
     this._citronGIS = citronGIS;
 
-    $(this._citronGIS._renderer.view).mousedown(C.System.Events.stageDown.bind(this));
-    $(window).mouseup(C.System.Events.stageUp.bind(this));
-    $(this._citronGIS._renderer.view).mousemove(C.System.Events.stageMove.bind(this));
-
-    this._citronGIS._renderer.view.addEventListener('touchstart', C.System.Events.stageDown.bind(this));
-    document.addEventListener('touchmove',C.System.Events.stageMove.bind(this));
-    window.addEventListener('touchend', C.System.Events.stageUp.bind(this));
-
-    $(window).keydown(C.System.Events.keyDown.bind(this));
-
-    this._citronGIS._viewport.on('move', C.System.Events.internalUpdate.bind(this));
+    /*
+     *  Panning/Click
+     */
+    document.addEventListener('mousedown', C.System.Events.stageDown.bind(this));
+    document.addEventListener('mousemove', C.System.Events.stageMove.bind(this));
+    document.addEventListener('mouseup', C.System.Events.stageUp.bind(this));
+    document.addEventListener('touchstart', C.System.Events.stageDown.bind(this));
+    document.addEventListener('touchmove', C.System.Events.stageMove.bind(this));
+    document.addEventListener('touchend', C.System.Events.stageUp.bind(this));
 
     this._citronGIS._renderer.view.addEventListener('wheel', C.System.Events.wheel.bind(this));
+
+    //
+    //    this._citronGIS._renderer.view.addEventListener('touchstart', C.System.Events.stageDown.bind(this));
+    //    document.addEventListener('touchmove',C.System.Events.stageMove.bind(this));
+    //    window.addEventListener('touchend', C.System.Events.stageUp.bind(this));
+    $(window).keydown(C.System.Events.keyDown.bind(this));
+    //    this._citronGIS._renderer.view.addEventListener('wheel', C.System.Events.wheel.bind(this));
+
+    this._citronGIS._viewport.on('move', C.System.Events.internalUpdate.bind(this));
+};
+
+C.System.Events.zoomInWithAnimation = function () {
+    var zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(C.Helpers.viewport._resolution);
+    if (zoomLevel + 1 < C.Helpers.ResolutionHelper.Resolutions.length) {
+        var resolutionTarget = C.Helpers.ResolutionHelper.Resolutions[zoomLevel + 1];
+        C.System.Events.zoomToWithAnimation(resolutionTarget, 0, 0);
+    }
+};
+
+C.System.Events.zoomOutWithAnimation = function () {
+    var zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(C.Helpers.viewport._resolution);
+    if (zoomLevel - 1 >= 0) {
+        var resolutionTarget = C.Helpers.ResolutionHelper.Resolutions[zoomLevel - 1];
+        C.System.Events.zoomToWithAnimation(resolutionTarget, 0, 0);
+    }
+};
+
+C.System.Events.zoomToWithAnimation = function (targetResolution, offsetX, offsetY) {
+    var resolution = C.Helpers.viewport._resolution;
+    var deltaResolution = targetResolution - C.Helpers.viewport._resolution;
+    var step = deltaResolution / 20;
+    var animationSpeed = 10;
+    var self = this;
+
+    if (this._currentAnimation) { clearTimeout(this._currentAnimation); }
+
+    this._currentAnimation = setTimeout(function zoomAnimation() {
+
+        resolution += step;
+
+        if (step < 0 && resolution > targetResolution ||
+            step > 0 && resolution < targetResolution) {
+            C.Helpers.viewport.translate(-offsetX, -offsetY, true);
+            C.Helpers.viewport.zoom(resolution, true);
+            C.Helpers.viewport.translate(offsetX, offsetY);
+            this._currentAnimation = setTimeout(zoomAnimation, animationSpeed);
+        } else {
+            C.Helpers.viewport.translate(-offsetX, -offsetY, true);
+            C.Helpers.viewport.zoom(targetResolution, true);
+            C.Helpers.viewport.translate(offsetX, offsetY);
+        }
+    }, animationSpeed);
 };
 
 C.System.Events.animateZoom = function () {
@@ -31400,7 +31577,7 @@ C.System.Events.wheel = function (evt) {
         }
     }
 };
-
+//
 C.System.Events.keyDown = function (evt) {
     if (evt.keyCode == 106) {
         this._citronGIS._viewport.rotate(-5);
@@ -31431,37 +31608,74 @@ C.System.Events.keyDown = function (evt) {
     }
 };
 
-C.System.Events.stageDown = function (evt) {
-    this.emit('mouseDown', evt);
-    this._isDown = true;
-    this._hasMoved = false;
-    this._lastX = evt.clientX || evt.touches[0].pageX;
-    this._lastY = evt.clientY || evt.touches[0].pageY;
-};
+C.System.Events.stageDown = function (e) {
+    if (e.target == this._citronGIS._renderer.view) {
+        this.emit('mouseDown', e);
+        this._isDown = true;
+        this._hasMoved = false;
+        this._lastX = e.clientX || e.touches[0].pageX;
+        this._lastY = e.clientY || e.touches[0].pageY;
 
-C.System.Events.stageUp = function (evt) {
-    this.emit('mouseUp', evt);
-
-    this._isDown = false;
-    if (!this._hasMoved) {
-        this.emit('mapClicked', evt);
+        this._lastTime = Date.now();
+        this._velocityX = 0;
+        this._velocityY = 0;
     }
 };
 
-C.System.Events.stageMove = function (evt) {
-    this.emit('mouseMove', evt);
-    if (!this._isDown) return;
+C.System.Events.stageUp = function (e) {
+    if (!this._isDown) { return; }
 
-    var x = evt.clientX || evt.touches[0].pageX;
-    var y = evt.clientY || evt.touches[0].pageY;
+    this.emit('mouseUp', e);
+    this._isDown = false;
+    if (!this._hasMoved) {
+        this.emit('mapClicked', e);
+    }
 
+    if (this._velocityX > 0.3 || this._velocityX < -0.3 || this._velocityY > 0.3 || this._velocityY < -0.3) {
+        var timeConstant = 400; //ms
+        var targetX = (this._velocityX * timeConstant) / 50;
+        var targetY = (this._velocityY * timeConstant) / 50;
+
+        this._lastTime = Date.now();
+        var self = this;
+        function easeOutQuad(t, b, c, d) {
+            return -c *(t/=d)*(t-2) + b;
+        }
+        function panAnim() {
+            if (self._isDown) {
+                return;
+            }
+            var speedX = targetX - easeOutQuad(Date.now() - self._lastTime, 0, 1, timeConstant) * targetX;
+            var speedY = targetY - easeOutQuad(Date.now() - self._lastTime, 0, 1, timeConstant) * targetY;
+            C.Helpers.viewport.translate(speedX, speedY);
+
+            if (Date.now() - self._lastTime < timeConstant) {
+                requestAnimationFrame(panAnim);
+            }
+        }
+        requestAnimationFrame(panAnim);
+    }
+};
+
+C.System.Events.stageMove = function (e) {
+    if (!this._isDown) { return; }
+
+    this.emit('mouseMove', e);
+    var x = e.clientX || e.touches[0].pageX;
+    var y = e.clientY || e.touches[0].pageY;
     var dx = x - this._lastX;
     var dy = y - this._lastY;
-
     if (dx === 0 && dy === 0) return;
 
-    this._citronGIS._viewport.translate(dx, dy);
+    var elapsed = Date.now() - this._lastTime;
+    this._lastTime = Date.now();
 
+    var vx = dx / (1 + elapsed);
+    var vy = dy / (1 + elapsed);
+    this._velocityX = 0.8 * vx + 0.2 * this._velocityX;
+    this._velocityY = 0.8 * vy + 0.2 * this._velocityY;
+
+    this._citronGIS._viewport.translate(dx, dy);
     this._lastX = x;
     this._lastY = y;
     this._hasMoved = true;
@@ -31591,31 +31805,31 @@ C.CitrongGISDebug = function (citronGIS) {
         owner: owner
     });
 
-    var test = new C.Layer.Tile.TileIndex.fromXYZ(10, 5, 2);
-    //    console.log('BID', test);
-
-    var osm = new C.Layer.Tile.TileLayer({
-
-        name: 'Open Street Map',
-
-        //http://bcdcspatial.blogspot.com/2012/01/onlineoffline-mapping-map-tiles-and.html
-        source: new C.Layer.Tile.Source.TMSSource({
-            //            url: 'http://mt3.google.com/vt/lyrs=s,h&z={z}&x={x}&y={y}',
-            /*server: undefined*/
-            //            url: 'http://{server}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            //            server: ['a', 'b', 'c']
-            //url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png'
-            url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga'
-            //url: 'https://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q'
-            //            url: 'https://b.tiles.mapbox.com/v3/aj.population-fire/{z}/{x}/{y}.png'
-            //            url: 'https://a.tiles.mapbox.com/v3/aj.Sketchy2/{z}/{x}/{y}.png'
-            /*url: 'http://{server}.tile.stamen.com/toner/{z}/{x}/{y}.png',
-            server: ['a', 'b', 'c']*/
-        }),
-
-        schema: C.Layer.Tile.Schema.SphericalMercator
-
-    });
+    //    var test = new C.Layer.Tile.TileIndex.fromXYZ(10, 5, 2);
+    //    //    console.log('BID', test);
+    //
+    //    var osm = new C.Layer.Tile.TileLayer({
+    //
+    //        name: 'Open Street Map',
+    //
+    //        //http://bcdcspatial.blogspot.com/2012/01/onlineoffline-mapping-map-tiles-and.html
+    //        source: new C.Layer.Tile.Source.TMSSource({
+    //            //            url: 'http://mt3.google.com/vt/lyrs=s,h&z={z}&x={x}&y={y}',
+    //            /*server: undefined*/
+    //            //            url: 'http://{server}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    //            //            server: ['a', 'b', 'c']
+    //            //url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png'
+    //            url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga'
+    //            //url: 'https://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q'
+    //            //            url: 'https://b.tiles.mapbox.com/v3/aj.population-fire/{z}/{x}/{y}.png'
+    //            //            url: 'https://a.tiles.mapbox.com/v3/aj.Sketchy2/{z}/{x}/{y}.png'
+    //            /*url: 'http://{server}.tile.stamen.com/toner/{z}/{x}/{y}.png',
+    //            server: ['a', 'b', 'c']*/
+    //        }),
+    //
+    //        schema: C.Layer.Tile.Schema.SphericalMercator
+    //
+    //    });
 
     var tilelayers =[
         new C.Layer.Tile.TileLayer({
@@ -31652,7 +31866,7 @@ C.CitrongGISDebug = function (citronGIS) {
         new C.Layer.Tile.TileLayer({
             name: 'MB sketchy',
             source: new C.Layer.Tile.Source.TMSSource({
-                url: 'https://a.tiles.mapbox.com/v3/aj.Sketchy2/{z}/{x}/{y}.png'
+                url: 'https://b.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q'
             }),
             schema: C.Layer.Tile.Schema.SphericalMercator})
     ];
@@ -31672,6 +31886,7 @@ C.CitrongGISDebug = function (citronGIS) {
     });
 
     tilelayers[0].addTo(layerGroup);
+    layer.addTo(layerGroup);
 
 
 
@@ -31716,10 +31931,17 @@ C.CitrongGISDebug = function (citronGIS) {
     //        outlineWidth: 5
     //    }));
     //
-    //    layer.addFeature(new C.Geo.Feature.Circle({
-    //        location: new C.Geometry.LatLng(38.94232099793376, -76.99218751775437),
-    //        radius: 2
-    //    }));
+    var f = new C.Geo.Feature.Circle({
+        location: new C.Geometry.LatLng(48.8156, 2.362886),
+        radius: 10
+    });
+    f.on('mousedown', function (f, e) {
+        e.data.originalEvent.stopPropagation();
+    });
+    f.on('mouseup', function () {
+        console.log('up');
+    });
+//    f.addTo(layer);
     //
     //    layer.addFeature(new C.Geo.Feature.Circle({
     //        location: new C.Geometry.LatLng(33.790271, -118.136604),
@@ -31811,8 +32033,9 @@ C.CitrongGISDebug = function (citronGIS) {
     //    debugExtensionLoader(citronGIS, '/src/modules/layer-manager/');
     //        debugExtensionLoader(citronGIS, '/src/modules/velib/');
     //    debugExtensionLoader(citronGIS, '/src/modules/flight/');
-//            debugExtensionLoader(citronGIS, '/src/modules/what3words/');
+    //            debugExtensionLoader(citronGIS, '/src/modules/what3words/');
     //    debugExtensionLoader(citronGIS, '/src/modules/extensionTest/');
+//        debugExtensionLoader(citronGIS, '/src/modules/csv/');
 };
 ;
 /*
@@ -31917,11 +32140,14 @@ C.Renderer.PIXIRenderer.prototype.featureAdded = function (feature, layer) {
             this.renderPolygon(feature);
             break;
     }
-    feature.__graphics.interactive = true;
+    feature.__graphics.interactive = feature._interactive;
     feature.__graphics.alpha = feature._opacity;
-    feature.__graphics.click = function (event) {
-        feature.__click(event);
-    };
+
+    feature.__graphics.mousedown = function (event) { feature.__mousedown(event); }
+    feature.__graphics.mousemove = function (event) { feature.__mousemove(event); }
+    feature.__graphics.mouseup = function (event) { feature.__mouseup(event); }
+    feature.__graphics.click = function (event) { feature.__click(event); }
+
     layer.__graphics.addChild(feature.__graphics);
 
 };
@@ -32102,6 +32328,13 @@ C.Renderer.PIXIRenderer.prototype.featureUpdated = function (feature) {
         if (feature.__graphics)
             feature.__graphics.alpha = feature._opacity;
         feature._mask -= C.Geo.Feature.Feature.OpacityMask;
+        if (feature._mask == 0)
+            return;
+    }
+    if ((feature._mask & C.Geo.Feature.Feature.InteractiveMask) != 0) {
+        if (feature.__graphics)
+            feature.__graphics.interactive = feature._interactive;
+        feature._mask -= C.Geo.Feature.Feature.InteractiveMask;
         if (feature._mask == 0)
             return;
     }
@@ -32463,24 +32696,51 @@ C.UI.PopupManager.updatePopup = function (popup, event) {
     if (!popup.location) {
         if (event) {
             popup.location = C.Helpers.viewport.screenToWorld(event.offsetX, event.offsetY);
+            if (popup.feature.location) {
+                var location;
+                location = popup.feature.location();
+                location = C.Helpers.CoordinatesHelper.TransformTo(location, C.Helpers.viewport._schema._crs);
+                var position = C.Helpers.viewport.worldToScreen(location.X, location.Y);
+                popup.offset = {
+                    x: event.offsetX - position.X,
+                    y: event.offsetY - position.Y
+                };
+            }
         } else { return; }
     }
 
-    var screenPosition = C.Helpers.viewport.worldToScreen(popup.location.X, popup.location.Y);
-
     var w = popup.dom.offsetWidth;
     var h = popup.dom.offsetHeight;
+    var x, y;
 
-    var x = screenPosition.X - (w / 2);
-    var y = screenPosition.Y - h /*- popup.feature._radius*/ + 3;
+    if (popup.offset) {
+        var location = popup.feature.location();
+        location = C.Helpers.CoordinatesHelper.TransformTo(location,
+                                                           C.Helpers.viewport._schema._crs);
+        var position = C.Helpers.viewport.worldToScreen(location.X, location.Y);
+        x = (position.X + popup.offset.x) - (w / 2);
+        y = (position.Y + popup.offset.y) - h + 3;
+    } else {
+        var screenPosition = C.Helpers.viewport.worldToScreen(popup.location.X, popup.location.Y);
+        x = screenPosition.X - (w / 2);
+        y = screenPosition.Y - h /*- popup.feature._radius*/ + 3;
+    }
 
     x = Math.floor(x + 0.5);
     y = Math.floor(y + 0.5);
 
     //TODO do better
-//    popup.dom.style.transform = "translate("+x+"px,"+y+"px)";
+    //    popup.dom.style.transform = "translate("+x+"px,"+y+"px)";
     popup.dom.style.top = y + 'px';
     popup.dom.style.left = x + 'px';
+};
+
+C.UI.PopupManager.propagateCSSContext = function (popup) {
+    var classList = popup._context._module.ui._classList;
+
+    for (var i = 0; i < classList.length; ++i) {
+        popup.dom.classList.add(classList[i]);
+    }
 };
 
 C.UI.PopupManager.register = function (popup, event) {
@@ -32488,6 +32748,7 @@ C.UI.PopupManager.register = function (popup, event) {
         return;
     }
     C.UI.PopupManager.popups.push(popup);
+    C.UI.PopupManager.propagateCSSContext(popup);
     C.UI.PopupManager.popupcontainer.appendChild(popup.dom);
     C.UI.PopupManager.updatePopup(popup, event);
 };
@@ -32552,7 +32813,9 @@ C.UI.Popup_ctr = function (args) {
 };
 C.UI.Popup_ctr.prototype = C.UI.Popup.prototype;
 C.UI.Popup_new_ctr = function () {
-    return new C.UI.Popup_ctr(arguments);
+    var obj = new C.UI.Popup_ctr(arguments);
+    obj._context = this
+    return obj
 };
 
 C.UI.Popup.prototype.open = function (event) {
@@ -32565,6 +32828,249 @@ C.UI.Popup.prototype.open = function (event) {
 C.UI.Popup.prototype.close = function () {
     C.UI.PopupManager.unregister(this);
 };
+;
+/*
+ *  interface.js    //TODO description
+ */
+
+var C = C || {};
+
+C.Interface = function () {
+
+    this._root;
+    this._container;
+    this._grid;
+
+};
+
+C.Interface.prototype.init = function (root) {
+    this._root = root;
+    this._container = document.createElement('div');
+    this._container.className = 'citrongis-interface';
+    this._root.appendChild(this._container);
+
+    this._grid = new C.Interface.Grid(this._container);
+
+    var blocktest = new C.Interface.ButtonBlock({
+        x: 1,
+        y: 0,
+        width: 1,
+        height: 1,
+        float: C.Interface.BlockFloat.topLeft,
+        content: '+',
+        css: {
+            borderRadius: '4px 4px 0px 0px',
+            fontWeight: 'bold'
+        }
+    });
+    this._grid.addBlock(blocktest);
+    var blocktest1 = new C.Interface.ButtonBlock({
+        x: 1,
+        y: 1,
+        width: 1,
+        height: 1,
+        float: C.Interface.BlockFloat.topLeft,
+        content: '-',
+        css: {
+            borderRadius: '0px 0px 4px 4px',
+            borderTop: 'none',
+            fontWeight: 'bold'
+        }
+    });
+    this._grid.addBlock(blocktest1);
+
+    blocktest.on('click', function () {
+        C.System.Events.zoomInWithAnimation();
+    });
+    blocktest1.on('click', function () {
+        C.System.Events.zoomOutWithAnimation();
+    });
+};
+
+C.Interface.prototype.resize = function (width, height) {
+
+    this._grid.resize(width, height);
+
+};
+
+C.Interface = new C.Interface();
+;
+/*
+ *  grid.js //TODO description
+ */
+
+var C = C || {};
+
+C.Interface.Grid = function (container) {
+
+    this._container = container;
+    this._width = $(this._container).width();
+    this._height = $(this._container).height();
+    this.calculateGridSize();
+
+    this._blocks = [];
+//    this.displayEditGrid();
+};
+
+C.Interface.Grid.prototype.calculateGridSize = function () {
+    this._gridSize = 30;
+    var horizontalMargin = (this._width % this._gridSize);
+    var horizontalCount = Math.floor((this._width - horizontalMargin) / this._gridSize);
+    this._horizontalMargin = (this._width - (horizontalCount * this._gridSize)) / 2;
+    var verticalMargin = (this._height % this._gridSize);
+    var verticalCount = Math.floor((this._height - verticalMargin) / this._gridSize);
+    this._verticalMargin = (this._height - (verticalCount * this._gridSize)) / 2;
+};
+
+C.Interface.Grid.prototype.gridInWidth = function () {
+    return (this._width - (this._horizontalMargin * 2)) / this._gridSize;
+};
+
+C.Interface.Grid.prototype.gridInHeight = function () {
+    return (this._height - (this._verticalMargin * 2)) / this._gridSize;
+};
+
+C.Interface.Grid.prototype.displayEditGrid = function () {
+
+    this._editBlocks = [];
+    var gridWidth = this.gridInWidth();
+    var gridHeight = this.gridInHeight();
+
+    for (var y = 0; y < gridHeight; ++y) {
+        for (var x = 0; x < gridWidth; ++x) {
+
+            var block = document.createElement('div');
+            block.className = 'grid-edit-block';
+            block.style.width = this._gridSize;
+            block.style.height = this._gridSize;
+            block.style.top = (this._verticalMargin) + y * this._gridSize;
+            block.style.left = this._horizontalMargin + x * this._gridSize;
+            this._container.appendChild(block);
+            this._editBlocks.push(block);
+
+        }
+    }
+};
+
+C.Interface.Grid.prototype.clearEditGrid = function () {
+    for (var i = 0; i < this._editBlocks.length; ++i) {
+        this._container.removeChild(this._editBlocks[i]);
+    }
+    delete this._editBlocks;
+};
+
+C.Interface.Grid.prototype.resize = function (width, height) {
+    this._width = width;
+    this._height = height;
+
+    this.calculateGridSize();
+    if (this._editBlocks) {
+        this.clearEditGrid();
+        this.displayEditGrid();
+    }
+    this.placeAllBlocks();
+};
+
+C.Interface.Grid.prototype.addBlock = function (block) {
+
+    this._blocks.push(block);
+    this._container.appendChild(block._container);
+    this._placeBlock(block);
+
+};
+
+C.Interface.Grid.prototype._placeBlock = function (block) {
+
+    var x;
+    if (block._float == C.Interface.BlockFloat.topLeft || block._float == C.Interface.BlockFloat.bottomLeft) {
+        x = this._horizontalMargin + block._x * this._gridSize;
+    } else {
+        x = this._width - (this._horizontalMargin + block._x * this._gridSize + block._width * this._gridSize);
+    }
+    var y;
+    if (block._float == C.Interface.BlockFloat.topLeft || block._float == C.Interface.BlockFloat.topRight) {
+        y = this._verticalMargin + block._y * this._gridSize;
+    } else {
+        y = this._height - (this._verticalMargin + block._y * this._gridSize + block._height * this._gridSize);
+    }
+    block._container.style.top = y;
+    block._container.style.left = x;
+    block._container.style.width = block._width * this._gridSize;
+    block._container.style.height = block._height * this._gridSize;
+
+};
+
+C.Interface.Grid.prototype.placeAllBlocks = function () {
+    for (var i = 0; i < this._blocks.length; ++i) {
+        this._placeBlock(this._blocks[i]);
+    }
+};
+;
+/*
+ *  block.js    //TODO description
+ */
+
+var C = C || {};
+
+C.Interface.BlockFloat = {
+    topLeft: 0,
+    topRight: 1,
+    bottomLeft: 2,
+    bottomRight: 3
+};
+
+C.Interface.Block = C.Utils.Inherit(function (base, options) {
+
+    base();
+
+    options = options || {};
+
+    this._x = options.x;
+    this._y = options.y;
+    this._width = options.width;
+    this._height = options.height;
+    this._float = options.float || C.Interface.BlockFloat.topLeft;
+    this._css = options.css || {};
+
+    this._container = document.createElement('div');
+    this._container.className = 'grid-block';
+
+    this._contentContainer = document.createElement('div');
+    this._contentContainer.className = 'grid-block-content';
+    this._contentContainer.innerHTML = options.content;
+    this._container.appendChild(this._contentContainer);
+
+    this._applyCss();
+}, EventEmitter, 'C.Interface.Block');
+
+C.Interface.Block.prototype._applyCss = function () {
+    for (var key in this._css) {
+        this._container.style[key] = this._css[key];
+    }
+};
+
+C.Interface.Block.prototype.setContent = function (content) {
+    this._contentContainer.innerHTML = content;
+};
+;
+/*
+ *  buttonblock.js  //TODO description
+ */
+
+var C = C || {};
+
+C.Interface.ButtonBlock = C.Utils.Inherit(function (base, options) {
+
+    base(options);
+
+    this._container.classList.add('grid-button-block');
+
+    var self = this;
+    $(this._container).click(function (event) {
+        self.emit('click', event.originalEvent);
+    });
+
+}, C.Interface.Block, 'C.Interface.ButtonBlock');
 ;
 /*
 **
@@ -32608,7 +33114,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     this._viewport = new C.System.Viewport({
         width: this._renderer.width,
         height: this._renderer.height,
-        resolution: C.Helpers.ResolutionHelper.Resolutions[17],
+        resolution: C.Helpers.ResolutionHelper.Resolutions[6],
         schema: new C.Schema.SphericalMercator(),
         origin: C.Helpers.CoordinatesHelper.TransformTo(new C.Geometry.LatLng(48.8156, 2.362886), C.Helpers.ProjectionsHelper.EPSG3857),
         rotation: 0 * Math.PI / 180
@@ -32619,6 +33125,8 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     C.UI.PopupManager.init(this._rootDiv);
     this._extDiv = C.Extension.Extension.init(this._rootDiv);
 
+    C.Interface.init(this._rootDiv);
+
     var self = this;
 
     function resize() {
@@ -32627,6 +33135,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
         self._renderer.resize(width, height);
         self._viewport.resize(width, height);
         C.UI.PopupManager.resize(width, height);
+        C.Interface.resize(width, height);
     }
 
     $(window).resize(resize);

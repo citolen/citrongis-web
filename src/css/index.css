@@ -141,9 +141,10 @@ a.popup-close:hover {
 
 div.citrongisextension-handler {
     position: absolute;
-    border: 1px solid rgb(200, 200, 200);
+/*    border: 1px solid rgb(200, 200, 200);*/
     border-radius: 0px;
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;
+    box-shadow: rgba(0, 0, 0, 0.65098) 0px 1px 5px;
+/*    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px 0px;*/
     background-color: rgba(247, 247, 247, 0.95);
     border-bottom: 4px solid rgb(240, 81, 92);
     box-sizing: border-box;

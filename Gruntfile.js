@@ -66,13 +66,17 @@ module.exports = function(grunt) {
                     'citrongis-core/src/extension/LayerHelper.js',
                     'citrongis-core/src/schema/SchemaBase.js',
                     'citrongis-core/src/schema/SphericalMercator.js',
-                    'citrongis-core/src/system/Events.js',
+                    'src/js/system/Events.js',
                     'citrongis-core/src/system/TileSchemaManager.js',
                     'src/js/CitronGISDebugger.js',
                     'citrongis-core/src/renderer/RendererBase.js',
                     'src/js/Renderer/PIXIRenderer.js',
                     'citrongis-core/src/ui/PopupManager.js',
                     'citrongis-core/src/ui/Popup.js',
+                    'src/js/interface/interface.js',
+                    'src/js/interface/grid.js',
+                    'src/js/interface/block.js',
+                    'src/js/interface/buttonblock.js',
                     'src/js/CitronGIS.js'
                 ],
                 dest: 'build/citrongis.js'

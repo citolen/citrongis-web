@@ -82,7 +82,7 @@ C.System.Events.zoomToWithAnimation = function (targetResolution, offsetX, offse
     var resolution = C.Helpers.viewport._resolution;
     var deltaResolution = targetResolution - C.Helpers.viewport._resolution;
     var step = deltaResolution / 20;
-    var animationSpeed = 10;
+    var animationSpeed = 5;
     var self = this;
 
     if (this._currentAnimation) { clearTimeout(this._currentAnimation); }
