@@ -8,7 +8,59 @@
     src: url('fonts/nexa-bold.ttf'); /*URL to font*/
 }
 
-.extensions-container {
+.grid-button-block {
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 27px;
+    font-family: 'nexa-light';
+    text-indent: 1px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.grid-button-block:hover {
+    background-color: #f5f5f5;
+    color: #2f2f2f;
+}
+
+.grid-button-block:active {
+    background-color: #efeded;
+    color: #2f2f2f;
+/*    color: #c6e546;*/
+}
+
+.grid-block {
+    position: absolute;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+    border-radius: 0px;
+    background-color: white;
+    pointer-events: auto;
+}
+
+.grid-block-content {
+    text-align: center;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.grid-edit-block {
+    position: absolute;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    border-top: 1px dashed black;
+    border-left: 1px dashed black;
+}
+
+.extensions-container, .citrongis-interface {
     position: absolute;
     top: 0;
     left: 0;

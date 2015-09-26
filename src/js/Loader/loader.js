@@ -70,6 +70,10 @@ var files = [
     'src/js/Renderer/PIXIRenderer.js',
     'citrongis-core/src/ui/PopupManager.js',
     'citrongis-core/src/ui/Popup.js',
+    'src/js/interface/interface.js',
+    'src/js/interface/grid.js',
+    'src/js/interface/block.js',
+    'src/js/interface/buttonblock.js',
     'src/js/CitronGIS.js'
 ];
 

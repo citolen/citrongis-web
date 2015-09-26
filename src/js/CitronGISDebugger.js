@@ -109,7 +109,7 @@ C.CitrongGISDebug = function (citronGIS) {
         new C.Layer.Tile.TileLayer({
             name: 'MB sketchy',
             source: new C.Layer.Tile.Source.TMSSource({
-                url: 'https://a.tiles.mapbox.com/v3/aj.Sketchy2/{z}/{x}/{y}.png'
+                url: 'https://b.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q'
             }),
             schema: C.Layer.Tile.Schema.SphericalMercator})
     ];
@@ -184,7 +184,7 @@ C.CitrongGISDebug = function (citronGIS) {
     f.on('mouseup', function () {
         console.log('up');
     });
-    f.addTo(layer);
+//    f.addTo(layer);
     //
     //    layer.addFeature(new C.Geo.Feature.Circle({
     //        location: new C.Geometry.LatLng(33.790271, -118.136604),
@@ -278,5 +278,5 @@ C.CitrongGISDebug = function (citronGIS) {
     //    debugExtensionLoader(citronGIS, '/src/modules/flight/');
     //            debugExtensionLoader(citronGIS, '/src/modules/what3words/');
     //    debugExtensionLoader(citronGIS, '/src/modules/extensionTest/');
-        debugExtensionLoader(citronGIS, '/src/modules/csv/');
+//        debugExtensionLoader(citronGIS, '/src/modules/csv/');
 };

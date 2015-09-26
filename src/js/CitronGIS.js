@@ -51,6 +51,8 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     C.UI.PopupManager.init(this._rootDiv);
     this._extDiv = C.Extension.Extension.init(this._rootDiv);
 
+    C.Interface.init(this._rootDiv);
+
     var self = this;
 
     function resize() {
@@ -59,6 +61,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
         self._renderer.resize(width, height);
         self._viewport.resize(width, height);
         C.UI.PopupManager.resize(width, height);
+        C.Interface.resize(width, height);
     }
 
     $(window).resize(resize);
