@@ -47,6 +47,7 @@ C.Interface.prototype.init = function (root) {
         }
     });
     this._grid.addBlock(blocktest1);
+    //menu btn
     var blocklogIn = new C.Interface.ButtonBlock({
         x: 3,
         y: 0,
@@ -109,13 +110,12 @@ C.Interface.prototype.init = function (root) {
     });
     this._grid.addBlock(blockSearch);
 
-
-
+    //menu windows
     var windowUser = new C.Interface.WindowBlock({
         x: blocklogIn.getX(),
         y: blocklogIn.getY() + 1,
-        width: 4,
-        height: 4,
+        width: 10,
+        height: 14,
         float: C.Interface.BlockFloat.topLeft,
         content: '<user-citrongis></user-citrongis>',
         css: {
@@ -127,7 +127,38 @@ C.Interface.prototype.init = function (root) {
         }
     });
     this._grid.addBlock(windowUser);
-
+    var windowStore = new C.Interface.WindowBlock({
+        x: blockStore.getX(),
+        y: blockStore.getY() + 1,
+        width: 4,
+        height: 4,
+        float: C.Interface.BlockFloat.topLeft,
+        content: '<user-citrongis></user-citrongis>',
+        css: {
+            borderRadius: '4px 4px 4px 4px',
+            borderBottom: 'solid 5px #2ecc71',
+            fontWeight: 'bold',
+            boxShadow: 'none',
+            display: 'none'
+        }
+    });
+    this._grid.addBlock(windowStore);
+    var windowSettings = new C.Interface.WindowBlock({
+        x: blockSettings.getX(),
+        y: blockSettings.getY() + 1,
+        width: 4,
+        height: 4,
+        float: C.Interface.BlockFloat.topLeft,
+        content: '<user-citrongis></user-citrongis>',
+        css: {
+            borderRadius: '4px 4px 4px 4px',
+            borderBottom: 'solid 5px #e67e22',
+            fontWeight: 'bold',
+            boxShadow: 'none',
+            display: 'none'
+        }
+    });
+    this._grid.addBlock(windowSettings);
 
 
     blocktest.on('click', function () {
@@ -137,7 +168,6 @@ C.Interface.prototype.init = function (root) {
         C.System.Events.zoomOutWithAnimation();
     });
     blocklogIn.on('click', function() {
-        console.log(windowUser.isVisble());
         if (windowUser.isVisble() == false) {
             blocklogIn.setCSS('backgroundColor', '#3498db');
             windowUser.setCSS('display', 'block');
@@ -146,7 +176,26 @@ C.Interface.prototype.init = function (root) {
             blocklogIn.setCSS('backgroundColor', '');
             windowUser.setCSS('display', 'none');
         }
-        windowUser._applyCss();
+    });
+    blockStore.on('click', function () {
+        if (windowStore.isVisble() == false) {
+            blockStore.setCSS('backgroundColor', '#2ecc71');
+            windowStore.setCSS('display', 'block');
+        }
+        else {
+            blockStore.setCSS('backgroundColor', '');
+            windowStore.setCSS('display', 'none');
+        }
+    });
+    blockSettings.on('click', function () {
+        if (windowSettings.isVisble() == false) {
+            blockSettings.setCSS('backgroundColor', '#e67e22');
+            windowSettings.setCSS('display', 'block');
+        }
+        else {
+            blockSettings.setCSS('backgroundColor', '');
+            windowSettings.setCSS('display', 'none');
+        }
     });
 };
 
