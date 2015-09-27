@@ -74,6 +74,7 @@ var files = [
     'src/js/interface/grid.js',
     'src/js/interface/block.js',
     'src/js/interface/buttonblock.js',
+    'src/js/interface/windowblock.js',
     'src/js/CitronGIS.js'
 ];
 
