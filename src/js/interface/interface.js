@@ -175,14 +175,13 @@ C.Interface.prototype.init = function (root) {
         }
     });
     this._grid.addBlock(windowSettings);
-
-
     blocktest.on('click', function () {
         C.System.Events.zoomInWithAnimation();
     });
     blocktest1.on('click', function () {
         C.System.Events.zoomOutWithAnimation();
     });
+
     blocklogIn.on('click', function() {
         var visible;
 
@@ -200,27 +199,9 @@ C.Interface.prototype.init = function (root) {
             blocklogIn.setCSS('backgroundColor', '');
             windowUserLogin.setCSS('display', 'none');
             windowUserProfile.setCSS('display', 'none');
-            //            visible.setCSS('display', 'none'); //TO DO
+            //            visible.setCSS('display', 'none'); //FIX TODO
         }
-
-
-
-        console.log(Utils.getVisible({windowUserLogin, windowUserProfile}));
-
-        /* if (windowUserProfile.isVisble() == false) {
-            blocklogIn.setCSS('backgroundColor', '#3498db');
-            windowUserProfile.setCSS('display', 'block');
-        }
-        else {
-            blocklogIn.setCSS('backgroundColor', '');
-            windowUserProfile.setCSS('display', 'none');
-        }
-        */
     });
-
-
-
-
 
     blockStore.on('click', function () {
         if (windowStore.isVisble() == false) {
@@ -242,10 +223,6 @@ C.Interface.prototype.init = function (root) {
             windowSettings.setCSS('display', 'none');
         }
     });
-
-
-
-
 };
 
 C.Interface.prototype.resize = function (width, height) {
