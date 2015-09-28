@@ -65,17 +65,51 @@
                         </div>
                     </div>
                     <div class="row">
-                        <a id="sign-in-send" class="btn waves-effect waves-light col s12 m10 l6 offset-m1 offset-l3" style="background-color: #3498db">Sign In</a>
+                        <a id="sign-in-send" on-click="handleClick" class="btn waves-effect waves-light col s12 m10 l6 offset-m1 offset-l3" style="background-color: #3498db">Sign In</a>
                     </div>
-                    <div class="row" style="margin-bottom: 0px;">
+                    <div class="row" style="margin-bottom: 10px;">
                         <a href="www.google.com" target="_blank">I don't remember</a> / <a href="www.google.com" target="_blank">Sign Up</a>
                     </div>
+                    <div id="invalid-connexion" class="row" style="margin-bottom: 0px; display: none">
+                        <a style="color: red;">Invalid email or password</a>
+                    </div>
+
                 </form>
             </div>
     </template>
   <script>
     Polymer({
-      is: 'user-citrongis'
+        is : 'user-citrongis',
+        handleClick: function() {
+            username = $("#email").val();
+            password = $("#password").val();
+
+            if (username != "" && password != "") {
+                $.post("http://52.10.137.45:8080/auth/login/",
+                    {
+                       username: username,
+                       password: password,
+                       grant_type: "password",
+                       client_id: "key",
+                       client_secret: "secret"
+                    })
+                    .done(function(result) {
+                        console.log(result.access_token);
+                        document.cookie="citrongis_access_token=" + result.access_token + "; expires=Thu, 30 Dec 2016 12:00:00 UTC";
+                        document.cookie="citrongis_refresh_token=" + result.refresh_token + "; expires=Thu, 30 Dec 2016 12:00:00 UTC";
+                    $("user-citrongis").parent().parent().css('display', 'none');
+                    $("profile-citrongis").parent().parent().css('display', 'block');
+                    })
+                    .fail(function(xhr, textStatus, errorThrown) {
+                        error = JSON.parse(xhr.responseText).error;
+                        console.log("Log-in KO!");
+                        if(error == "invalid_grant") {
+                            $("#invalid-connexion").css('display', 'block');
+                        }
+                    });
+            }
+
+        }
     });
   </script>
 </dom-module>
