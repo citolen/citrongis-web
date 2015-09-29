@@ -97,9 +97,8 @@
                         console.log(result.access_token);
                         document.cookie="citrongis_access_token=" + result.access_token + "; expires=Thu, 30 Dec 2016 12:00:00 UTC";
                         document.cookie="citrongis_refresh_token=" + result.refresh_token + "; expires=Thu, 30 Dec 2016 12:00:00 UTC";
-                    $("user-citrongis").parent().parent().css('display', 'none');
-                    $("profile-citrongis").parent().parent().css('display', 'block');
-                    })
+                        $("user-citrongis").replaceWith("<profile-citrongis></profile-citrongis>");
+                })
                     .fail(function(xhr, textStatus, errorThrown) {
                         error = JSON.parse(xhr.responseText).error;
                         console.log("Log-in KO!");

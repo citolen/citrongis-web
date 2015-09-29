@@ -4,6 +4,12 @@
 
 var Utils = Utils || {};
 
+Utils.set_if_not_empty = function (selector, data) {
+    if (data) {
+        $(selector).text(data);
+    }
+};
+
 Utils.get_cookie = function (cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');
@@ -49,26 +55,31 @@ Utils.check_log_in = function() {
             },
             error: function(xhr, textStatus, errorThrown) {
                 console.log("Mauvais token");
+                status = "no-login";
 
-                $.post("http://52.10.137.45:8080/auth/login",
-                {
-                    "grant_type": "refresh_token",
-                    "client_id": "key",
-                    "client_secret": "secret",
-                    "refresh_token": refresh_token
-                }).done(function(result) {
-                    document.cookie="citrongis_access_token=" + result.access_token + "; expires=Thu, 30 Dec 2016 12:00:00 UTC";
-                    document.cookie="citrongis_refresh_token=" + result.refresh_token + "; expires=Thu, 30 Dec 2016 12:00:00 UTC";
-                    status = "login";
-                    console.log("Nouveau refresh token");
-                })
-                .fail(function(xhr, textStatus, errorThrown){
-                    status = "no-login";
-                    console.log("mauvais refresh token, GO LOGIN");
+                $.ajax({
+                    async: false,
+                    type: 'POST',
+                    url: "http://52.10.137.45:8080/auth/login",
+                    data: {
+                        "grant_type": "refresh_token",
+                        "client_id": "key",
+                        "client_secret": "secret",
+                        "refresh_token": refresh_token
+                    },
+                    success: function(result) {
+                        document.cookie="citrongis_access_token=" + result.access_token + "; expires=Thu, 30 Dec 2016 12:00:00 UTC";
+                        document.cookie="citrongis_refresh_token=" + result.refresh_token + "; expires=Thu, 30 Dec 2016 12:00:00 UTC";
+                        status = "login";
+                        console.log("Nouveau refresh token");
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        status = "no-login";
+                        console.log("mauvais refresh token, GO LOGIN");
+                    }
                 });
             }
         });
     }
     return (status);
 }
-

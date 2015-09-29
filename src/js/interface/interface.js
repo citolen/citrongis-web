@@ -117,7 +117,7 @@ C.Interface.prototype.init = function (root) {
         width: 10,
         height: 14,
         float: C.Interface.BlockFloat.topLeft,
-        content: '<user-citrongis></user-citrongis>',
+        content: '',
         css: {
             borderRadius: '4px 4px 4px 4px',
             borderBottom: 'solid 5px #3498db',
@@ -127,54 +127,22 @@ C.Interface.prototype.init = function (root) {
         }
     });
     this._grid.addBlock(windowUserLogin);
-    var windowUserProfile = new C.Interface.WindowBlock({
-        x: blocklogIn.getX(),
-        y: blocklogIn.getY() + 1,
-        width: 10,
-        height: 14,
-        float: C.Interface.BlockFloat.topLeft,
-        content: '<profile-citrongis></profile-citrongis>',
-        css: {
-            borderRadius: '4px 4px 4px 4px',
-            borderBottom: 'solid 5px #3498db',
-            fontWeight: 'bold',
-            boxShadow: 'none',
-            display: 'none'
-        }
-    });
-    this._grid.addBlock(windowUserProfile);
-    var windowStore = new C.Interface.WindowBlock({
-        x: blockStore.getX(),
-        y: blockStore.getY() + 1,
-        width: 4,
-        height: 4,
-        float: C.Interface.BlockFloat.topLeft,
-        content: '<user-citrongis></user-citrongis>',
-        css: {
-            borderRadius: '4px 4px 4px 4px',
-            borderBottom: 'solid 5px #2ecc71',
-            fontWeight: 'bold',
-            boxShadow: 'none',
-            display: 'none'
-        }
-    });
-    this._grid.addBlock(windowStore);
-    var windowSettings = new C.Interface.WindowBlock({
-        x: blockSettings.getX(),
-        y: blockSettings.getY() + 1,
-        width: 4,
-        height: 4,
-        float: C.Interface.BlockFloat.topLeft,
-        content: '<user-citrongis></user-citrongis>',
-        css: {
-            borderRadius: '4px 4px 4px 4px',
-            borderBottom: 'solid 5px #e67e22',
-            fontWeight: 'bold',
-            boxShadow: 'none',
-            display: 'none'
-        }
-    });
-    this._grid.addBlock(windowSettings);
+//    var windowUserProfile = new C.Interface.WindowBlock({
+//        x: blocklogIn.getX(),
+//        y: blocklogIn.getY() + 1,
+//        width: 10,
+//        height: 14,
+//        float: C.Interface.BlockFloat.topLeft,
+//        content: '<profile-citrongis></profile-citrongis>',
+//        css: {
+//            borderRadius: '4px 4px 4px 4px',
+//            borderBottom: 'solid 5px #3498db',
+//            fontWeight: 'bold',
+//            boxShadow: 'none'
+//        }
+//    });
+//    this._grid.addBlock(windowUserProfile);
+
     blocktest.on('click', function () {
         C.System.Events.zoomInWithAnimation();
     });
@@ -185,42 +153,21 @@ C.Interface.prototype.init = function (root) {
     blocklogIn.on('click', function() {
         var visible;
 
-        if ((visible = Utils.getVisible({windowUserLogin, windowUserProfile})) == undefined) {
+        if (windowUserLogin.isVisible() == false) {
+            windowUserLogin.setCSS('display', 'block');
+
             if (Utils.check_log_in() == "login") {
                 blocklogIn.setCSS('backgroundColor', '#3498db');
-                windowUserProfile.setCSS('display', 'block');
+                windowUserLogin.setContent("<profile-citrongis></profile-citrongis>");
             }
             else {
                 blocklogIn.setCSS('backgroundColor', '#3498db');
-                windowUserLogin.setCSS('display', 'block');
+                windowUserLogin.setContent("<user-citrongis></user-citrongis>");
             }
         }
         else {
             blocklogIn.setCSS('backgroundColor', '');
             windowUserLogin.setCSS('display', 'none');
-            windowUserProfile.setCSS('display', 'none');
-            //            visible.setCSS('display', 'none'); //FIX TODO
-        }
-    });
-
-    blockStore.on('click', function () {
-        if (windowStore.isVisble() == false) {
-            blockStore.setCSS('backgroundColor', '#2ecc71');
-            windowStore.setCSS('display', 'block');
-        }
-        else {
-            blockStore.setCSS('backgroundColor', '');
-            windowStore.setCSS('display', 'none');
-        }
-    });
-    blockSettings.on('click', function () {
-        if (windowSettings.isVisble() == false) {
-            blockSettings.setCSS('backgroundColor', '#e67e22');
-            windowSettings.setCSS('display', 'block');
-        }
-        else {
-            blockSettings.setCSS('backgroundColor', '');
-            windowSettings.setCSS('display', 'none');
         }
     });
 };

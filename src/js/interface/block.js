@@ -53,7 +53,7 @@ C.Interface.Block.prototype.getY = function () {
     return (this._y);
 }
 
-C.Interface.Block.prototype.isVisble = function () {
+C.Interface.Block.prototype.isVisible = function () {
     if (this._css['display'] == 'none') {
         return (false);
     }

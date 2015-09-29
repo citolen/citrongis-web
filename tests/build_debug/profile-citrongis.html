@@ -15,12 +15,98 @@
 <dom-module id="profile-citrongis">
     <template>
         <div class="materialize-noconflict" style="width: 100%; height: 100%; overflow-y: scroll; font-family: 'nexa-light';">
-            <h1>ROMAIN GABILAN</h1>
+
+
+        <div class="row">
+    <div class="col s12 m12 l12 center-align">
+        <div class="card-panel" style="background-color: #3498db; color: #ffffff;"><h5><span id="firstname"></span> <span id="lastname"></span></h5></div>
+    </div>
+</div>
+<div class="row center-align">
+    <div class="col s12 m12 l9 offset-l2">
+        <table>
+            <tbody>
+                <tr>
+                    <td class="hide-on-small-only">Username</td>
+                    <td id="username">-</td>
+                </tr>
+                <tr>
+                    <td class="hide-on-small-only">Email</td>
+                    <td id="email">-</td>
+                </tr>
+                <tr>
+                    <td class="hide-on-small-only">Profile type</td>
+                    <td id="profile-type">-</td>
+                </tr>
+                <tr>
+                    <td class="hide-on-small-only">Language</td>
+                    <td id="language">-</td>
+                </tr>
+                <tr>
+                    <td class="hide-on-small-only">Location</td>
+                    <td id="location">-</td>
+                </tr>
+                <tr>
+                    <td class="hide-on-small-only">Phone number</td>
+                    <td id="phone-number">-</td>
+                </tr>
+                <tr>
+                    <td class="hide-on-small-only">Date of birth</td>
+                    <td id="date-of-birth">-</td>
+                </tr>
+                <tr>
+                    <td class="hide-on-small-only">Company</td>
+                    <td id="company">-</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col s6 m6 l6 offset-s3 offset-m3 offset-l3">
+        <a id="open-edit-profile-modal" class="waves-effect waves-light btn modal-trigger" href="#edit-profile-modal">Edit</a>
+    </div>
+</div>
+
+
+
+
+
         </div>
     </template>
   <script>
     Polymer({
         is : 'profile-citrongis',
+        ready: function () {
+            var access_token = Utils.get_cookie("citrongis_access_token");
+            $.ajax({
+                url: "http://52.10.137.45:8080/account/get",
+                method: "GET",
+                headers : {
+                    Authorization: "Bearer " + access_token
+                },
+                success: function (res) {
+                    data = res.data;
+
+                    /* Get profile informations */
+                    Utils.set_if_not_empty("#firstname", data.firstname);
+                    Utils.set_if_not_empty("#lastname", data.lastname);
+                    Utils.set_if_not_empty("#username", data.username);
+                    Utils.set_if_not_empty("#email", data.email);
+                    Utils.set_if_not_empty("#profile-type", data.profileType );
+                    Utils.set_if_not_empty("#language", data.language);
+                    Utils.set_if_not_empty("#location", data.location);
+                    Utils.set_if_not_empty("#phone-number", data.phoneNumber);
+                    Utils.set_if_not_empty("#date-of-birth", data.dateOfBirth);
+                    Utils.set_if_not_empty("#company", data.companyName);
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    console.log("Bad token");
+                    console.log(xhr.resoponseText);
+                    // TODO ERROR
+                }
+            });
+        }
     });
   </script>
 </dom-module>
