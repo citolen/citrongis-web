@@ -127,21 +127,6 @@ C.Interface.prototype.init = function (root) {
         }
     });
     this._grid.addBlock(windowUserLogin);
-//    var windowUserProfile = new C.Interface.WindowBlock({
-//        x: blocklogIn.getX(),
-//        y: blocklogIn.getY() + 1,
-//        width: 10,
-//        height: 14,
-//        float: C.Interface.BlockFloat.topLeft,
-//        content: '<profile-citrongis></profile-citrongis>',
-//        css: {
-//            borderRadius: '4px 4px 4px 4px',
-//            borderBottom: 'solid 5px #3498db',
-//            fontWeight: 'bold',
-//            boxShadow: 'none'
-//        }
-//    });
-//    this._grid.addBlock(windowUserProfile);
 
     blocktest.on('click', function () {
         C.System.Events.zoomInWithAnimation();
