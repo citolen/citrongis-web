@@ -1,0 +1,114 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link type="text/css" rel="stylesheet" href="materialize.css"  media="screen,projection"/>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js"></script>
+
+<style>
+
+    .materialize-noconflict input[type=password]:focus:not([readonly]) + label, .materialize-noconflict input[type=email]:focus:not([readonly]) + label {
+        color: #3498db;
+    }
+
+    .materialize-noconflict input[type=password]:focus:not([readonly]), .materialize-noconflict input[type=email]:focus:not([readonly]) {
+        border-bottom: 1px solid #3498db;
+        box-shadow: 0 1px 0 0 #3498db;
+    }
+
+    .materialize-noconflict .switch label input[type=checkbox]:checked + .lever {
+        background-color: #7cc5f4;
+    }
+
+    .materialize-noconflict .switch label input[type=checkbox]:checked + .lever:after {
+        background-color: #3498db;
+    }
+
+    .materialize-noconflict input[type=checkbox]:checked:not(:disabled) ~ .lever:active:after {
+        box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px rgba(124, 197, 244, 0.1);
+    }
+
+</style>
+
+<dom-module id="user-citrongis">
+    <template>
+        <div class="materialize-noconflict" style="width: 100%; height: 100%; overflow-y: scroll; font-family: 'nexa-light';">
+            <div class="row" style="margin-bottom: 0px;">
+                <div class="col s12 m12 l12 center-align">
+                    <div class="card-panel" style="background-color: #3498db; color: #ffffff;"><h5>Sign In</h5></div>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 0;">
+                <form class="col s12 m12 l12" style="margin-bottom: 0;">
+                    <div class="row" style="margin-bottom: 0px;">
+                        <div class="input-field col s12 m12 l12">
+                            <input id="email" type="email">
+                            <label for="email">Email</label>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 0px;">
+                        <div class="input-field col s12 m12 l12">
+                            <input id="password" type="password">
+                            <label for="password">Password</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="switch col s12 m12 l12 center-align">
+                            <label>
+                                <input id="remember" type="checkbox">
+                                <span class="lever"></span><span>Remember me</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <a id="sign-in-send" on-click="handleClick" class="btn waves-effect waves-light col s12 m10 l6 offset-m1 offset-l3" style="background-color: #3498db">Sign In</a>
+                    </div>
+                    <div class="row" style="margin-bottom: 10px;">
+                        <a href="www.google.com" target="_blank">I don't remember</a> / <a href="www.google.com" target="_blank">Sign Up</a>
+                    </div>
+                    <div id="invalid-connexion" class="row" style="margin-bottom: 0px; display: none">
+                        <a style="color: red;">Invalid email or password</a>
+                    </div>
+
+                </form>
+            </div>
+    </template>
+  <script>
+    Polymer({
+        is : 'user-citrongis',
+        handleClick: function() {
+            username = $("#email").val();
+            password = $("#password").val();
+
+            if (username != "" && password != "") {
+                $.post("http://52.10.137.45:8080/auth/login/",
+                    {
+                       username: username,
+                       password: password,
+                       grant_type: "password",
+                       client_id: "key",
+                       client_secret: "secret"
+                    })
+                    .done(function(result) {
+                        console.log(result.access_token);
+                        document.cookie="citrongis_access_token=" + result.access_token + "; expires=Thu, 30 Dec 2016 12:00:00 UTC";
+                        document.cookie="citrongis_refresh_token=" + result.refresh_token + "; expires=Thu, 30 Dec 2016 12:00:00 UTC";
+                        $("user-citrongis").replaceWith("<profile-citrongis></profile-citrongis>");
+                })
+                    .fail(function(xhr, textStatus, errorThrown) {
+                        error = JSON.parse(xhr.responseText).error;
+                        console.log("Log-in KO!");
+                        if(error == "invalid_grant") {
+                            $("#invalid-connexion").css('display', 'block');
+                        }
+                    });
+            }
+
+        }
+    });
+  </script>
+</dom-module>

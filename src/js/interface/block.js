@@ -40,6 +40,25 @@ C.Interface.Block.prototype._applyCss = function () {
         this._container.style[key] = this._css[key];
     }
 };
+C.Interface.Block.prototype.setCSS = function (key, value) {
+    this._css[key] = value;
+    this._container.style[key] = value;
+}
+
+C.Interface.Block.prototype.getX = function () {
+    return (this._x);
+}
+
+C.Interface.Block.prototype.getY = function () {
+    return (this._y);
+}
+
+C.Interface.Block.prototype.isVisible = function () {
+    if (this._css['display'] == 'none') {
+        return (false);
+    }
+    return (true);
+}
 
 C.Interface.Block.prototype.setContent = function (content) {
     this._contentContainer.innerHTML = content;
