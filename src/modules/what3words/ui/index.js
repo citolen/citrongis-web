@@ -167,7 +167,7 @@ function getItinerary(origin, destination, callback) {
                 height: 36,
                 anchorX: 0.5,
                 anchorY: 1,
-                source: '../../src/modules/what3words/assets/marker_start.png',
+                source: 'assets/marker_start.png',
                 scaleMode: C.ImageScaleMode.DEFAULT
             });
             marker_start.load();
@@ -179,7 +179,7 @@ function getItinerary(origin, destination, callback) {
                 height: 36,
                 anchorX: 0.5,
                 anchorY: 1,
-                source: '../../src/modules/what3words/assets/marker_end.png',
+                source: 'assets/marker_end.png',
                 scaleMode: C.ImageScaleMode.DEFAULT
             });
             marker_end.load();

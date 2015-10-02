@@ -20,8 +20,9 @@ C.System.Events = new (C.Utils.Inherit(function () {
     this._lastTime;
 
 
-    this._wheel= 0;
+    this._wheelDelta = 0;
     this._wheelTrigger= 100;
+    this._wheelTimer;
     this._resolutionTarget= 0;
     this._resolutionStep= 0;
     this._wheeldX= 0;
@@ -125,66 +126,80 @@ C.System.Events.animateZoom = function () {
 
 };
 
+C.System.Events.performWheelZoom = function () {
+    console.log(this._wheelDelta);
+    this._wheelDelta = 0;
+}
+
 C.System.Events.wheel = function (evt) {
-    this._wheel += evt.deltaY;
-    if (this._wheel <= -this._wheelTrigger) {
-        this._wheel = 0;
-        var zoomLevel;
-        if (!this._zoomAnimation) {
-            zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._citronGIS._viewport._resolution);
-        } else {
-            zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._resolutionTarget);
-        }
+    this._wheelDelta += evt.deltaY;
 
-        if (zoomLevel + 1 < C.Helpers.ResolutionHelper.Resolutions.length) {
-            zoomLevel = C.Helpers.ResolutionHelper.Resolutions[zoomLevel + 1];
-
-            if (zoomLevel == this._resolutionTarget) {
-                return;
-            }
-
-            var dx = evt.offsetX - this._citronGIS._viewport._width / 2;
-            var dy = evt.offsetY - this._citronGIS._viewport._height / 2;
-
-            this._wheeldX = dx;
-            this._wheeldY = dy;
-
-            this._resolutionTarget = zoomLevel;
-            this._resolutionStep = (this._resolutionTarget - this._citronGIS._viewport._resolution) / this._zoomStep;
-
-            clearTimeout(this._zoomAnimation);
-            setTimeout(C.System.Events.animateZoom.bind(this), this._zoomStepDuration);
-        }
-    } else if (this._wheel >= this._wheelTrigger) {
-        this._wheel = 0;
-        var zoomLevel;
-        if (!this._zoomAnimation) {
-            zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._citronGIS._viewport._resolution);
-        } else {
-            zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._resolutionTarget);
-        }
-
-        if (zoomLevel - 1 >= 0) {
-            zoomLevel = C.Helpers.ResolutionHelper.Resolutions[zoomLevel - 1];
-
-
-            if (zoomLevel == this._resolutionTarget) {
-                return;
-            }
-
-            var dx = evt.offsetX - this._citronGIS._viewport._width / 2;
-            var dy = evt.offsetY - this._citronGIS._viewport._height / 2;
-
-            this._wheeldX = dx;
-            this._wheeldY = dy;
-
-            this._resolutionTarget = zoomLevel;
-            this._resolutionStep = (this._resolutionTarget - this._citronGIS._viewport._resolution) / this._zoomStep;
-
-            clearTimeout(this._zoomAnimation);
-            setTimeout(C.System.Events.animateZoom.bind(this), this._zoomStepDuration);
-        }
+    if (this._wheelTimer) {
+        clearTimeout(this._wheelTimer);
     }
+
+    this._wheelTimer = setTimeout(this.performWheelZoom.bind(this), 100);
+
+//    console.log(evt.deltaY, evt);
+//    this._wheel += evt.deltaY;
+//    if (this._wheel <= -this._wheelTrigger) {
+//        this._wheel = 0;
+//        var zoomLevel;
+//        if (!this._zoomAnimation) {
+//            zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._citronGIS._viewport._resolution);
+//        } else {
+//            zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._resolutionTarget);
+//        }
+//
+//        if (zoomLevel + 1 < C.Helpers.ResolutionHelper.Resolutions.length) {
+//            zoomLevel = C.Helpers.ResolutionHelper.Resolutions[zoomLevel + 1];
+//
+//            if (zoomLevel == this._resolutionTarget) {
+//                return;
+//            }
+//
+//            var dx = evt.offsetX - this._citronGIS._viewport._width / 2;
+//            var dy = evt.offsetY - this._citronGIS._viewport._height / 2;
+//
+//            this._wheeldX = dx;
+//            this._wheeldY = dy;
+//
+//            this._resolutionTarget = zoomLevel;
+//            this._resolutionStep = (this._resolutionTarget - this._citronGIS._viewport._resolution) / this._zoomStep;
+//
+//            clearTimeout(this._zoomAnimation);
+//            setTimeout(C.System.Events.animateZoom.bind(this), this._zoomStepDuration);
+//        }
+//    } else if (this._wheel >= this._wheelTrigger) {
+//        this._wheel = 0;
+//        var zoomLevel;
+//        if (!this._zoomAnimation) {
+//            zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._citronGIS._viewport._resolution);
+//        } else {
+//            zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._resolutionTarget);
+//        }
+//
+//        if (zoomLevel - 1 >= 0) {
+//            zoomLevel = C.Helpers.ResolutionHelper.Resolutions[zoomLevel - 1];
+//
+//
+//            if (zoomLevel == this._resolutionTarget) {
+//                return;
+//            }
+//
+//            var dx = evt.offsetX - this._citronGIS._viewport._width / 2;
+//            var dy = evt.offsetY - this._citronGIS._viewport._height / 2;
+//
+//            this._wheeldX = dx;
+//            this._wheeldY = dy;
+//
+//            this._resolutionTarget = zoomLevel;
+//            this._resolutionStep = (this._resolutionTarget - this._citronGIS._viewport._resolution) / this._zoomStep;
+//
+//            clearTimeout(this._zoomAnimation);
+//            setTimeout(C.System.Events.animateZoom.bind(this), this._zoomStepDuration);
+//        }
+//    }
 };
 //
 C.System.Events.keyDown = function (evt) {
@@ -267,9 +282,15 @@ C.System.Events.stageUp = function (e) {
 };
 
 C.System.Events.stageMove = function (e) {
-    if (!this._isDown) { return; }
+
+    var offset = $(this._citronGIS._rootDiv).offset();
+    e.X = e.pageX - offset.left;
+    e.Y = e.pageY - offset.top;
 
     this.emit('mouseMove', e);
+    if (!this._isDown) { return; }
+
+
     var x = e.clientX || e.touches[0].pageX;
     var y = e.clientY || e.touches[0].pageY;
     var dx = x - this._lastX;

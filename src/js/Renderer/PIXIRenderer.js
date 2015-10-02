@@ -137,7 +137,7 @@ C.Renderer.PIXIRenderer.prototype.renderLine = function (feature, layer) {
 
     'use strict';
 
-    if (feature._locations.length < 2) return;
+    //    if (feature._locations.length < 2) return;
 
     if (feature._locationChanged) {
         feature.__locations = [];
@@ -161,13 +161,15 @@ C.Renderer.PIXIRenderer.prototype.renderLine = function (feature, layer) {
         if (i === 0) {
             origin = pt;
             g.moveTo(0, 0);
+            g.position = new PIXI.Point(origin.X, origin.Y);
             continue;
         }
         g.lineTo(pt.X - origin.X, pt.Y - origin.Y);
     }
-    g.position = new PIXI.Point(origin.X, origin.Y);
     g.endFill();
-    g.currentPath.shape.closed = false;
+    if (g.currentPath) {
+        g.currentPath.shape.closed = false;
+    }
     feature._dirty = false;
 };
 
@@ -180,7 +182,7 @@ C.Renderer.PIXIRenderer.prototype.renderPolygon = function (feature) {
 
     'use strict';
 
-    if (feature._locations.length < 3) return;
+//    if (feature._locations.length < 3) return;
 
     if (feature._locationChanged) {
         feature.__locations = [];
@@ -204,6 +206,7 @@ C.Renderer.PIXIRenderer.prototype.renderPolygon = function (feature) {
         if (i === 0) {
             origin = pt;
             points.push(new PIXI.Point(0, 0));
+            g.position = new PIXI.Point(origin.X, origin.Y);
             continue;
         }
         points.push(new PIXI.Point(pt.X - origin.X, pt.Y - origin.Y));
@@ -211,7 +214,6 @@ C.Renderer.PIXIRenderer.prototype.renderPolygon = function (feature) {
 
     g.drawPolygon(points);
     g.endFill();
-    g.position = new PIXI.Point(origin.X, origin.Y);
     feature._dirty = false;
 };
 

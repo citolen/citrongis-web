@@ -20,6 +20,41 @@ var distanceDot = C.Circle({
     outlineWidth: 3
 });
 
+var infoLine = C.Line({
+    locations: [],
+    lineColor: 0xF2676B,
+    lineWidth: 8,
+    opacity: 0
+});
+
+var InfoPolygon = C.Polygon({
+    locations: [],
+    fillColor: 0xF2676B,
+    outlineWidth: 3,
+    outlineColor: 0xBF4E6C,
+    opacity: 0
+});
+
+var measuredLine = C.Line({
+    locations: [],
+    lineColor: 0xBF4E6C,
+    lineWidth: 8,
+    opacity: 0
+});
+
+var measuredPolygon = C.Polygon({
+    locations: [],
+    fillColor: 0xF2676B,
+    outlineWidth: 3,
+    outlineColor: 0xBF4E6C,
+    opacity: 0
+});
+
+
+InfoPolygon.addTo(baseLayer);
+measuredPolygon.addTo(baseLayer);
+measuredLine.addTo(baseLayer);
+infoLine.addTo(baseLayer);
 distanceDot.addTo(baseLayer);
 
 var measurePoints = [];
@@ -34,7 +69,7 @@ this.onLoaded = function () {
             E.$('#aire i').removeClass('fa-square-o');
             E.$('#distance i').addClass('fa-square-o');
             E.$('#distance i').removeClass('fa-check-square-o');
-            reset();
+            resetStart();
         }
         if (e.currentTarget.id == 'distance' && aire) {
             aire = false;
@@ -42,17 +77,18 @@ this.onLoaded = function () {
             E.$('#aire i').removeClass('fa-check-square-o');
             E.$('#distance i').addClass('fa-check-square-o');
             E.$('#distance i').removeClass('fa-square-o');
-            reset();
+            resetStart();
         }
     });
 
     E.$('.measure').click(function () {
         if (!measuring) {
-            reset();
+            resetStart();
+//            reset();
             E.$('.measure').text('terminer la mesure');
             measuring = true;
         } else {
-            reset()
+//            reset();
             E.$('.measure').text('mesurer');
             measuring = false;
             emptyLayers();
@@ -60,11 +96,12 @@ this.onLoaded = function () {
         setEvent(measuring);
     });
 
-    reset();
+    resetStart();
 };
 
-function reset() {
-    emptyLayers();
+function resetStart() {
+    measuredPolygon.locations([]);
+    measuredLine.locations([]);
     if (aire) {
         E.$('.info').text('0 m²');
     } else {
@@ -77,14 +114,21 @@ function setEvent(toggle) {
         C.Events.on('mapClicked', mapClicked);
         C.Events.on('mouseMove', mouseMove);
         distanceDot.opacity(1);
+        infoLine.opacity(1);
     } else {
         C.Events.off('mapClicked', mapClicked);
         C.Events.off('mouseMove', mouseMove);
         distanceDot.opacity(0);
+        infoLine.opacity(0);
     }
 }
 
 function emptyLayers() {
+
+    InfoPolygon.opacity(0);
+    infoLine.opacity(0);
+
+
     lineLayer.clearLayer();
     for (var i = 0; i < measurePoints.length; ++i) {
         baseLayer.removeFeature(measurePoints[i]);
@@ -103,10 +147,11 @@ function mapClicked(evt) {
     var y = evt.offsetY;
 
     var world = C.Viewport.screenToWorld(x, y);
+    var clickedPoint = C.Point(world.X, world.Y, 0, C.Viewport._schema._crs);
 
     var measurePoint = C.Circle({
         radius: 5,
-        location: C.Point(world.X, world.Y, 0, C.Viewport._schema._crs),
+        location: clickedPoint,
         outlineColor: 0xBF4E6C,
         backgroundColor: 0xffffff,
         outlineWidth: 3
@@ -115,49 +160,62 @@ function mapClicked(evt) {
     measurePoints.push(measurePoint);
     measurePoint.addTo(baseLayer);
 
-    if (measurePoints.length > 1) {
+    //    if (measurePoints.length > 1) {
 
-        if (!aire) {
-            var measureLine = C.Line({
-                locations: [
-                    measurePoints[measurePoints.length-2].location(),
-                    measurePoints[measurePoints.length-1].location()
-                ],
-                lineColor: 0xBF4E6C,
-                lineWidth: 8
-            });
-            var measureLineInner = C.Line({
-                locations: [
-                    measurePoints[measurePoints.length-2].location(),
-                    measurePoints[measurePoints.length-1].location()
-                ],
-                lineColor: 0xffffff,
-                lineWidth: 4
-            });
-
-            measureLines.push(measureLine);
-            measureLines.push(measureLineInner);
-            measureLine.addTo(lineLayer);
-            measureLineInner.addTo(lineLayer);
-        } else if (aire && measurePoints.length > 2) {
-
-            var points = [];
-            for (var i = 0; i < measurePoints.length; ++i) {
-                points.push(measurePoints[i].location());
-            }
-
-            var polygon = C.Polygon({
-                locations: points,
-                fillColor: 0xF2676B,
-                outlineWidth: 3,
-                outlineColor: 0xBF4E6C,
-                opacity: 0.5
-            });
-
-            lineLayer.clearLayer();
-            polygon.addTo(lineLayer);
-        }
+    if (!aire) {
+        measuredLine.opacity(1);
+        measuredPolygon.opacity(0);
+        var locations = measuredLine.locations();
+        locations.push(clickedPoint);
+        measuredLine.locations(locations);
+    } else {
+        measuredLine.opacity(0);
+        measuredPolygon.opacity(0.7);
+        var locations = measuredPolygon.locations();
+        locations.push(clickedPoint);
+        measuredPolygon.locations(locations);
     }
+
+    //            var measureLine = C.Line({
+    //                locations: [
+    //                    measurePoints[measurePoints.length-2].location(),
+    //                    measurePoints[measurePoints.length-1].location()
+    //                ],
+    //                lineColor: 0xBF4E6C,
+    //                lineWidth: 8
+    //            });
+    //            var measureLineInner = C.Line({
+    //                locations: [
+    //                    measurePoints[measurePoints.length-2].location(),
+    //                    measurePoints[measurePoints.length-1].location()
+    //                ],
+    //                lineColor: 0xffffff,
+    //                lineWidth: 4
+    //            });
+    //
+    //            measureLines.push(measureLine);
+    //            measureLines.push(measureLineInner);
+    //            measureLine.addTo(lineLayer);
+    //            measureLineInner.addTo(lineLayer);
+    //        } else if (aire && measurePoints.length > 2) {
+    //
+    //            var points = [];
+    //            for (var i = 0; i < measurePoints.length; ++i) {
+    //                points.push(measurePoints[i].location());
+    //            }
+    //
+    //            var polygon = C.Polygon({
+    //                locations: points,
+    //                fillColor: 0xF2676B,
+    //                outlineWidth: 3,
+    //                outlineColor: 0xBF4E6C,
+    //                opacity: 0.5
+    //            });
+    //
+    //            lineLayer.clearLayer();
+    //            polygon.addTo(lineLayer);
+    //        }
+    //    }
 
     var val;
     var units = ' m';
@@ -182,12 +240,34 @@ function mapClicked(evt) {
 }
 
 function mouseMove(evt) {
-    var x = evt.offsetX;
-    var y = evt.offsetY;
+    var x = evt.X;
+    var y = evt.Y;
 
     var world = C.Viewport.screenToWorld(x, y);
 
-    distanceDot.location(C.Point(world.X, world.Y, 0, C.Viewport._schema._crs));
+    var cursorWorldPosition = C.Point(world.X, world.Y, 0, C.Viewport._schema._crs);
+    distanceDot.location(cursorWorldPosition);
+
+    if (!aire && measurePoints.length > 0) {
+        infoLine.opacity(1);
+        var lastPoint = measurePoints[measurePoints.length-1].location();
+        infoLine.locations([lastPoint, cursorWorldPosition]);
+    } else {
+        infoLine.opacity(0);
+    }
+    if (aire && measurePoints.length > 0) {
+        InfoPolygon.opacity(0.4);
+        var mLocations = measuredPolygon.locations();
+        var iLocations = [];
+        iLocations.push(mLocations[0]);
+        if (mLocations.length > 1) {
+            iLocations.push(mLocations[mLocations.length -1]);
+        }
+        iLocations.push(cursorWorldPosition);
+        InfoPolygon.locations(iLocations);
+    } else {
+        InfoPolygon.opacity(0);
+    }
 }
 
 function distanceBetween2Points(p1, p2) {

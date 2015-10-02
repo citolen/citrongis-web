@@ -76,11 +76,11 @@ C.CitrongGISDebug = function (citronGIS) {
 
     var tilelayers =[
         new C.Layer.Tile.TileLayer({
-            name: 'Google maps',
+            name: 'MB sketchy',
             source: new C.Layer.Tile.Source.TMSSource({
-                url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga'
+                url: 'https://b.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}@2x.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q'
             }),
-            schema: C.Layer.Tile.Schema.SphericalMercator}),
+            schema: C.Layer.Tile.Schema.SphericalMercatorRetina}),
         new C.Layer.Tile.TileLayer({
             name: 'Google satellite',
             source: new C.Layer.Tile.Source.TMSSource({
@@ -107,11 +107,11 @@ C.CitrongGISDebug = function (citronGIS) {
             }),
             schema: C.Layer.Tile.Schema.SphericalMercator}),
         new C.Layer.Tile.TileLayer({
-            name: 'MB sketchy',
+            name: 'Google maps',
             source: new C.Layer.Tile.Source.TMSSource({
-                url: 'https://b.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q'
+                url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga&scale=2'
             }),
-            schema: C.Layer.Tile.Schema.SphericalMercator})
+            schema: C.Layer.Tile.Schema.SphericalMercatorRetina}),
     ];
 
     var layerGroup = citronGIS._layerManager.createGroup(owner, {
@@ -184,7 +184,7 @@ C.CitrongGISDebug = function (citronGIS) {
     f.on('mouseup', function () {
         console.log('up');
     });
-//    f.addTo(layer);
+    //    f.addTo(layer);
     //
     //    layer.addFeature(new C.Geo.Feature.Circle({
     //        location: new C.Geometry.LatLng(33.790271, -118.136604),
@@ -272,11 +272,11 @@ C.CitrongGISDebug = function (citronGIS) {
     }*/
 
     //    debugExtensionLoader(citronGIS, '/src/modules/scale/');
-    //    debugExtensionLoader(citronGIS, '/src/modules/distance/');
+        debugExtensionLoader(citronGIS, '/src/modules/distance/');
     //    debugExtensionLoader(citronGIS, '/src/modules/layer-manager/');
     //        debugExtensionLoader(citronGIS, '/src/modules/velib/');
     //    debugExtensionLoader(citronGIS, '/src/modules/flight/');
-    //            debugExtensionLoader(citronGIS, '/src/modules/what3words/');
+//    debugExtensionLoader(citronGIS, '/src/modules/what3words/');
     //    debugExtensionLoader(citronGIS, '/src/modules/extensionTest/');
-//        debugExtensionLoader(citronGIS, '/src/modules/csv/');
+    //        debugExtensionLoader(citronGIS, '/src/modules/csv/');
 };

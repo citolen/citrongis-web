@@ -40,9 +40,9 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     this._viewport = new C.System.Viewport({
         width: this._renderer.width,
         height: this._renderer.height,
-        resolution: C.Helpers.ResolutionHelper.Resolutions[6],
+        resolution: C.Helpers.ResolutionHelper.Resolutions[1],
         schema: new C.Schema.SphericalMercator(),
-        origin: C.Helpers.CoordinatesHelper.TransformTo(new C.Geometry.LatLng(48.8156, 2.362886), C.Helpers.ProjectionsHelper.EPSG3857),
+        origin: C.Helpers.CoordinatesHelper.TransformTo(new C.Geometry.LatLng(0, 0), C.Helpers.ProjectionsHelper.EPSG3857),
         rotation: 0 * Math.PI / 180
     });
     C.Helpers.viewport = this._viewport;
@@ -71,7 +71,10 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     C.Utils.Event.__initialized();
 
     this._customRenderer = new C.Renderer.PIXIRenderer(this);
-    C.CitrongGISDebug(this);
+
+    $(document).ready(function () {
+        C.CitrongGISDebug(self);
+    });
 
     requestAnimationFrame( animate );
     function animate() {
@@ -118,19 +121,19 @@ C.CitrongGIS.prototype.loadExtension = function (file, citronGIS) {
             extension.run();
         });
 
-//        var e = new C.Extension.Extension(extZip, self._layerManager);
-//        C.Extension.Manager.register(e);
-//
-//        e.module.ui.on('display', function (element) {
-//            var container = document.createElement('DIV');
-//            container.appendChild(element);
-//            container.className = "extension-container";
-//
-//            self._extDiv.appendChild(container);
-//            $(container).draggable({ containment: "#citrongis", scroll: false });
-//        });
-//
-//        e.run();
+        //        var e = new C.Extension.Extension(extZip, self._layerManager);
+        //        C.Extension.Manager.register(e);
+        //
+        //        e.module.ui.on('display', function (element) {
+        //            var container = document.createElement('DIV');
+        //            container.appendChild(element);
+        //            container.className = "extension-container";
+        //
+        //            self._extDiv.appendChild(container);
+        //            $(container).draggable({ containment: "#citrongis", scroll: false });
+        //        });
+        //
+        //        e.run();
     };
 
     reader.readAsArrayBuffer(file);

@@ -22,7 +22,7 @@ C.Interface.prototype.init = function (root) {
 
     var blocktest = new C.Interface.ButtonBlock({
         x: 1,
-        y: 0,
+        y: 1,
         width: 1,
         height: 1,
         float: C.Interface.BlockFloat.topLeft,
@@ -35,7 +35,7 @@ C.Interface.prototype.init = function (root) {
     this._grid.addBlock(blocktest);
     var blocktest1 = new C.Interface.ButtonBlock({
         x: 1,
-        y: 1,
+        y: 2,
         width: 1,
         height: 1,
         float: C.Interface.BlockFloat.topLeft,

@@ -55,6 +55,7 @@ var files = [
     'citrongis-core/src/layer/tile/TileIndex.js',
     'citrongis-core/src/layer/tile/TileSchema.js',
     'citrongis-core/src/layer/tile/schema/SphericalMercator.js',
+    'citrongis-core/src/layer/tile/schema/SphericalMercatorRetina.js',
     'citrongis-core/src/layer/tile/source/TileSource.js',
     'citrongis-core/src/layer/tile/source/TMSSource.js',
     'citrongis-core/src/layer/tile/TileLayer.js',
