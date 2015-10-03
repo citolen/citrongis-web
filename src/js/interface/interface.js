@@ -128,16 +128,30 @@ C.Interface.prototype.init = function (root) {
     });
     this._grid.addBlock(windowUserLogin);
 
+    var windowStore = new C.Interface.WindowBlock({
+        x: blockStore.getX(),
+        y: blockStore.getY() + 1,
+        width: 20,
+        height: 20,
+        float: C.Interface.BlockFloat.topLeft,
+        content: '<store-citrongis></store-citrongis>',
+        css: {
+            borderRadius: '4px 4px 4px 4px',
+            borderBottom: 'solid 5px #2ecc71',
+            fontWeight: 'bold',
+            boxShadow: 'none',
+            display: 'none'
+        }
+    });
+    this._grid.addBlock(windowStore);
+
     blocktest.on('click', function () {
         C.System.Events.zoomInWithAnimation();
     });
     blocktest1.on('click', function () {
         C.System.Events.zoomOutWithAnimation();
     });
-
-    blocklogIn.on('click', function() {
-        var visible;
-
+    blocklogIn.on('click', function () {
         if (windowUserLogin.isVisible() == false) {
             windowUserLogin.setCSS('display', 'block');
 
@@ -153,6 +167,16 @@ C.Interface.prototype.init = function (root) {
         else {
             blocklogIn.setCSS('backgroundColor', '');
             windowUserLogin.setCSS('display', 'none');
+        }
+    });
+    blockStore.on('click', function () {
+        if (windowStore.isVisible() == false) {
+            blockStore.setCSS('backgroundColor', '2ecc71');
+            windowStore.setCSS('display', 'block');
+        }
+        else {
+            blockStore.setCSS('backgroundColor', '');
+            windowStore.setCSS('display', 'none');
         }
     });
 };
