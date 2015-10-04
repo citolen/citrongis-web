@@ -137,7 +137,6 @@ function hideSections(sectionHide, selected) {
                         <div class="card-panel" style="background-color: #2ecc71; color: #ffffff;"><h5>Classement</h5></div>
                     </div>
                 </div>
-
                 <div class="row" style="height: 76%; overflow: scroll; margin-bottom: 2px;">
                     <div class="col s10 m10 l10 offset-s1 offset-m1 offset-l1">
                         <table class="highlight">
@@ -267,8 +266,6 @@ function hideSections(sectionHide, selected) {
                         <div class="card-panel" style="background-color: #2ecc71; color: #ffffff;"><h5>Recherche</h5></div>
                     </div>
                 </div>
-
-
                 <div class="row" style="margin-bottom: 0px; font-size: 14px;">
                     <div class="col s1 m1 l1" style="margin-top: 5px;">
                         <i class="material-icons">search</i>
@@ -277,17 +274,74 @@ function hideSections(sectionHide, selected) {
                         <input id="search" placeholder="Rechercher" type="text" style="font-size: 14px;">
                     </div>
                 </div>
-                <div class="row" style="margin-bottom: 19px;">
-                    <div class="col s12 m12 l12" style="height: 62%">
+                <div class="row" style="height: 62%; margin-bottom: 19px;  overflow: scroll;">
+                    <div class="col s12 m12 l12">
 
                     </div>
                 </div>
             </div>
-
-
-
-
-            <div id="update-panel" hidden>update</div>
+            <div id="update-panel" hidden>
+                <div class="row" style="margin-bottom: 0px;">
+                    <div class="col s12 m12 l12 center-align">
+                        <div class="card-panel" style="background-color: #2ecc71; color: #ffffff;"><h5>Mise à jour</h5></div>
+                    </div>
+                </div>
+                <div class="row" style="height: 76%; overflow: scroll; margin-bottom: 2px;">
+                    <div class="col s10 m10 l10 offset-s2 offset-m2 offset-l2">
+                        <table class="highlight">
+                            <tbody>
+                                <tr>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Location@58w.png"/></td>
+                                    <td>Location App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Mettre à jour</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Money@58w.png"/></td>
+                                    <td>Money App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Mettre à jour</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Payments@58w.png"/></td>
+                                    <td>Payments App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Mettre à jour</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Ring@58w.png"/></td>
+                                    <td>Ring App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Mettre à jour</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Ring@58w.png"/></td>
+                                    <td>Ring App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Mettre à jour</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Ring@58w.png"/></td>
+                                    <td>Ring App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Mettre à jour</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Ring@58w.png"/></td>
+                                    <td>Ring App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Mettre à jour</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Ring@58w.png"/></td>
+                                    <td>Ring App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Mettre à jour</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Ring@58w.png"/></td>
+                                    <td>Ring App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Mettre à jour</a></td>
+                                </tr>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
             <footer>
                 <div class="col s12" id="tabs-citrongis" style="background-color : #f2f4f4; padding-top:5px;">
                     <ul class="tabs" style="background-color : #f2f4f4;">
@@ -326,27 +380,26 @@ function hideSections(sectionHide, selected) {
             </footer>
         </div>
     </template>
-  <script>
-    Polymer({
-        is : 'store-citrongis',
-        ready : function () {
-        },
-        handleClickSelection: function() {
-            hideSections(["#ranking-panel","#location-panel","#search-panel", "#update-panel"], "#selection-panel");
-        },
-        handleClickRank: function() {
-            hideSections(["#selection-panel","#location-panel","#search-panel", "#update-panel"], "#ranking-panel");
-        },
-        handleClickLocation: function() {
-            hideSections(["#selection-panel","#ranking-panel","#search-panel", "#update-panel"], "#location-panel");
-        },
-        handleClickSearch: function() {
-           hideSections(["#selection-panel","#ranking-panel","#location-panel", "#update-panel"], "#search-panel");
-        },
-        handleClickUpdate: function() {
-           hideSections(["#selection-panel","#ranking-panel","#search-panel", "#location-panel"], "#update-panel");
-        },
-
-    });
-  </script>
+    <script>
+        Polymer({
+            is : 'store-citrongis',
+            ready : function () {
+            },
+            handleClickSelection: function() {
+                hideSections(["#ranking-panel","#location-panel","#search-panel", "#update-panel"], "#selection-panel");
+            },
+            handleClickRank: function() {
+                hideSections(["#selection-panel","#location-panel","#search-panel", "#update-panel"], "#ranking-panel");
+            },
+            handleClickLocation: function() {
+                hideSections(["#selection-panel","#ranking-panel","#search-panel", "#update-panel"], "#location-panel");
+            },
+            handleClickSearch: function() {
+               hideSections(["#selection-panel","#ranking-panel","#location-panel", "#update-panel"], "#search-panel");
+            },
+            handleClickUpdate: function() {
+               hideSections(["#selection-panel","#ranking-panel","#search-panel", "#location-panel"], "#update-panel");
+            },
+        });
+    </script>
 </dom-module>
