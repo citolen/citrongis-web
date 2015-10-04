@@ -23,6 +23,16 @@
     ul a:hover {
         font-style: italic;
     }
+
+    .materialize-noconflict input[type=text]:focus:not([readonly]) + label {
+        color: #2ecc71;
+    }
+
+    .materialize-noconflict input[type=text]:focus:not([readonly]) {
+        border-bottom: 1px solid #2ecc71;
+        box-shadow: 0 1px 0 0 #2ecc71;
+    }
+
 </style>
 
 <script>
@@ -191,18 +201,12 @@ function hideSections(sectionHide, selected) {
                     </div>
                 </div>
             </div>
-
-
-
-
-
             <div id="location-panel" hidden>
                 <div class="row" style="margin-bottom: 0px;">
                     <div class="col s12 m12 l12 center-align">
                         <div class="card-panel" style="background-color: #2ecc71; color: #ffffff;"><h5>À proximité</h5></div>
                     </div>
                 </div>
-
                 <div class="row" style="height: 73%; overflow: scroll">
                     <div class="col s10 m10 l10 offset-s2 offset-m2 offset-l2">
                         <table class="highlight">
@@ -256,9 +260,33 @@ function hideSections(sectionHide, selected) {
                         </table>
                     </div>
                 </div>
-
             </div>
-            <div id="search-panel" hidden>search</div>
+            <div id="search-panel" hidden>
+                <div class="row" style="margin-bottom: 20px;">
+                    <div class="col s12 m12 l12 center-align">
+                        <div class="card-panel" style="background-color: #2ecc71; color: #ffffff;"><h5>Recherche</h5></div>
+                    </div>
+                </div>
+
+
+                <div class="row" style="margin-bottom: 0px; font-size: 14px;">
+                    <div class="col s1 m1 l1" style="margin-top: 5px;">
+                        <i class="material-icons">search</i>
+                    </div>
+                    <div class="input-field col s11 m11 l11" style="margin-top: 0px;">
+                        <input id="search" placeholder="Rechercher" type="text" style="font-size: 14px;">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 m12 l12" style="height: 62%">
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
             <div id="update-panel" hidden>update</div>
             <footer>
                 <div class="col s12" id="tabs-citrongis" style="background-color : #f2f4f4; padding-top:5px;">
