@@ -112,6 +112,14 @@ C.CitrongGISDebug = function (citronGIS) {
                 url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga&scale=2'
             }),
             schema: C.Layer.Tile.Schema.SphericalMercatorRetina}),
+//        new C.Layer.Tile.TileLayer({
+//            name: 'Open Weather Map',
+//            source: new C.Layer.Tile.Source.TMSSource({
+//                url: 'http://undefined.tile.openweathermap.org/map/pressure_cntr/{z}/{x}/{y}.png'
+//            }),
+//            schema: C.Layer.Tile.Schema.SphericalMercator}),
+
+
     ];
 
     var layerGroup = citronGIS._layerManager.createGroup(owner, {

@@ -7,17 +7,13 @@ var directionAPI = 'https://maps.googleapis.com/maps/api/directions/json?key=' +
 var lang = 'en';
 var currentWords = [];
 
-var group = C.LayerGroup({
-    name: 'what3words'
-});
-
 var baseLayer = C.Layer();
 var pointerLayer = C.Layer();
 var lines = [];
 var points = [];
 
-baseLayer.addTo(group);
-pointerLayer.addTo(group);
+baseLayer.addTo(E.map);
+pointerLayer.addTo(E.map);
 
 var marker = C.Image({
     location: C.Viewport._origin,

@@ -1,8 +1,7 @@
 var self = this;
 
-self._group = C.LayerGroup({name: 'csv_data'});
 self._csvLayer = C.Layer();
-self._csvLayer.addTo(self._group);
+self._csvLayer.addTo(E.map);
 
 function processCSV(csv) {
     var data = self.Papa.parse(csv.target.result, {
