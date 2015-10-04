@@ -10,7 +10,7 @@
     margin-right: 10px;
 }
 
-.measure {
+.edit, .measure {
     background-color: #EF4836;
     font-family: 'nexa-light';
     color: white;
@@ -18,6 +18,13 @@
     text-align: center;
     padding: 6px 10px;
     cursor: pointer;
+    margin-top: 1px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .info {
