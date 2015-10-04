@@ -72,7 +72,7 @@ function hideSections(sectionHide, selected) {
                         <h5>Top classement</h5>
                     </div>
                     <div class="col s2 m2 l2">
-                        <a class="btn" style="background-color: #2ecc71; text-transform: none;">Tout</a>
+                        <a class="btn" style="background-color: #2ecc71; text-transform: none;" on-click="handleClickRank">Tout</a>
                     </div>
                 </div>
                 <div class="row" style="margin-bottom: 10px;">
@@ -121,8 +121,143 @@ function hideSections(sectionHide, selected) {
 
                 </div>
             </div>
-            <div id="ranking-panel" hidden>rank</div>
-            <div id="location-panel" hidden>location</div>
+            <div id="ranking-panel" hidden>
+                <div class="row" style="margin-bottom: 0px;">
+                    <div class="col s12 m12 l12 center-align">
+                        <div class="card-panel" style="background-color: #2ecc71; color: #ffffff;"><h5>Classement</h5></div>
+                    </div>
+                </div>
+
+                <div class="row" style="height: 73%; overflow: scroll">
+                    <div class="col s10 m10 l10 offset-s1 offset-m1 offset-l1">
+                        <table class="highlight">
+                            <tbody>
+                                <tr>
+                                    <td># 1</td>
+                                    <td><img src="../../src/css/img/icons_extensions/Location@58w.png"/></td>
+                                    <td>Location App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Gratuit</a></td>
+                                </tr>
+                                <tr>
+                                    <td># 2</td>
+                                    <td><img src="../../src/css/img/icons_extensions/Money@58w.png"/></td>
+                                    <td>Money App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Gratuit</a></td>
+                                </tr>
+                                <tr>
+                                    <td># 3</td>
+                                    <td><img src="../../src/css/img/icons_extensions/Payments@58w.png"/></td>
+                                    <td>Payments App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Gratuit</a></td>
+                                </tr>
+                                <tr>
+                                    <td># 4</td>
+                                    <td><img src="../../src/css/img/icons_extensions/Ring@58w.png"/></td>
+                                    <td>Ring App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Gratuit</a></td>
+                                </tr>
+                                <tr>
+                                    <td># 5</td>
+                                    <td><img src="../../src/css/img/icons_extensions/Ring@58w.png"/></td>
+                                    <td>Ring App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Gratuit</a></td>
+                                </tr>
+                                <tr>
+                                    <td># 6</td>
+                                    <td><img src="../../src/css/img/icons_extensions/Ring@58w.png"/></td>
+                                    <td>Ring App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Gratuit</a></td>
+                                </tr>
+                                <tr>
+                                    <td># 7</td>
+                                    <td><img src="../../src/css/img/icons_extensions/Ring@58w.png"/></td>
+                                    <td>Ring App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Gratuit</a></td>
+                                </tr>
+                                <tr>
+                                    <td># 8</td>
+                                    <td><img src="../../src/css/img/icons_extensions/Ring@58w.png"/></td>
+                                    <td>Ring App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Gratuit</a></td>
+                                </tr>
+                                <tr>
+                                    <td># 9</td>
+                                    <td><img src="../../src/css/img/icons_extensions/Ring@58w.png"/></td>
+                                    <td>Ring App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Gratuit</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <div id="location-panel" hidden>
+                <div class="row" style="margin-bottom: 0px;">
+                    <div class="col s12 m12 l12 center-align">
+                        <div class="card-panel" style="background-color: #2ecc71; color: #ffffff;"><h5>À proximité</h5></div>
+                    </div>
+                </div>
+
+                <div class="row" style="height: 73%; overflow: scroll">
+                    <div class="col s10 m10 l10 offset-s2 offset-m2 offset-l2">
+                        <table class="highlight">
+                            <tbody>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Location@58w.png"/></td>
+                                    <td>Location App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Gratuit</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Money@58w.png"/></td>
+                                    <td>Money App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Gratuit</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Payments@58w.png"/></td>
+                                    <td>Payments App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Gratuit</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Ring@58w.png"/></td>
+                                    <td>Ring App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Gratuit</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Ring@58w.png"/></td>
+                                    <td>Ring App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Gratuit</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Ring@58w.png"/></td>
+                                    <td>Ring App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Gratuit</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Ring@58w.png"/></td>
+                                    <td>Ring App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Gratuit</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Ring@58w.png"/></td>
+                                    <td>Ring App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Gratuit</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Ring@58w.png"/></td>
+                                    <td>Ring App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71 ">Gratuit</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
             <div id="search-panel" hidden>search</div>
             <div id="update-panel" hidden>update</div>
             <footer>
@@ -143,7 +278,7 @@ function hideSections(sectionHide, selected) {
                         <li class="tab col s2" style="margin-left: 4%;" on-click="handleClickLocation">
                             <a style="text-decoration: none;">
                                 <img class="responsive-img" src="../../src/css/img/store_location.png" style="margin-left: auto; margin-right: auto; height: 25px;"/>
-                                <div style="height: 50%; transform: translateY(-15px); text-transform: none; color:#7e8b8d;">A proximité</div>
+                                <div style="height: 50%; transform: translateY(-15px); text-transform: none; color:#7e8b8d;">À proximité</div>
                             </a>
                         </li>
                         <li class="tab col s2" style="margin-left: 4%;" on-click="handleClickSearch">
