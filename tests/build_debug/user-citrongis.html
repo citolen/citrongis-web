@@ -13,23 +13,28 @@
 
     .materialize-noconflict input[type=password]:focus:not([readonly]) + label, .materialize-noconflict input[type=email]:focus:not([readonly]) + label {
         color: #3498db;
+        font-size: 14px;
     }
 
     .materialize-noconflict input[type=password]:focus:not([readonly]), .materialize-noconflict input[type=email]:focus:not([readonly]) {
         border-bottom: 1px solid #3498db;
         box-shadow: 0 1px 0 0 #3498db;
+        font-size: 14px;
     }
 
     .materialize-noconflict .switch label input[type=checkbox]:checked + .lever {
         background-color: #7cc5f4;
+        font-size: 14px;
     }
 
     .materialize-noconflict .switch label input[type=checkbox]:checked + .lever:after {
         background-color: #3498db;
+        font-size: 14px;
     }
 
     .materialize-noconflict input[type=checkbox]:checked:not(:disabled) ~ .lever:active:after {
         box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px rgba(124, 197, 244, 0.1);
+        font-size: 14px;
     }
 
 </style>
@@ -37,7 +42,7 @@
 <dom-module id="user-citrongis">
     <template>
         <div class="materialize-noconflict" style="width: 100%; height: 100%; overflow-y: scroll; font-family: 'nexa-light';">
-            <div class="row" style="margin-bottom: 0px;">
+            <div class="row" style="margin-bottom: 10px;">
                 <div class="col s12 m12 l12 center-align">
                     <div class="card-panel" style="background-color: #3498db; color: #ffffff;"><h5>Sign In</h5></div>
                 </div>
@@ -47,20 +52,20 @@
                     <div class="row" style="margin-bottom: 0px;">
                         <div class="input-field col s12 m12 l12">
                             <input id="email" type="email">
-                            <label for="email">Email</label>
+                            <label for="email" style="font-size: 14px;">Email</label>
                         </div>
                     </div>
                     <div class="row" style="margin-bottom: 0px;">
                         <div class="input-field col s12 m12 l12">
                             <input id="password" type="password">
-                            <label for="password">Password</label>
+                            <label for="password" style="font-size: 14px;">Password</label>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" style="padding-top: 30px;">
                         <div class="switch col s12 m12 l12 center-align">
                             <label>
                                 <input id="remember" type="checkbox">
-                                <span class="lever"></span><span>Remember me</span>
+                                <span class="lever"></span><span style="font-size: 14px;">Remember me</span>
                             </label>
                         </div>
                     </div>

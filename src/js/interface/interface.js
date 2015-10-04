@@ -114,8 +114,8 @@ C.Interface.prototype.init = function (root) {
     var windowUserLogin = new C.Interface.WindowBlock({
         x: blocklogIn.getX(),
         y: blocklogIn.getY() + 1,
-        width: 10,
-        height: 14,
+        width: 15,
+        height: 15,
         float: C.Interface.BlockFloat.topLeft,
         content: '',
         css: {
