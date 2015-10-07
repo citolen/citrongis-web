@@ -71,6 +71,7 @@
                     </form>
                 </div>
             </div>
+
             <div id="sign-up" hidden>
                 <div class="row" style="margin-bottom: 10px;">
                     <div class="col s12 m12 l12 center-align">
@@ -81,27 +82,29 @@
                         <form class="col s12 m12 l12">
                             <div class="row">
                                 <div class="input-field col s12 m12 l12">
-                                    <input id="email-sign-up" type="email" class="validate">
-                                    <label id="label-email-sign-up" for="email-sign-up">Email</label>
+                                    <input id="email-sign-up" type="email">
+                                    <label id="label-email-sign-up" for="email-sign-up" style="font-size: 14px;">Email</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12 m12 l12">
-                                    <input id="password-sign-up" type="password" class="validate">
-                                    <label id="label-password-sign-up" for="password-sign-up">Password</label>
+                                    <input id="password-sign-up" type="password">
+                                    <label id="label-password-sign-up" for="password-sign-up" style="font-size: 14px;">Password</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12 m12 l12">
-                                    <input type="checkbox" id="cg-checkbox"/>
-                                    <label for="cg-checkbox">I accept the <a class="modal-trigger" href="#cg-modal">general conditions</a></label>
+                                    <input id="password-sign-up-again" type="password">
+                                    <label id="label-password-sign-up-again" for="password-sign-up" style="font-size: 14px;">Password Again</label>
                                 </div>
                             </div>
-                            <div class="row padding-top-20">
-                                <a id="sign-up-send" class="btn waves-effect waves-light col s12 m10 l6 offset-m1 offset-l3 bg-green-blue dark-blue">Sign Up <span  class="material-icons vertical-align padding-left-10 hide-on-small-only">send</span></a>
+                            <div class="row" stype="margin-top: 20px;">
+                                <a id="sign-up-send" class="btn col s12 m10 l6 offset-m1 offset-l3" style="background-color: #3498db">Sign Up</a>
+                            </div>
+                            <div class="row" style="margin-bottom: 10px;">
+                                <a on-click="handleClickBack">Sign In</a>
                             </div>
                     </form>
-
             </div>
     </template>
   <script>
@@ -136,9 +139,13 @@
             }
 
         },
-        handleClickSignUp : function () {
+        handleClickSignUp: function () {
             $('#sign-in').hide();
             $('#sign-up').show();
+        },
+        handleClickBack: function () {
+            $('#sign-in').show();
+            $('#sign-up').hide();
         }
     });
   </script>
