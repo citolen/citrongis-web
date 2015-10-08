@@ -218,12 +218,12 @@ C.System.Events.keyDown = function (evt) {
         evt.keyCode == 109)/* '-' key */ {
         this.zoomOutWithAnimation();
     }
-    //    if (evt.keyCode == 106) {
-    //        this._citronGIS._viewport.rotate(-5);
-    //    }
-    //    if (evt.keyCode == 111) {
-    //        this._citronGIS._viewport.rotate(5);
-    //    }
+        if (evt.keyCode == 106) {
+            this._citronGIS._viewport.rotate(-5);
+        }
+        if (evt.keyCode == 111) {
+            this._citronGIS._viewport.rotate(5);
+        }
     //    if (evt.keyCode == 107) {
     //        /*var zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._citronGIS._viewport._resolution);
     //        zoomLevel = C.Helpers.ResolutionHelper.Resolutions[zoomLevel + 2]*1*/

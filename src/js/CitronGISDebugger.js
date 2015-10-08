@@ -41,12 +41,17 @@ function debugExtensionLoader(citronGIS, baseUrl) {
 C.CitrongGISDebug = function (citronGIS) {
     console.log('--Debugger--');
 
-    var owner = {};
+    var layer = new C.Geo.Layer();
 
-    var layer = new C.Geo.Layer({
-        name: 'Vector Layer',
-        owner: owner
-    });
+    citronGIS._layerManager.addLayer(layer);
+
+
+    //    var owner = {};
+
+    //    var layer = new C.Geo.Layer({
+    //        name: 'Vector Layer',
+    //        owner: owner
+    //    });
 
     //    var test = new C.Layer.Tile.TileIndex.fromXYZ(10, 5, 2);
     //    //    console.log('BID', test);
@@ -112,32 +117,32 @@ C.CitrongGISDebug = function (citronGIS) {
                 url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga&scale=2'
             }),
             schema: C.Layer.Tile.Schema.SphericalMercatorRetina}),
-//        new C.Layer.Tile.TileLayer({
-//            name: 'Open Weather Map',
-//            source: new C.Layer.Tile.Source.TMSSource({
-//                url: 'http://undefined.tile.openweathermap.org/map/pressure_cntr/{z}/{x}/{y}.png'
-//            }),
-//            schema: C.Layer.Tile.Schema.SphericalMercator}),
+        //        new C.Layer.Tile.TileLayer({
+        //            name: 'Open Weather Map',
+        //            source: new C.Layer.Tile.Source.TMSSource({
+        //                url: 'http://undefined.tile.openweathermap.org/map/pressure_cntr/{z}/{x}/{y}.png'
+        //            }),
+        //            schema: C.Layer.Tile.Schema.SphericalMercator}),
 
 
     ];
-
-    var layerGroup = citronGIS._layerManager.createGroup(owner, {
-        name: 'Simple Group'
-    });
-
+    //
+    //    var layerGroup = citronGIS._layerManager.createGroup(owner, {
+    //        name: 'Simple Group'
+    //    });
+    //
     $('#select_tilelayer_drop').on('change', function (e) {
         var optionSelected = $("option:selected", this);
         var valueSelected = parseInt(this.value);
 
         for (var i = 0; i < tilelayers.length; ++i) {
-            layerGroup.removeLayer(tilelayers[i]);
+            layer.remove(tilelayers[i]);
         }
-        layerGroup.addLayer(tilelayers[valueSelected]);
+        layer.add(tilelayers[valueSelected]);
     });
 
-    tilelayers[0].addTo(layerGroup);
-    layer.addTo(layerGroup);
+    tilelayers[0].addTo(layer);
+    //        layer.addTo(layerGroup);
 
 
 
@@ -182,16 +187,16 @@ C.CitrongGISDebug = function (citronGIS) {
     //        outlineWidth: 5
     //    }));
     //
-    var f = new C.Geo.Feature.Circle({
-        location: new C.Geometry.LatLng(48.8156, 2.362886),
-        radius: 10
-    });
-    f.on('mousedown', function (f, e) {
-        e.data.originalEvent.stopPropagation();
-    });
-    f.on('mouseup', function () {
-        console.log('up');
-    });
+    //    var f = new C.Geo.Feature.Circle({
+    //        location: new C.Geometry.LatLng(48.8156, 2.362886),
+    //        radius: 10
+    //    });
+    //    f.on('mousedown', function (f, e) {
+    //        e.data.originalEvent.stopPropagation();
+    //    });
+    //    f.on('mouseup', function () {
+    //        console.log('up');
+    //    });
     //    f.addTo(layer);
     //
     //    layer.addFeature(new C.Geo.Feature.Circle({
@@ -279,12 +284,12 @@ C.CitrongGISDebug = function (citronGIS) {
         }
     }*/
 
-    //    debugExtensionLoader(citronGIS, '/src/modules/scale/');
-        debugExtensionLoader(citronGIS, '/src/modules/distance/');
+//    debugExtensionLoader(citronGIS, '/src/modules/scale/');
+//    debugExtensionLoader(citronGIS, '/src/modules/distance/');
     //    debugExtensionLoader(citronGIS, '/src/modules/layer-manager/');
-    //        debugExtensionLoader(citronGIS, '/src/modules/velib/');
+    //    debugExtensionLoader(citronGIS, '/src/modules/velib/');
     //    debugExtensionLoader(citronGIS, '/src/modules/flight/');
-//    debugExtensionLoader(citronGIS, '/src/modules/what3words/');
+//        debugExtensionLoader(citronGIS, '/src/modules/what3words/');
     //    debugExtensionLoader(citronGIS, '/src/modules/extensionTest/');
-    //        debugExtensionLoader(citronGIS, '/src/modules/csv/');
+            debugExtensionLoader(citronGIS, '/src/modules/csv/');
 };

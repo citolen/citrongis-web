@@ -1,14 +1,9 @@
 var contracts = {};
 var farContracts = {};
 
-var group = C.LayerGroup({
-    name: 'Velib'
-});
-
 var baseLayer = C.Layer();
 
-baseLayer.addTo(group);
-//group.addLayer(farLayer);
+baseLayer.addTo(E.map);
 
 var createReference = function (context, func) {
     return function () { return func.call(context); }
@@ -22,7 +17,6 @@ function removeContract(contract) {
     for (var i = 0; i < currentContract.length; ++i) {
         baseLayer.removeFeature(currentContract[i]["station"]);
     }
-//    farLayer.removeFeature(farContracts[contract]);
 }
 
 function timeConverter(UNIX_timestamp){
@@ -55,28 +49,12 @@ function loadContract(contract) {
         for (var i = 0; i < currentContract.length; ++i) {
             baseLayer.addFeature(currentContract[i]["station"]);
         }
-//        farLayer.addFeature(farContracts[contract]);
     } else {
         contracts[contract] = [];
         var oldContract = contract;
         var currentContract = contracts[contract];
         var contract = JSON.parse(req.responseText);
         for (var i = 0; i < contract.length; ++i) {
-
-            if (i == 0) {
-//                farContracts[oldContract] = new C.Geo.Feature.Image({
-//                    location: new C.Geometry.LatLng(contract[i]["position"]["lat"], contract[i]["position"]["lng"]),
-//                    source:"https://mt0.google.com/vt/icon/name=icons/spotlight/spotlight-poi.png&scale=4",
-//                    anchorY:1,
-//                    anchorX:0.5,
-//                    width:44,
-//                    height:80,
-//                    opacity:1,
-//                    scaleMode: (C.Utils.Comparison.Equals(C.Viewport._rotation, 0)) ? C.Geo.Feature.Image.ScaleMode.NEAREST : C.Geo.Feature.Image.ScaleMode.DEFAULT
-//                });
-//                farContracts[oldContract].load();
-//                farLayer.addFeature(farContracts[oldContract]);
-            }
 
             var station = C.Image({
                 location: C.LatLng(contract[i]["position"]["lat"], contract[i]["position"]["lng"]),
@@ -89,15 +67,9 @@ function loadContract(contract) {
 
             station.load();
 
-            //            var station = new C.Geo.Feature.Circle({
-            //                location: new C.Geometry.LatLng(contract[i]["position"]["lat"], contract[i]["position"]["lng"]),
-            //                radius: 5,
-            //                backgroundColor: 0xffffff
-            //            });
-
             station.set("number", contract[i]["number"]);
             station.set("contract", contract[i]["contract_name"]);
-            baseLayer.addFeature(station);
+            station.addTo(baseLayer);
 
             station.on("click", function(feature, event) {
 
@@ -134,7 +106,7 @@ function loadContracts() {
     }
 }
 
-this.onLoaded = function() {
+E.onload(function() {
     loadContracts();
     $('.velib-ui-cat').on('click', function (e) {
         if (!$(this).find('i').hasClass('fa-check-square-o')) {
@@ -147,56 +119,6 @@ this.onLoaded = function() {
             removeContract($(this).children('span').text());
         }
     });
-
-    var previousRes = C.Viewport._resolution;
-
-    //    C.Viewport.on('resolutionChange', function () {
-    //		if (C.Viewport._resolution > 5 && previousRes <= 5)
-    //			for (var j = baseLayer._features.length - 1; j >= 0; --j) {
-    //				console.log(baseLayer._features[j])
-    //
-    //				baseLayer._features[j]._width = 22;
-    //				baseLayer._features[j]._height = 40;
-    //				baseLayer._features[j].load();
-    //			}
-    //
-    //		else if (C.Viewport._resolution < 20 && previousRes >= 20)
-    //			for (var j = baseLayer._features.length - 1; j >= 0; --j) {
-    //				console.log(baseLayer._features[j])
-    //
-    //				baseLayer._features[j]._width = 22;
-    //				baseLayer._features[j]._height = 40;
-    //				baseLayer._features[j].load();
-    //			}
-    //
-    //		else if (C.Viewport._resolution < 5 && previousRes >= 5)
-    //			for (var j = baseLayer._features.length - 1; j >= 0; --j) {
-    //				console.log(baseLayer._features[j])
-    //
-    //				baseLayer._features[j]._width = 44;
-    //				baseLayer._features[j]._height = 80;
-    //				baseLayer._features[j].load();
-    //			}
-    //
-    //		else if (C.Viewport._resolution > 20 && previousRes <= 20)
-    //			for (var j = baseLayer._features.length - 1; j >= 0; --j) {
-    //				console.log(baseLayer._features[j])
-    //
-    //				baseLayer._features[j]._width = 11;
-    //				baseLayer._features[j]._height = 20;
-    //				baseLayer._features[j].load();
-    //			}
-    //
-    //		if (C.Viewport._resolution > 100 && previousRes <= 100) {
-    //			baseLayer.opacity(0);
-    //			farLayer.opacity(1);
-    //		} else if (C.Viewport._resolution < 100 && previousRes >= 100){
-    //			baseLayer.opacity(1);
-    //			farLayer.opacity(0);
-    //		}
-    //
-    //		previousRes = C.Viewport._resolution;
-    //	});
-};
+});
 
 E.Display('ui/index.tmpl');

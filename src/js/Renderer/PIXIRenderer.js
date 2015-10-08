@@ -36,6 +36,15 @@ C.Renderer.PIXIRenderer.prototype.featureChange = function (eventType, feature, 
         case C.Geo.Feature.Feature.EventType.UPDATED:
             this.featureUpdated(feature, layer);
             break;
+        case C.Geo.Feature.Feature.EventType.MOVED:
+            this.featureMoved(feature, layer);
+            break;
+    }
+};
+
+C.Renderer.PIXIRenderer.prototype.featureMoved = function (moveInfo, layer) {
+    if (layer.__graphics && moveInfo.feature.__graphics) {
+        layer.__graphics.setChildIndex(moveInfo.feature.__graphics, moveInfo.toIdx);
     }
 };
 
@@ -182,7 +191,7 @@ C.Renderer.PIXIRenderer.prototype.renderPolygon = function (feature) {
 
     'use strict';
 
-//    if (feature._locations.length < 3) return;
+    //    if (feature._locations.length < 3) return;
 
     if (feature._locationChanged) {
         feature.__locations = [];
@@ -386,14 +395,25 @@ C.Renderer.PIXIRenderer.prototype.layerAdded = function (layer) {
 
     layer.__graphics = new PIXI.Container();
     layer.__graphics.interactive = true;
-    layer._group.__graphics.addChild(layer.__graphics);
+
+    if (layer._parent && layer._parent.__graphics) {
+        layer._parent.__graphics.addChild(layer.__graphics);
+    } else if (layer._parent === null) {
+        this._stage.addChild(layer.__graphics);
+    }
+    //    layer._group.__graphics.addChild(layer.__graphics);
     //layer.__graphics.cacheAsBitmap = true;
 };
 
 C.Renderer.PIXIRenderer.prototype.layerRemoved = function (layer) {
 
     'use strict';
-    layer._group.__graphics.removeChild(layer.__graphics);
+
+    if (layer._parent && layer._parent.__graphics) {
+        layer._parent.__graphics.removeChild(layer.__graphics);
+    } else {
+        this._stage.removeChild(layer.__graphics);
+    }
 };
 
 C.Renderer.PIXIRenderer.prototype.layerUpdated = function (layer) {
@@ -416,41 +436,41 @@ C.Renderer.PIXIRenderer.prototype.layerMoved = function (layer) {
 //////////////////////
 //  GROUP RENDERING //
 //////////////////////
-C.Renderer.PIXIRenderer.prototype.groupChange = function (eventType, group) {
-
-    'use strict';
-
-    switch (eventType) {
-        case C.Extension.LayerGroup.EventType.ADDED:
-            this.groupAdded(group);
-            break;
-        case C.Extension.LayerGroup.EventType.REMOVED:
-            this.groupRemoved(group);
-            break;
-        case C.Extension.LayerGroup.EventType.MOVED:
-            this.groupMoved(group);
-            break;
-    }
-};
-
-C.Renderer.PIXIRenderer.prototype.groupAdded = function (group) {
-
-    'use strict';
-    group.__graphics = new PIXI.Container();
-    group.__graphics.interactive = true;
-    this._stage.addChild(group.__graphics);
-};
-
-C.Renderer.PIXIRenderer.prototype.groupRemoved = function (group) {
-
-    'use strict';
-    this._stage.removeChild(group.__graphics);
-};
-
-C.Renderer.PIXIRenderer.prototype.groupMoved = function (group) {
-
-    'use strict';
-};
+//C.Renderer.PIXIRenderer.prototype.groupChange = function (eventType, group) {
+//
+//    'use strict';
+//
+//    switch (eventType) {
+//        case C.Extension.LayerGroup.EventType.ADDED:
+//            this.groupAdded(group);
+//            break;
+//        case C.Extension.LayerGroup.EventType.REMOVED:
+//            this.groupRemoved(group);
+//            break;
+//        case C.Extension.LayerGroup.EventType.MOVED:
+//            this.groupMoved(group);
+//            break;
+//    }
+//};
+//
+//C.Renderer.PIXIRenderer.prototype.groupAdded = function (group) {
+//
+//    'use strict';
+//    group.__graphics = new PIXI.Container();
+//    group.__graphics.interactive = true;
+//    this._stage.addChild(group.__graphics);
+//};
+//
+//C.Renderer.PIXIRenderer.prototype.groupRemoved = function (group) {
+//
+//    'use strict';
+//    this._stage.removeChild(group.__graphics);
+//};
+//
+//C.Renderer.PIXIRenderer.prototype.groupMoved = function (group) {
+//
+//    'use strict';
+//};
 
 ///////////////////////
 //  UPDATE POSITIONS //
@@ -459,16 +479,35 @@ C.Renderer.PIXIRenderer.prototype.updatePositions = function () {
 
     'use strict';
 
-    var groups = this._layerManager._layerGroups;
-    for (var i = 0; i < groups.length; ++i) {
-        var layers = groups[i]._layers;
-        for (var j = 0; j < layers.length; ++j) {
-            var features = layers[j]._features;
-            for (var k = 0; k < features.length; ++k) {
-                this.updateFeaturePosition(features[k]);
+    var self = this;
+
+    function it_layer(layer) {
+        var features = layer._features;
+        for (var k = 0; k < features.length; ++k) {
+            var feature = features[k];
+            if (feature._features) {
+                it_layer(feature);
+            } else {
+                self.updateFeaturePosition(feature);
             }
         }
     }
+
+    var layers = this._layerManager._layers;
+    for (var i = 0; i < layers.length; ++i) {
+        it_layer(layers[i]);
+    }
+
+    //    var groups = this._layerManager._layerGroups;
+    //    for (var i = 0; i < groups.length; ++i) {
+    //        var layers = groups[i]._layers;
+    //        for (var j = 0; j < layers.length; ++j) {
+    //            var features = layers[j]._features;
+    //            for (var k = 0; k < features.length; ++k) {
+    //                this.updateFeaturePosition(features[k]);
+    //            }
+    //        }
+    //    }
 };
 
 C.Renderer.PIXIRenderer.prototype.renderFrame = function () {

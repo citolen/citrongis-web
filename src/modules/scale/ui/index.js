@@ -27,13 +27,12 @@ function updateUI() {
 
     if (scaleM > 1000) { //km scale
 
-        scaleM = Math.floor(scaleM / 1000);
-        var n = Math.pow(10, scaleM.toString().length-1);
-        scaleM = Math.ceil(scaleM / n) * n;
-
-        var barSize = Math.ceil(scaleM * 1000 / C.Viewport._resolution);
-        E.$('.val').html(scaleM + 'km');
-        E.$('.bar').width(barSize);
+        scaleM /= 1000;
+        var roundedScale = Math.floor(scaleM);
+        var n = Math.pow(10, roundedScale.toString().length-1);
+        var roundedScale = Math.ceil(roundedScale / n) * n;
+        E.$('.val').html(roundedScale + 'km');
+        E.$('.bar').width(scaleWidth * roundedScale / scaleM);
 
     } else { // m scale
         scaleM = Math.floor(scaleM);

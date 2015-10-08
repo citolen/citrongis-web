@@ -68,6 +68,7 @@ var EditableFeature = C.Utils.Inherit(function (base, feature) {
 EditableFeature.prototype.edit = function () {
 
     if (this._isEditing) { return; }
+    moveLayerToTop();
 
     this._isEditing = true;
 
