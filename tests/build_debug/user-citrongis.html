@@ -1,14 +1,3 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link type="text/css" rel="stylesheet" href="materialize.css"  media="screen,projection"/>
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
-
-
-<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js"></script>
-
 <style>
 
     .materialize-noconflict input[type=password]:focus:not([readonly]) + label, .materialize-noconflict input[type=email]:focus:not([readonly]) + label {
@@ -42,50 +31,86 @@
 <dom-module id="user-citrongis">
     <template>
         <div class="materialize-noconflict" style="width: 100%; height: 100%; overflow-y: scroll; font-family: 'nexa-light';">
-            <div class="row" style="margin-bottom: 10px;">
-                <div class="col s12 m12 l12 center-align">
-                    <div class="card-panel" style="background-color: #3498db; color: #ffffff;"><h5>Sign In</h5></div>
+            <div id="sign-in">
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col s12 m12 l12 center-align">
+                        <div class="card-panel" style="background-color: #3498db; color: #ffffff;"><h5>Sign In</h5></div>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 0;">
+                    <form class="col s12 m12 l12" style="margin-bottom: 0;">
+                        <div class="row" style="margin-bottom: 0px;">
+                            <div class="input-field col s12 m12 l12">
+                                <input id="email" type="email">
+                                <label for="email" style="font-size: 14px;">Email</label>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-bottom: 0px;">
+                            <div class="input-field col s12 m12 l12">
+                                <input id="password" type="password">
+                                <label for="password" style="font-size: 14px;">Password</label>
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top: 30px;">
+                            <div class="switch col s12 m12 l12 center-align">
+                                <label>
+                                    <input id="remember" type="checkbox">
+                                    <span class="lever"></span><span style="font-size: 14px;">Remember me</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <a id="sign-in-send" on-click="handleClickSignIn" class="btn col s12 m10 l6 offset-m1 offset-l3" style="background-color: #3498db">Sign In</a>
+                        </div>
+                        <div class="row" style="margin-bottom: 10px;">
+                            <a href="www.google.com" target="_blank">I don't remember</a> / <a on-click="handleClickSignUp">Sign Up</a>
+                        </div>
+                        <div id="invalid-connexion" class="row" style="margin-bottom: 0px; display: none">
+                            <a style="color: red;">Invalid email or password</a>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 0;">
-                <form class="col s12 m12 l12" style="margin-bottom: 0;">
-                    <div class="row" style="margin-bottom: 0px;">
-                        <div class="input-field col s12 m12 l12">
-                            <input id="email" type="email">
-                            <label for="email" style="font-size: 14px;">Email</label>
-                        </div>
-                    </div>
-                    <div class="row" style="margin-bottom: 0px;">
-                        <div class="input-field col s12 m12 l12">
-                            <input id="password" type="password">
-                            <label for="password" style="font-size: 14px;">Password</label>
-                        </div>
-                    </div>
-                    <div class="row" style="padding-top: 30px;">
-                        <div class="switch col s12 m12 l12 center-align">
-                            <label>
-                                <input id="remember" type="checkbox">
-                                <span class="lever"></span><span style="font-size: 14px;">Remember me</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <a id="sign-in-send" on-click="handleClick" class="btn waves-effect waves-light col s12 m10 l6 offset-m1 offset-l3" style="background-color: #3498db">Sign In</a>
-                    </div>
-                    <div class="row" style="margin-bottom: 10px;">
-                        <a href="www.google.com" target="_blank">I don't remember</a> / <a href="www.google.com" target="_blank">Sign Up</a>
-                    </div>
-                    <div id="invalid-connexion" class="row" style="margin-bottom: 0px; display: none">
-                        <a style="color: red;">Invalid email or password</a>
-                    </div>
 
-                </form>
+            <div id="sign-up" hidden>
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col s12 m12 l12 center-align">
+                        <div class="card-panel" style="background-color: #3498db; color: #ffffff;"><h5>Sign Up</h5></div>
+                    </div>
+                </div>
+                <div class="row">
+                        <form class="col s12 m12 l12">
+                            <div class="row">
+                                <div class="input-field col s12 m12 l12">
+                                    <input id="email-sign-up" type="email">
+                                    <label id="label-email-sign-up" for="email-sign-up" style="font-size: 14px;">Email</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12 m12 l12">
+                                    <input id="password-sign-up" type="password">
+                                    <label id="label-password-sign-up" for="password-sign-up" style="font-size: 14px;">Password</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12 m12 l12">
+                                    <input id="password-sign-up-again" type="password">
+                                    <label id="label-password-sign-up-again" for="password-sign-up" style="font-size: 14px;">Password Again</label>
+                                </div>
+                            </div>
+                            <div class="row" stype="margin-top: 20px;">
+                                <a id="sign-up-send" class="btn col s12 m10 l6 offset-m1 offset-l3" style="background-color: #3498db">Sign Up</a>
+                            </div>
+                            <div class="row" style="margin-bottom: 10px;">
+                                <a on-click="handleClickBack">Sign In</a>
+                            </div>
+                    </form>
             </div>
     </template>
   <script>
     Polymer({
         is : 'user-citrongis',
-        handleClick: function() {
+        handleClickSignIn: function() {
             username = $("#email").val();
             password = $("#password").val();
 
@@ -113,6 +138,14 @@
                     });
             }
 
+        },
+        handleClickSignUp: function () {
+            $('#sign-in').hide();
+            $('#sign-up').show();
+        },
+        handleClickBack: function () {
+            $('#sign-in').show();
+            $('#sign-up').hide();
         }
     });
   </script>

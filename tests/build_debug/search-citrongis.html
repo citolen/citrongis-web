@@ -1,0 +1,81 @@
+<style>
+    ul a:hover {
+        font-style: italic;
+    }
+
+    .materialize-noconflict input[type=text]:focus:not([readonly]) + label {
+        color: #f1c40f;
+    }
+
+    .materialize-noconflict input[type=text]:focus:not([readonly]) {
+        border-bottom: 1px solid #f1c40f;
+        box-shadow: 0 1px 0 0 #f1c40f;
+    }
+
+</style>
+
+<script>
+</script>
+
+<dom-module id="search-citrongis">
+    <template>
+        <div class="materialize-noconflict" style="width: 100%; height: 100%; overflow-y: scroll; font-family: 'nexa-light';">
+            <div class="row" style="margin-bottom: 0px;">
+                <div class="col s12 m12 l12 center-align">
+                    <div class="card-panel" style="background-color: #f1c40f; color: #ffffff;"><h5>Recherche</h5></div>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 0px; font-size: 14px;">
+                <div class="input-field col s10 m10 l10">
+                    <input id="search" placeholder="Rechercher" type="text" style="font-size: 14px;">
+                </div>
+                <div class="col s1 m1 l1" style="margin-top: 5px;">
+                    <a class="btn" style="background-color: #f1c40f"><i class="material-icons" style="font-size: 20px;">search</i></a>
+                </div>
+            </div>
+            <div class="row" style="height: 62%; margin-bottom: 19px;  overflow: scroll;">
+                <div class="col s12 m12 l12">
+                    <div class="col s12 m12 l12">
+                        <table class="highlight">
+                            <thead style="border-bottom: solid 1px #f1c40f">
+                                <tr>
+                                    <td>Applications</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="../../src/css/img/icons_extensions/Location@58w.png"/></td>
+                                    <td>Location App</td>
+                                    <td><a class="btn" style="background-color: #f2f4f4; text-transform: none; color: #f1c40f ">Voir</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="highlight">
+                            <thead style="border-bottom: solid 1px #f1c40f">
+                                <tr>
+                                    <td>Utilisateurs</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="../../src/css/img/menu_user.png" style="height: 58px;"/></td>
+                                    <td>Nicolas Pretot</td>
+                                </tr>
+                                <tr>
+                                    <td><img src="../../src/css/img/menu_user.png" style="height: 58px;"/></td>
+                                    <td>Romain Gabilan</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is : 'search-citrongis'
+        });
+    </script>
+</dom-module>
