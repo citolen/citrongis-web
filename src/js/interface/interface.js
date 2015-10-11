@@ -102,13 +102,44 @@ C.Interface.prototype.init = function (root) {
         float: C.Interface.BlockFloat.topLeft,
         content: '<img src="../../src/css/img/menu_search.png" style="height: 75%"/>',
         css: {
-            borderRadius: '0px 4px 4px 0px',
+            borderRadius: '0px 0px 0px 0px',
             borderBottom: 'solid 5px #f1c40f',
             fontWeight: 'bold',
             boxShadow: 'none'
         }
     });
     this._grid.addBlock(blockSearch);
+
+    var blockWhat3Words = new C.Interface.ButtonBlock({
+         x: 7,
+        y: 0,
+        width: 1,
+        height: 1,
+        float: C.Interface.BlockFloat.topLeft,
+        content: '<img src="../../src/css/img/icons_extensions/w3w.png" style="height: 75%"/>',
+        css: {
+            borderRadius: '0px 0px 0px 0px',
+            borderBottom: 'solid 5px #e6323d',
+            fontWeight: 'bold',
+            boxShadow: 'none'
+        }
+    });
+    this._grid.addBlock(blockWhat3Words);
+      var blockVelib = new C.Interface.ButtonBlock({
+         x: 8,
+        y: 0,
+        width: 1,
+        height: 1,
+        float: C.Interface.BlockFloat.topLeft,
+        content: '<img src="../../src/css/img/icons_extensions/velib.png" style="width: 75%"/>',
+        css: {
+            borderRadius: '0px 4px 4px 0px',
+            borderBottom: 'solid 5px #99b819',
+            fontWeight: 'bold',
+            boxShadow: 'none'
+        }
+    });
+    this._grid.addBlock(blockVelib);
 
     //menu windows
     var windowUserLogin = new C.Interface.WindowBlock({
