@@ -26,6 +26,8 @@ C.Renderer.PIXIRenderer = C.Utils.Inherit(function (base, citronGIS) {
 C.Renderer.PIXIRenderer.prototype.featureChange = function (eventType, feature, layer) {
 
     'use strict';
+
+    feature._wasHandled = true;
     switch (eventType) {
         case C.Geo.Feature.Feature.EventType.ADDED:
             this.featureAdded(feature, layer);
@@ -51,30 +53,64 @@ C.Renderer.PIXIRenderer.prototype.featureMoved = function (moveInfo, layer) {
 C.Renderer.PIXIRenderer.prototype.featureAdded = function (feature, layer) {
 
     'use strict';
-    switch (feature._type) {
-        case C.Geo.Feature.Feature.FeatureType.CIRCLE:
-            this.renderCircle(feature, layer);
-            break;
-        case C.Geo.Feature.Feature.FeatureType.IMAGE:
-            this.renderImage(feature, layer);
-            break;
-        case C.Geo.Feature.Feature.FeatureType.LINE:
-            this.renderLine(feature, layer);
-            break;
-        case C.Geo.Feature.Feature.FeatureType.POLYGON:
-            this.renderPolygon(feature);
-            break;
-    }
-    feature.__graphics.interactive = feature._interactive;
-    feature.__graphics.alpha = feature._opacity;
 
-    feature.__graphics.mousedown = function (event) { feature.__mousedown(event); }
-    feature.__graphics.mousemove = function (event) { feature.__mousemove(event); }
-    feature.__graphics.mouseup = function (event) { feature.__mouseup(event); }
-    feature.__graphics.click = function (event) { feature.__click(event); }
+//    if (!feature.__graphics || feature._dirty) {
+        switch (feature._type) {
+            case C.Geo.Feature.Feature.FeatureType.CIRCLE:
+                this.renderCircle(feature, layer);
+                break;
+            case C.Geo.Feature.Feature.FeatureType.IMAGE:
+                this.renderImage(feature, layer);
+                break;
+            case C.Geo.Feature.Feature.FeatureType.LINE:
+                this.renderLine(feature, layer);
+                break;
+            case C.Geo.Feature.Feature.FeatureType.POLYGON:
+                this.renderPolygon(feature);
+                break;
+            case C.Geo.Feature.Feature.FeatureType.TEXT:
+                this.renderText(feature);
+                break;
+        }
+        feature.__graphics.interactive = feature._interactive;
+        feature.__graphics.alpha = feature._opacity;
+
+        feature.__graphics.mousedown = function (event) { feature.__mousedown(event); }
+        feature.__graphics.mousemove = function (event) { feature.__mousemove(event); }
+        feature.__graphics.mouseup = function (event) { feature.__mouseup(event); }
+        feature.__graphics.click = function (event) { feature.__click(event); }
+//
+//    } else {
+//        this.updateFeaturePosition(feature);
+//    }
 
     layer.__graphics.addChild(feature.__graphics);
+};
 
+/*
+**
+**  Render Text
+**
+*/
+C.Renderer.PIXIRenderer.prototype.renderText = function (feature, layer) {
+
+    'use strict';
+
+    feature.__location = C.Helpers.CoordinatesHelper.TransformTo(feature._location, this._viewport._schema._crs);
+
+    var options = {};
+    if (feature._fill) { options.fill = feature._fill; }
+    if (feature._align) { options.align = feature._align; }
+    if (feature._font) { options.font = feature._font; }
+
+    var g = feature.__graphics = feature.__graphics || new PIXI.Text(feature._text, options);
+
+    if (feature._anchor) {
+        g.anchor = new PIXI.Point(feature._anchor[0], feature._anchor[1]);
+    }
+    var position = this._viewport.worldToScreen(feature.__location.X, feature.__location.Y);
+    g.position = new PIXI.Point(position.X, position.Y);
+    feature._dirty = false;
 };
 
 /*
@@ -112,7 +148,7 @@ C.Renderer.PIXIRenderer.prototype.renderImage = function (feature) {
 
     feature.__location = C.Helpers.CoordinatesHelper.TransformTo(feature._location, this._viewport._schema._crs);
 
-    var sprite = feature.__graphics = new PIXI.Sprite(feature.__texture);
+    var sprite = feature.__graphics = feature.__graphics || new PIXI.Sprite(feature.__texture);
 
     if (feature.__texture) {
         feature.__texture.baseTexture.scaleMode = this._scaleModeConvert(feature._scaleMode);
@@ -280,7 +316,15 @@ C.Renderer.PIXIRenderer.prototype.updateFeature = function () {
         if (feature.__graphics) {
             switch (feature._type) {
                 case C.Geo.Feature.Feature.FeatureType.CIRCLE:
-                    this.renderCircle(feature);
+                    if (feature.__location && feature._mask == C.Geo.Feature.Circle.MaskIndex.LOCATION) {
+                        if (feature._locationChanged) {
+                            feature.__location = C.Helpers.CoordinatesHelper.TransformTo(feature._location, this._viewport._schema._crs);
+                            feature._locationChanged = false;
+                        }
+                        this.updateFeaturePosition(feature);
+                    } else {
+                        this.renderCircle(feature);
+                    }
                     break;
                 case C.Geo.Feature.Feature.FeatureType.IMAGE:
                     this.updateImage(feature);
@@ -291,6 +335,9 @@ C.Renderer.PIXIRenderer.prototype.updateFeature = function () {
                 case C.Geo.Feature.Feature.FeatureType.POLYGON:
                     this.renderPolygon(feature);
                     break;
+                case C.Geo.Feature.Feature.FeatureType.TEXT:
+                    this.updateText(feature);
+                    break;
             }
         }
         feature._noted = undefined;
@@ -299,12 +346,38 @@ C.Renderer.PIXIRenderer.prototype.updateFeature = function () {
     this._dirtyFeatures = [];
 };
 
+C.Renderer.PIXIRenderer.prototype.updateText = function (feature) {
+    'use strict';
+
+    if ((feature._mask & C.Geo.Feature.Text.MaskIndex.LOCATION) != 0) {
+        feature.__location = C.Helpers.CoordinatesHelper.TransformTo(feature._location, this._viewport._schema._crs);
+        var position = this._viewport.worldToScreen(feature.__location.X, feature.__location.Y);
+        feature.__graphics.position.x = position.X;
+        feature.__graphics.position.y = position.Y;
+    }
+    if ((feature._mask & C.Geo.Feature.Text.MaskIndex.TEXT) != 0) {
+        feature.__graphics.text = feature._text;
+    }
+    if ((feature._mask & C.Geo.Feature.Text.MaskIndex.FILL) != 0) {
+        feature.__graphics.style.fill = feature._fill;
+    }
+    if ((feature._mask & C.Geo.Feature.Text.MaskIndex.ALIGN) != 0) {
+        feature.__graphics.style.align = feature._align;
+    }
+    if ((feature._mask & C.Geo.Feature.Text.MaskIndex.FONT) != 0) {
+        feature.__graphics.style.font = feature._font;
+    }
+    if ((feature._mask & C.Geo.Feature.Text.MaskIndex.ANCHOR) != 0) {
+        feature.__graphics.anchor = new PIXI.Point(feature._anchor[0], feature._anchor[1]);
+    }
+};
+
 C.Renderer.PIXIRenderer.prototype.updateImage = function (feature) {
 
     'use strict';
 
-    var xRoundWay = 0;
-    var yRoundWay = 0;
+    //    var xRoundWay = 0;
+    //    var yRoundWay = 0;
 
 
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.LOCATION) != 0) {
@@ -313,8 +386,8 @@ C.Renderer.PIXIRenderer.prototype.updateImage = function (feature) {
         feature.__graphics.position.x = position.X;//Math.floor(position.X + 0.5);
         feature.__graphics.position.y = position.Y;//Math.floor(position.Y + 0.5);
 
-        feature._xRoundWay = feature.__graphics.position.x - position.X;
-        feature._yRoundWay = feature.__graphics.position.y - position.Y;
+        //        feature._xRoundWay = feature.__graphics.position.x - position.X;
+        //        feature._yRoundWay = feature.__graphics.position.y - position.Y;
     }
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.SOURCE) != 0) {
         feature.__graphics.texture = feature.__texture;
@@ -349,7 +422,7 @@ C.Renderer.PIXIRenderer.prototype.updateFeaturePosition = function (feature) {
 
     'use strict';
 
-    if (feature.__location !== undefined) { // Circle,Image
+    if (feature.__location !== undefined) { // Circle,Image,Text
         var position = this._viewport.worldToScreen(feature.__location.X, feature.__location.Y);
         feature.__graphics.position.x = position.X;
         feature.__graphics.position.y = position.Y;
@@ -373,6 +446,8 @@ C.Renderer.PIXIRenderer.prototype.updateFeaturePosition = function (feature) {
 C.Renderer.PIXIRenderer.prototype.layerChange = function (eventType, layer) {
 
     'use strict';
+
+    layer._wasHandled = true;
     switch (eventType) {
         case C.Geo.Layer.EventType.ADDED:
             this.layerAdded(layer);
@@ -393,12 +468,12 @@ C.Renderer.PIXIRenderer.prototype.layerAdded = function (layer) {
 
     'use strict';
 
-    layer.__graphics = new PIXI.Container();
+    layer.__graphics = layer.__graphics || new PIXI.Container();
     layer.__graphics.interactive = true;
 
     if (layer._parent && layer._parent.__graphics) {
         layer._parent.__graphics.addChild(layer.__graphics);
-    } else if (layer._parent === null) {
+    } else if (layer._parent === 42) {
         this._stage.addChild(layer.__graphics);
     }
     //    layer._group.__graphics.addChild(layer.__graphics);
