@@ -145,45 +145,45 @@ C.CitrongGISDebug = function (citronGIS) {
 
     tilelayers[0].addTo(layer);
 
-//    var l1 = new C.Geo.Layer();
-//
-//    var fg = new C.Geo.FeatureGroup();
-//
-//    var c1 = new C.Geo.Feature.Circle({
-//        location: new C.Geometry.LatLng(48, 2),
-//        radius: 20
-//    });
-//    var c2 = new C.Geo.Feature.Circle({
-//        location: new C.Geometry.LatLng(49, 2),
-//        radius: 20
-//    });
-//    console.log('s');
-//    c1.addTo(fg);
-//    c2.addTo(fg);
-//
-//    fg.addTo(l1);
-//    l1.addTo(layer);
-//
-//    setTimeout(function () {
-//        layer.remove(l1);
-//
-//        fg.remove(c1);
-//        fg.add(c1);
-//        setTimeout(function () {
-//            layer.add(l1);
-//        }, 2000);
-//    }, 5000);
+    //    var l1 = new C.Geo.Layer();
+    //
+    //    var fg = new C.Geo.FeatureGroup();
+    //
+    //    var c1 = new C.Geo.Feature.Circle({
+    //        location: new C.Geometry.LatLng(48, 2),
+    //        radius: 20
+    //    });
+    //    var c2 = new C.Geo.Feature.Circle({
+    //        location: new C.Geometry.LatLng(49, 2),
+    //        radius: 20
+    //    });
+    //    console.log('s');
+    //    c1.addTo(fg);
+    //    c2.addTo(fg);
+    //
+    //    fg.addTo(l1);
+    //    l1.addTo(layer);
+    //
+    //    setTimeout(function () {
+    //        layer.remove(l1);
+    //
+    //        fg.remove(c1);
+    //        fg.add(c1);
+    //        setTimeout(function () {
+    //            layer.add(l1);
+    //        }, 2000);
+    //    }, 5000);
 
-//    var test_text = new C.Geo.Feature.Text({
-//        location: new C.Geometry.LatLng(48.861005, 2.340435),
-//        text: 'bonjour',
-//        fill: 0xff0000,
-//        align: C.Geo.Feature.Text.TextAlign.CENTER,
-//        anchor: [0.5, 0.5],
-//        font: '20px Arial'
-//    });
-//    console.log(test_text);
-//    test_text.addTo(layer);
+    //    var test_text = new C.Geo.Feature.Text({
+    //        location: new C.Geometry.LatLng(48.861005, 2.340435),
+    //        text: 'bonjour',
+    //        fill: 0xff0000,
+    //        align: C.Geo.Feature.Text.TextAlign.CENTER,
+    //        anchor: [0.5, 0.5],
+    //        font: '20px Arial'
+    //    });
+    //    console.log(test_text);
+    //    test_text.addTo(layer);
     //        layer.addTo(layerGroup);
 
     //    var ti = new C.Layer.Tile.TileIndex.fromXYZ(9376, 12530, 15);
@@ -325,12 +325,12 @@ C.CitrongGISDebug = function (citronGIS) {
     }*/
 
     //    debugExtensionLoader(citronGIS, '/src/modules/scale/');
-        debugExtensionLoader(citronGIS, '/src/modules/distance/');
+    //        debugExtensionLoader(citronGIS, '/src/modules/distance/');
     //    debugExtensionLoader(citronGIS, '/src/modules/layer-manager/');
-//    debugExtensionLoader(citronGIS, '/src/modules/velib/');
+    debugExtensionLoader(citronGIS, '/src/modules/velib/');
     //    debugExtensionLoader(citronGIS, '/src/modules/flight/');
-//            debugExtensionLoader(citronGIS, '/src/modules/what3words/');
+    //            debugExtensionLoader(citronGIS, '/src/modules/what3words/');
     //    debugExtensionLoader(citronGIS, '/src/modules/extensionTest/');
-//                debugExtensionLoader(citronGIS, '/src/modules/csv/');
+    //    debugExtensionLoader(citronGIS, '/src/modules/csv/');
     //    debugExtensionLoader(citronGIS, '/src/modules/testRequest/');
 };

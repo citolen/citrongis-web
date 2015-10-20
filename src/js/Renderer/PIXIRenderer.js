@@ -54,35 +54,35 @@ C.Renderer.PIXIRenderer.prototype.featureAdded = function (feature, layer) {
 
     'use strict';
 
-//    if (!feature.__graphics || feature._dirty) {
-        switch (feature._type) {
-            case C.Geo.Feature.Feature.FeatureType.CIRCLE:
-                this.renderCircle(feature, layer);
-                break;
-            case C.Geo.Feature.Feature.FeatureType.IMAGE:
-                this.renderImage(feature, layer);
-                break;
-            case C.Geo.Feature.Feature.FeatureType.LINE:
-                this.renderLine(feature, layer);
-                break;
-            case C.Geo.Feature.Feature.FeatureType.POLYGON:
-                this.renderPolygon(feature);
-                break;
-            case C.Geo.Feature.Feature.FeatureType.TEXT:
-                this.renderText(feature);
-                break;
-        }
-        feature.__graphics.interactive = feature._interactive;
-        feature.__graphics.alpha = feature._opacity;
+    //    if (!feature.__graphics || feature._dirty) {
+    switch (feature._type) {
+        case C.Geo.Feature.Feature.FeatureType.CIRCLE:
+            this.renderCircle(feature, layer);
+            break;
+        case C.Geo.Feature.Feature.FeatureType.IMAGE:
+            this.renderImage(feature, layer);
+            break;
+        case C.Geo.Feature.Feature.FeatureType.LINE:
+            this.renderLine(feature, layer);
+            break;
+        case C.Geo.Feature.Feature.FeatureType.POLYGON:
+            this.renderPolygon(feature);
+            break;
+        case C.Geo.Feature.Feature.FeatureType.TEXT:
+            this.renderText(feature);
+            break;
+    }
+    feature.__graphics.interactive = feature._interactive;
+    feature.__graphics.alpha = feature._opacity;
 
-        feature.__graphics.mousedown = function (event) { feature.__mousedown(event); }
-        feature.__graphics.mousemove = function (event) { feature.__mousemove(event); }
-        feature.__graphics.mouseup = function (event) { feature.__mouseup(event); }
-        feature.__graphics.click = function (event) { feature.__click(event); }
-//
-//    } else {
-//        this.updateFeaturePosition(feature);
-//    }
+    feature.__graphics.mousedown = function (event) { feature.__mousedown(event); }
+    feature.__graphics.mousemove = function (event) { feature.__mousemove(event); }
+    feature.__graphics.mouseup = function (event) { feature.__mouseup(event); }
+    feature.__graphics.click = function (event) { feature.__click(event); }
+    //
+    //    } else {
+    //        this.updateFeaturePosition(feature);
+    //    }
 
     layer.__graphics.addChild(feature.__graphics);
 };
@@ -102,6 +102,10 @@ C.Renderer.PIXIRenderer.prototype.renderText = function (feature, layer) {
     if (feature._fill) { options.fill = feature._fill; }
     if (feature._align) { options.align = feature._align; }
     if (feature._font) { options.font = feature._font; }
+
+    if (feature.__graphics) {
+        feature.__graphics.text = feature._text;
+    }
 
     var g = feature.__graphics = feature.__graphics || new PIXI.Text(feature._text, options);
 
@@ -148,6 +152,9 @@ C.Renderer.PIXIRenderer.prototype.renderImage = function (feature) {
 
     feature.__location = C.Helpers.CoordinatesHelper.TransformTo(feature._location, this._viewport._schema._crs);
 
+    if (feature.__graphics && feature.__texture) {
+        feature.__graphics.texture = feature.__texture;
+    }
     var sprite = feature.__graphics = feature.__graphics || new PIXI.Sprite(feature.__texture);
 
     if (feature.__texture) {
@@ -162,9 +169,6 @@ C.Renderer.PIXIRenderer.prototype.renderImage = function (feature) {
 
     var position = this._viewport.worldToScreen(feature.__location.X, feature.__location.Y);
     sprite.position = new PIXI.Point(position.X, position.Y); //new PIXI.Point(Math.floor(position.X + 0.5), Math.floor(position.Y + 0.5));
-
-    feature._xRoundWay = sprite.position.x - position.X;
-    feature._yRoundWay = sprite.position.y - position.Y;
 
     sprite.width = feature._width;
     sprite.height = feature._height;

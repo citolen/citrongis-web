@@ -86,6 +86,37 @@ C.System.Events.zoomOutWithAnimation = function () {
     }
 };
 
+C.System.Events.zoomToBounds = function (bounds) {
+
+    var crsBounds = bounds.transformTo(C.Helpers.viewport._schema._crs);
+    var center = crsBounds.getCenter();
+    var width = C.Helpers.viewport._width;
+    var height = C.Helpers.viewport._height;
+    var boundsWidth = Math.abs (crsBounds._topRight.X - crsBounds._bottomLeft.X);
+    var boundsHeight = Math.abs(crsBounds._topRight.Y - crsBounds._bottomLeft.Y);
+    var res;
+    for (var z = C.Helpers.viewport._schema._resolutions.length-1; z >= 0; --z) {
+        var resolution = C.Helpers.viewport._schema._resolutions[z];
+        var tw = width * resolution;
+        var th = height * resolution;
+        if (tw > boundsWidth && th > boundsHeight) {
+            res = resolution;
+            break;
+        }
+    }
+    if (!res) {
+        res = C.Helpers.viewport._schema._resolutions[0];
+    }
+    if (C.Utils.Comparison.Equals(res, C.Helpers.viewport._resolution)) {
+        var zl = C.Helpers.viewport.getZoomLevel() + 1;
+        if (zl <= C.Helpers.viewport.getMaxZoomLevel()) {
+            res = C.Helpers.viewport.getResolutionAtZoomLevel(zl);
+        }
+    }
+    var centerScreen = C.Helpers.viewport.worldToScreen(center.X, center.Y);
+    C.System.Events.zoomToWithAnimation(res, centerScreen.X - (width / 2), centerScreen.Y - (height / 2));
+};
+
 C.System.Events.zoomToWithAnimation = function (targetResolution, offsetX, offsetY) {
     var resolution = C.Helpers.viewport._resolution;
     var deltaResolution = targetResolution - C.Helpers.viewport._resolution;

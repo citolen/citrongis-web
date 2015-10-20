@@ -7,25 +7,6 @@ require('lib/citrongis.cluster.js', function (err, Cluster) {
 
     baseLayer.addTo(E.map);
 
-//    C.Line({
-//        locations: [C.LatLng(0,0), C.LatLng(48, 2)]
-//    }).addTo(baseLayer);
-
-//    C.Circle({
-//        location: C.LatLng(48.876023, 2.318806),
-//        radius: 5
-//    }).addTo(baseLayer);
-//    C.Circle({
-//        location: C.LatLng(48.875571, 2.342495),
-//        radius: 5
-//    }).addTo(baseLayer);
-//    C.Circle({
-//        location: C.LatLng(48.832198, 2.352108),
-//        radius: 5
-//    }).addTo(baseLayer);
-
-    console.log(baseLayer);
-
     var createReference = function (context, func) {
         return function () { return func.call(context); }
     };
@@ -35,9 +16,11 @@ require('lib/citrongis.cluster.js', function (err, Cluster) {
 
     function removeContract(contract) {
         var currentContract = contracts[contract];
+        var stationsToRemove = [];
         for (var i = 0; i < currentContract.length; ++i) {
-            baseLayer.remove(currentContract[i]["station"]);
+            stationsToRemove.push(currentContract[i]["station"]);
         }
+        baseLayer.remove(stationsToRemove);
     }
 
     function timeConverter(UNIX_timestamp){
@@ -72,6 +55,7 @@ require('lib/citrongis.cluster.js', function (err, Cluster) {
             }
         } else {
             contracts[contract] = [];
+            var markers = [];
             var oldContract = contract;
             var currentContract = contracts[contract];
             var contract = JSON.parse(req.responseText);
@@ -80,7 +64,7 @@ require('lib/citrongis.cluster.js', function (err, Cluster) {
 
                 var station = C.Image({
                     location: C.LatLng(contract[i]["position"]["lat"], contract[i]["position"]["lng"]),
-                    source:"assets/marker-icon.png"/*"https://mt0.google.com/vt/icon/name=icons/spotlight/spotlight-poi.png&scale=2"*/,
+                    source:"assets/marker-icon.png"/*"http://leafletjs.com/dist/images/marker-icon.png"/*"https://mt0.google.com/vt/icon/name=icons/spotlight/spotlight-poi.png&scale=2"*/,
                     anchorY:1,
                     anchorX:0.5,
                     width:25,
@@ -92,20 +76,13 @@ require('lib/citrongis.cluster.js', function (err, Cluster) {
 
                 station.set("number", contract[i]["number"]);
                 station.set("contract", contract[i]["contract_name"]);
-                station.addTo(baseLayer);
-
-//                if (i == 0) {
-//                    setTimeout(function () {
-//                        baseLayer.remove(station);
-//                    }.bind(null, station), 10000);
-//                }
 
                 station.on("click", function(feature, event) {
 
 
-                    if (C.Viewport._resolution >= 100) {
-                        return ;
-                    }
+//                    if (C.Viewport._resolution >= 100) {
+//                        return ;
+//                    }
                     if (this.get("popup")) {
                         this.get("popup").close();
                     }
@@ -119,10 +96,13 @@ require('lib/citrongis.cluster.js', function (err, Cluster) {
                     p.open(event);
                     this.set("popup", p);
                 });
+
+                markers.push(station);
                 currentContract.push({"name" : contract[i]["name"], "station" : station});
             }
+
+            baseLayer.add(markers);
         }
-        baseLayer._refresh();
     }
 
     function loadContracts() {
