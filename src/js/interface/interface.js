@@ -21,7 +21,108 @@ C.Interface.prototype.init = function (root, map) {
 
     this._grid = new C.Interface.Grid(this._container);
 
-    var blocktest = new C.Interface.ButtonBlock({
+    var layerButton = new C.Interface.ButtonBlock({
+        x: 1,
+        y: 1,
+        width: 5,
+        height: 1,
+        float: C.Interface.BlockFloat.topRight,
+        content: '<i class="fa fa-map-o"></i>&nbsp;Mapbox',
+        css: {
+            borderRadius: '4px',
+            fontWeight: 'normal',
+            fontSize: '15px',
+            textAlign: 'left',
+            paddingLeft: '10px'
+        }
+    });
+    this._grid.addBlock(layerButton);
+
+    var layerWindow = new C.Interface.TileLayerBlock({
+        x: layerButton.getX(),
+        y: layerButton.getY() + 1,
+        width: 7,
+        height: 10,
+        float: C.Interface.BlockFloat.topRight,
+        content: '',
+        css: {
+            borderRadius: '4px 4px 4px 4px',
+            borderBottom: 'solid 5px #ffffff',
+            fontWeight: 'normal',
+            overflow: 'hidden'
+        }
+    });
+    layerWindow.addTileLayer('img/preview_mapbox.jpg', 'Mapbox', 0);
+    layerWindow.addTileLayer('img/preview_satellite.jpg', 'Satellite', 1);
+    layerWindow.addTileLayer('img/preview_arcgis.jpg', 'Arcgis', 2);
+    layerWindow.addTileLayer('img/preview_osm.jpg', 'OpenStreetMap', 3);
+    layerWindow.addTileLayer('img/preview_stamen.jpg', 'Toner', 4);
+    layerWindow.addTileLayer('img/preview_google.jpg', 'Google', 5);
+    var tilelayers =[
+        new C.Layer.Tile.TileLayer({
+            name: 'Mapbox',
+            source: new C.Layer.Tile.Source.TMSSource({
+                url: 'https://b.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}@2x.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q'
+            }),
+            schema: C.Layer.Tile.Schema.SphericalMercatorRetina}),
+        new C.Layer.Tile.TileLayer({
+            name: 'Satellite',
+            source: new C.Layer.Tile.Source.TMSSource({
+                url: 'http://mt3.google.com/vt/lyrs=s,h&z={z}&x={x}&y={y}'
+            }),
+            schema: C.Layer.Tile.Schema.SphericalMercator}),
+        new C.Layer.Tile.TileLayer({
+            name: 'ArcGIS',
+            source: new C.Layer.Tile.Source.TMSSource({
+                url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png'
+            }),
+            schema: C.Layer.Tile.Schema.SphericalMercator}),
+        new C.Layer.Tile.TileLayer({
+            name: 'OSM',
+            source: new C.Layer.Tile.Source.TMSSource({
+                url: 'http://{server}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                server: ['a', 'b', 'c']
+            }),
+            schema: C.Layer.Tile.Schema.SphericalMercator}),
+        new C.Layer.Tile.TileLayer({
+            name: 'Toner',
+            source: new C.Layer.Tile.Source.TMSSource({
+                url: 'http://a.tile.stamen.com/toner/{z}/{x}/{y}.png'
+            }),
+            schema: C.Layer.Tile.Schema.SphericalMercator}),
+        new C.Layer.Tile.TileLayer({
+            name: 'Google',
+            source: new C.Layer.Tile.Source.TMSSource({
+                url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga&scale=2'
+            }),
+            schema: C.Layer.Tile.Schema.SphericalMercatorRetina})
+    ];
+    var layer = new C.Geo.Layer();
+    map._layerManager.addLayer(layer);
+    tilelayers[0].addTo(layer);
+    var currentId = 0;
+    var self = this;
+    layerWindow.on('select', function (id) {
+        if (id == currentId) { return; }
+        layer.clearLayer();
+        tilelayers[id].addTo(layer);
+        currentId = id;
+        self._grid.removeBlock(layerWindow);
+        layerWindowOpen = false;
+        layerButton.setContent('<i class="fa fa-map-o"></i>&nbsp;' + tilelayers[id]._name);
+    });
+    var layerWindowOpen = false;
+    layerButton.on('click', function () {
+        if (!layerWindowOpen) {
+            self._grid.addBlock(layerWindow);
+        } else {
+            self._grid.removeBlock(layerWindow);
+        }
+        layerWindowOpen = !layerWindowOpen;
+    });
+
+
+    var zoomInButton = new C.Interface.ButtonBlock({
         x: 1,
         y: 1,
         width: 1,
@@ -33,8 +134,8 @@ C.Interface.prototype.init = function (root, map) {
             fontWeight: 'bold'
         }
     });
-    this._grid.addBlock(blocktest);
-    var blocktest1 = new C.Interface.ButtonBlock({
+    this._grid.addBlock(zoomInButton);
+    var zoomOutButton = new C.Interface.ButtonBlock({
         x: 1,
         y: 2,
         width: 1,
@@ -47,7 +148,7 @@ C.Interface.prototype.init = function (root, map) {
             fontWeight: 'bold'
         }
     });
-    this._grid.addBlock(blocktest1);
+    this._grid.addBlock(zoomOutButton);
 
     var velibbtn = new C.Interface.ButtonBlock({
         x: 5,
@@ -352,10 +453,10 @@ C.Interface.prototype.init = function (root, map) {
     //    });
     //    this._grid.addBlock(windowSearch);
     //
-    blocktest.on('click', function () {
+    zoomInButton.on('click', function () {
         C.System.Events.zoomInWithAnimation();
     });
-    blocktest1.on('click', function () {
+    zoomOutButton.on('click', function () {
         C.System.Events.zoomOutWithAnimation();
     });
     //    blocklogIn.on('click', function () {

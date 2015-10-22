@@ -45,6 +45,10 @@ C.Interface.Block.prototype.setCSS = function (key, value) {
     this._container.style[key] = value;
 }
 
+C.Interface.Block.prototype.setContent = function (content) {
+    this._contentContainer.innerHTML = content;
+};
+
 C.Interface.Block.prototype.getX = function () {
     return (this._x);
 }

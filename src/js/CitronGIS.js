@@ -50,7 +50,6 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     C.UI.PopupManager.init(this._rootDiv);
     this._extDiv = C.Extension.Extension.init(this._rootDiv);
 
-    C.Interface.init(this._rootDiv, this);
 
     var self = this;
 
@@ -73,6 +72,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     this._customRenderer = new C.Renderer.PIXIRenderer(this);
 
     $(document).ready(function () {
+        C.Interface.init(self._rootDiv, self);
         C.CitrongGISDebug(self);
     });
 

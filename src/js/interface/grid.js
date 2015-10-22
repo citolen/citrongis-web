@@ -82,6 +82,17 @@ C.Interface.Grid.prototype.addBlock = function (block) {
 
 };
 
+C.Interface.Grid.prototype.removeBlock = function (block) {
+
+    var idx;
+    if ((idx = this._blocks.indexOf(block)) == -1) {
+        return;
+    }
+    this._blocks.splice(idx, 1);
+    this._container.removeChild(block._container);
+
+};
+
 C.Interface.Grid.prototype._placeBlock = function (block) {
 
     var x;

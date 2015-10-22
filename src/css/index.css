@@ -42,10 +42,10 @@
     border-radius: 0px;
     background-color: white;
     pointer-events: auto;
+    text-align: center;
 }
 
 .grid-block-content {
-    text-align: center;
     position: relative;
     top: 50%;
     transform: translateY(-50%);

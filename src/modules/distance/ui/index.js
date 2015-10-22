@@ -70,6 +70,7 @@ require('lib/citrongis.editable.js', function (err, editable) {
         editablePolygon.done();
         editing = false;
         E.$('.edit').text('editer');
+        E.$('.edit').hide();
         if (aire) {
             E.$('.info').text('0 m²');
         } else {
