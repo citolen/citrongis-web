@@ -70,6 +70,7 @@ require(['lib/ace/ace.js',
 
             E.$('.launch_btn').click(function () {
 
+                ga('send', 'pageview', 'Editor/Run');
                 if (extension) {
                     extension.destroy();
                 }
@@ -80,6 +81,9 @@ require(['lib/ace/ace.js',
                     style: editor_style.getValue()
                 }), function (err, ext) {
                     extension = ext;
+                    extension.on('stopped', function () {
+                        ga('send', 'pageview', 'Editor/RunnableStopped');
+                    });
                 });
 
             });
