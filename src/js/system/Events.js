@@ -249,6 +249,7 @@ C.System.Events.keyDown = function (evt) {
         this.zoomInWithAnimation();
     }
     if ((!evt.shiftKey && evt.keyCode == 54) ||
+        (!evt.shiftKey && evt.keyCode == 189) ||
         evt.keyCode == 109)/* '-' key */ {
         this.zoomOutWithAnimation();
     }
