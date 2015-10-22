@@ -3,7 +3,6 @@ require('lib/papaparse.min.js', function (err, Papa) {
     require('lib/citrongis.cluster.js', function (err, Cluster) {
         self._csvLayer = new Cluster();
 
-        console.log(self._csvLayer);
         self._csvLayer.addTo(E.map);
 
         function processCSV(csv) {
@@ -110,7 +109,14 @@ require('lib/papaparse.min.js', function (err, Papa) {
             dropZone.on('dragleave', function () { $(this).removeClass('drag_end'); });
             dropZone.on('drop', handleFileSelect);
 
+            E.$('#input_file')[0].onchange = function () {
+                var reader = new FileReader();
+                reader.onload = processCSV;
+                reader.readAsText(this.files[0], 'utf-8');
+            };
             E.$('#display_btn').click(displayData);
+
+
         });
     });
 });
