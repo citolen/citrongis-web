@@ -43,6 +43,7 @@ var files = [
     'citrongis-core/src/extension/UI/Bridge.js',
     'citrongis-core/src/extension/UI/UI.js',
     'citrongis-core/src/extension/Module.js',
+    'citrongis-core/src/extension/Storage.js',
     'citrongis-core/src/extension/ExtensionResources.js',
     'citrongis-core/src/extension/Extension.js',
     'citrongis-core/src/extension/Manager.js',

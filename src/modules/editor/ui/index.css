@@ -1,0 +1,26 @@
+#editor_code, #editor_interface, #editor_style {
+    width: 500px;
+    height: 300px;
+}
+
+.ui.menu {
+    margin-top: 3px !important;
+    margin-bottom: 0 !important;
+}
+
+.launch_btn {
+    background-color: #EF4836;
+    font-family: 'nexa-light';
+    color: white;
+    font-size: 16px;
+    text-align: center;
+    padding: 6px 10px;
+    cursor: pointer;
+    margin-top: 1px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

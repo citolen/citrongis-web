@@ -30,11 +30,11 @@ require('lib/simplify.js', function (err, simplify) {
 
     marker.addTo(pointerLayer);
 
-    C.Viewport.on('move', function (viewport) {
+    function viewport_move(viewport) {
 
         marker.location(viewport._origin);
 
-    });
+    };
 
     function refresh(viewport) {
         var pos = viewport._origin.copy().TransformTo(C.ProjectionsHelper.WGS84);
@@ -42,11 +42,11 @@ require('lib/simplify.js', function (err, simplify) {
         get3words(pos);
     }
 
-    C.Viewport.on('moved', function (viewport) {
+    function viewport_moved(viewport) {
 
         refresh(viewport);
 
-    });
+    };
 
     function get3words(position) {
         var url = apiUrl;
@@ -188,24 +188,23 @@ require('lib/simplify.js', function (err, simplify) {
 
     E.onload(function () {
 
+        C.Viewport.on('move', viewport_move);
+        C.Viewport.on('moved', viewport_moved);
+
+        E.ondestroy(function () {
+            C.Viewport.off('move', viewport_move);
+            C.Viewport.off('moved', viewport_moved);
+        });
+
         loadLanguages();
 
         resizeField('#i1-f1');
-        //    resizeField('#i1-f2');
-        //    resizeField('#i1-f3');
         resizeField('#i2-f1');
-        //    resizeField('#i2-f2');
-        //    resizeField('#i2-f3');
-
-        //period.tend.javelin
-        //hosts.lush.soldiers
 
         E.$('#load1').click(function () {
             if (currentWords.length != 3) { return; }
 
             E.$('#i1-f1').val(currentWords.join('.')); resizeField('#i1-f1');
-            //        $('#i1-f2').val(currentWords[1]); resizeField('#i1-f2');
-            //        $('#i1-f3').val(currentWords[2]); resizeField('#i1-f3');
 
         });
 
@@ -213,17 +212,11 @@ require('lib/simplify.js', function (err, simplify) {
             if (currentWords.length != 3) { return; }
 
             E.$('#i2-f1').val(currentWords.join('.')); resizeField('#i2-f1');
-            //        $('#i2-f2').val(currentWords[1]); resizeField('#i2-f2');
-            //        $('#i2-f3').val(currentWords[2]); resizeField('#i2-f3');
         });
 
         E.$('#itinary').click(function () {
             var w1 = E.$('#i1-f1').val();
-            //        var w2 = $('#i1-f2').val();
-            //        var w3 = $('#i1-f3').val();
             var w4 = E.$('#i2-f1').val();
-            //        var w5 = $('#i2-f2').val();
-            //        var w6 = $('#i2-f3').val();
 
             if (w1.length < 12 ||
                 w4.length < 12) { return; }
@@ -244,8 +237,6 @@ require('lib/simplify.js', function (err, simplify) {
 
         E.$('#search').click(function () {
             var w1 = E.$('#i1-f1').val();
-            //        var w2 = $('#i1-f2').val();
-            //        var w3 = $('#i1-f3').val();
 
             if (w1.length < 12) { return; }
             getPositionForWords(w1, function (err, position) {

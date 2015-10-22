@@ -3,7 +3,7 @@
  *  Inertia from Leaflet (https://github.com/Leaflet/Leaflet/)
  */
 
-'use strict';
+//'use strict';
 
 //TODO make an interface out of it so that each plateform can use their own events
 
@@ -181,7 +181,7 @@ C.System.Events.wheel = function (evt) {
 
     //        console.log(evt.deltaY, evt);
     this._wheel += evt.deltaY;
-//    console.log(this._wheel);
+    //    console.log(this._wheel);
     if (this._wheel <= -this._wheelTrigger) {
         this._wheel = 0;
         var zoomLevel;
@@ -250,12 +250,12 @@ C.System.Events.keyDown = function (evt) {
         evt.keyCode == 109)/* '-' key */ {
         this.zoomOutWithAnimation();
     }
-    if (evt.keyCode == 106) {
-        this._citronGIS._viewport.rotate(-5);
-    }
-    if (evt.keyCode == 111) {
-        this._citronGIS._viewport.rotate(5);
-    }
+    //    if (evt.keyCode == 106) {
+    //        this._citronGIS._viewport.rotate(-5);
+    //    }
+    //    if (evt.keyCode == 111) {
+    //        this._citronGIS._viewport.rotate(5);
+    //    }
     //    if (evt.keyCode == 107) {
     //        /*var zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._citronGIS._viewport._resolution);
     //        zoomLevel = C.Helpers.ResolutionHelper.Resolutions[zoomLevel + 2]*1*/
@@ -304,6 +304,10 @@ C.System.Events.stageDown = function (e) {
     }
 };
 
+function easeOutQuad(t, b, c, d) {
+    return -c *(t/=d)*(t-2) + b;
+}
+
 C.System.Events.stageUp = function (e) {
     if (!this._isDown) { return; }
 
@@ -320,9 +324,7 @@ C.System.Events.stageUp = function (e) {
 
         this._lastTime = Date.now();
         var self = this;
-        function easeOutQuad(t, b, c, d) {
-            return -c *(t/=d)*(t-2) + b;
-        }
+
         function panAnim() {
             if (self._isDown) {
                 return;

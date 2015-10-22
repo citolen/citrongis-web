@@ -20,10 +20,15 @@ function updateUI() {
     w1 = C.Point(w1.X, w1.Y, w1.Z, C.Viewport._schema._crs);
     w2 = C.Point(w2.X, w2.Y, w2.Z, C.Viewport._schema._crs);
 
-    w1 = C.CoordinatesHelper.TransformTo(w1, C.ProjectionsHelper.WGS84);
-    w2 = C.CoordinatesHelper.TransformTo(w2, C.ProjectionsHelper.WGS84);
+//    if (Math.abs(w1.X, w2.X) > Math.abs(C.Viewport._schema._extent._maxX - C.Viewport._schema._extent._minX) / 2) {
+//        console.log('other mode');
+//    } else {
+//        w1 = C.CoordinatesHelper.TransformTo(w1, C.ProjectionsHelper.WGS84);
+//        w2 = C.CoordinatesHelper.TransformTo(w2, C.ProjectionsHelper.WGS84);
+//    }
+    var scaleM = Math.sqrt(Math.pow(w1.X - w2.X, 2) + Math.pow(w1.Y - w2.Y, 2))
 
-    var scaleM = distanceBetween2Points(w1, w2);
+//    var scaleM = distanceBetween2Points(w1, w2);
 
     if (scaleM > 1000) { //km scale
 

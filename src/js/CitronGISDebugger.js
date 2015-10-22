@@ -9,35 +9,40 @@
 
 var C = C || {};
 
-function debugExtensionLoader(citronGIS, baseUrl) {
+function debugExtensionLoader(map, baseUrl) {
 
-    new C.Extension.Extension(new URLHandler({
+    C.Extension.Extension_ctr.call({_map: map}, new URLHandler({
         baseUrl: baseUrl
-    }), citronGIS._layerManager, function (err, extension) {
+    }), function () {
 
-        if (err) {
-            return console.log(err);
-        }
-
-        C.Extension.Manager.register(extension);
-
-        extension._module.ui.on('display', function (element, nowindow) {
-
-            element.style.top = '50%';
-            element.style.left = '50%';
-            citronGIS._extDiv.appendChild(element);
-
-            if (!nowindow) {
-                $(element).draggable({
-                    containment: "#citrongis",
-                    scroll: false,
-                    handle: '.citrongisextension-header'
-                });
-            }
-        });
-
-        extension.run();
     });
+    //    new C.Extension.Extension(new URLHandler({
+    //        baseUrl: baseUrl
+    //    }), map, function (err, extension) {
+    //
+    //        if (err) {
+    //            return console.log(err);
+    //        }
+    //
+    //        C.Extension.Manager.register(extension);
+    //
+    //        extension._module.ui.on('display', function (element, nowindow) {
+    //
+    //            element.style.top = '50%';
+    //            element.style.left = '50%';
+    //            map._extDiv.appendChild(element);
+    //
+    //            if (!nowindow) {
+    //                $(element).draggable({
+    //                    containment: "#citrongis",
+    //                    scroll: false,
+    //                    handle: '.citrongisextension-header'
+    //                });
+    //            }
+    //        });
+    //
+    //        extension.run();
+    //    });
 }
 
 C.CitrongGISDebug = function (citronGIS) {
@@ -324,12 +329,13 @@ C.CitrongGISDebug = function (citronGIS) {
         }
     }*/
 
-    //    debugExtensionLoader(citronGIS, '/src/modules/scale/');
+    debugExtensionLoader(citronGIS, './src/modules/scale/');
     //        debugExtensionLoader(citronGIS, '/src/modules/distance/');
     //    debugExtensionLoader(citronGIS, '/src/modules/layer-manager/');
-    debugExtensionLoader(citronGIS, '/src/modules/velib/');
+    //    debugExtensionLoader(citronGIS, '/src/modules/velib/');
+//    debugExtensionLoader(citronGIS, '/src/modules/editor/');
     //    debugExtensionLoader(citronGIS, '/src/modules/flight/');
-    //            debugExtensionLoader(citronGIS, '/src/modules/what3words/');
+    //                debugExtensionLoader(citronGIS, '/src/modules/what3words/');
     //    debugExtensionLoader(citronGIS, '/src/modules/extensionTest/');
     //    debugExtensionLoader(citronGIS, '/src/modules/csv/');
     //    debugExtensionLoader(citronGIS, '/src/modules/testRequest/');
