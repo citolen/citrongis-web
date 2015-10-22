@@ -140,8 +140,10 @@ C.Interface.prototype.init = function (root, map) {
                     velib_loaded = false;
                 });
             });
+            ga('send', 'event', 'Velib/Open','click');
         } else {
             velib_ext.destroy();
+            ga('send', 'event', 'Velib/Destroy','click');
         }
     });
 
