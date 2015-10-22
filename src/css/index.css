@@ -149,6 +149,7 @@ div.citrongisextension-handler {
     border-bottom: 4px solid rgb(240, 81, 92);
     box-sizing: border-box;
     pointer-events: all;
+    z-index: 10;
 }
 
 div.citrongisextension-header {
