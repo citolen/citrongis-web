@@ -105,7 +105,9 @@ require('lib/citrongis.editable.js', function (err, editable) {
     }
 
     function mapDblClicked(evt) {
-        measureAction();
+        if (measuring) {
+            measureAction();
+        }
     }
 
     function mapClicked(evt) {

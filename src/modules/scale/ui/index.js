@@ -20,20 +20,24 @@ function updateUI() {
     w1 = C.Point(w1.X, w1.Y, w1.Z, C.Viewport._schema._crs);
     w2 = C.Point(w2.X, w2.Y, w2.Z, C.Viewport._schema._crs);
 
-    w1 = C.CoordinatesHelper.TransformTo(w1, C.ProjectionsHelper.WGS84);
-    w2 = C.CoordinatesHelper.TransformTo(w2, C.ProjectionsHelper.WGS84);
+//    if (Math.abs(w1.X, w2.X) > Math.abs(C.Viewport._schema._extent._maxX - C.Viewport._schema._extent._minX) / 2) {
+//        console.log('other mode');
+//    } else {
+//        w1 = C.CoordinatesHelper.TransformTo(w1, C.ProjectionsHelper.WGS84);
+//        w2 = C.CoordinatesHelper.TransformTo(w2, C.ProjectionsHelper.WGS84);
+//    }
+    var scaleM = Math.sqrt(Math.pow(w1.X - w2.X, 2) + Math.pow(w1.Y - w2.Y, 2))
 
-    var scaleM = distanceBetween2Points(w1, w2);
+//    var scaleM = distanceBetween2Points(w1, w2);
 
     if (scaleM > 1000) { //km scale
 
-        scaleM = Math.floor(scaleM / 1000);
-        var n = Math.pow(10, scaleM.toString().length-1);
-        scaleM = Math.ceil(scaleM / n) * n;
-
-        var barSize = Math.ceil(scaleM * 1000 / C.Viewport._resolution);
-        E.$('.val').html(scaleM + 'km');
-        E.$('.bar').width(barSize);
+        scaleM /= 1000;
+        var roundedScale = Math.floor(scaleM);
+        var n = Math.pow(10, roundedScale.toString().length-1);
+        var roundedScale = Math.ceil(roundedScale / n) * n;
+        E.$('.val').html(roundedScale + 'km');
+        E.$('.bar').width(scaleWidth * roundedScale / scaleM);
 
     } else { // m scale
         scaleM = Math.floor(scaleM);

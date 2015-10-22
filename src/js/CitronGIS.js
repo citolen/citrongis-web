@@ -27,7 +27,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
 
     this._renderer = new PIXI.CanvasRenderer($(this._rootDiv).width(), $(this._rootDiv).height(), {
         transparent: true,
-        antialias: true
+//        antialias: true
     });
 
 
@@ -35,14 +35,13 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     this._rootDiv.appendChild(this._renderer.view);
 
     this._rendererStage = new PIXI.Container();
-    //    this._rendererStage.setQuadtreeSize(this._renderer.width, this._renderer.height);
 
     this._viewport = new C.System.Viewport({
         width: this._renderer.width,
         height: this._renderer.height,
-        resolution: C.Helpers.ResolutionHelper.Resolutions[1],
+        resolution: C.Helpers.ResolutionHelper.Resolutions[9],
         schema: new C.Schema.SphericalMercator(),
-        origin: C.Helpers.CoordinatesHelper.TransformTo(new C.Geometry.LatLng(0, 0), C.Helpers.ProjectionsHelper.EPSG3857),
+        origin: C.Helpers.CoordinatesHelper.TransformTo(new C.Geometry.LatLng(48.860051, 2.342438), C.Helpers.ProjectionsHelper.EPSG3857),
         rotation: 0 * Math.PI / 180
     });
     C.Helpers.viewport = this._viewport;
@@ -51,7 +50,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     C.UI.PopupManager.init(this._rootDiv);
     this._extDiv = C.Extension.Extension.init(this._rootDiv);
 
-    C.Interface.init(this._rootDiv);
+    C.Interface.init(this._rootDiv, this);
 
     var self = this;
 
@@ -65,6 +64,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     }
 
     $(window).resize(resize);
+    setTimeout(resize, 100);
 
     C.System.Events.attach(this);
 
@@ -78,9 +78,9 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
 
     requestAnimationFrame( animate );
     function animate() {
-        requestAnimationFrame( animate );
         self._customRenderer.renderFrame();
         self._renderer.render(self._rendererStage);
+        requestAnimationFrame( animate );
     }
 }, EventEmitter, 'C.CitronGIS');
 
