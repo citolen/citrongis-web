@@ -160,8 +160,10 @@ C.Interface.prototype.init = function (root, map) {
                     w3w_loaded = false;
                 });
             });
+            ga('send', 'event', 'W3W/Open','click');
         } else {
             w3w_ext.destroy();
+            ga('send', 'event', 'W3W/Destroy','click');
         }
     });
 
@@ -178,8 +180,10 @@ C.Interface.prototype.init = function (root, map) {
                     distance_loaded = false;
                 });
             });
+            ga('send', 'event', 'Distance/Open','click');
         } else {
             distance_ext.destroy();
+            ga('send', 'event', 'Distance/Destroy','click');
         }
     });
 
@@ -196,8 +200,10 @@ C.Interface.prototype.init = function (root, map) {
                     csv_loaded = false;
                 });
             });
+            ga('send', 'event', 'CSV/Open','click');
         } else {
             csv_ext.destroy();
+            ga('send', 'event', 'CSV/Destroy','click');
         }
     });
 
@@ -214,8 +220,10 @@ C.Interface.prototype.init = function (root, map) {
                     editor_loaded = false;
                 });
             });
+            ga('send', 'event', 'Editor/Open','click');
         } else {
             editor_ext.destroy();
+            ga('send', 'event', 'Editor/Destroy','click');
         }
     });
 
@@ -336,9 +344,11 @@ C.Interface.prototype.init = function (root, map) {
     //
     blocktest.on('click', function () {
         C.System.Events.zoomInWithAnimation();
+        ga('send', 'event', 'Zoom In','click');
     });
     blocktest1.on('click', function () {
         C.System.Events.zoomOutWithAnimation();
+        ga('send', 'event', 'Zoom Out','click');
     });
     //    blocklogIn.on('click', function () {
     //        if (windowUserLogin.isVisible() == false) {
