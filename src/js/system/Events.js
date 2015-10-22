@@ -71,6 +71,7 @@ C.System.Events.zoomInWithAnimation = function () {
         if (zoomLevel + 1 < C.Helpers.ResolutionHelper.Resolutions.length) {
             var resolutionTarget = C.Helpers.ResolutionHelper.Resolutions[zoomLevel + 1];
             C.System.Events.zoomToWithAnimation(resolutionTarget, 0, 0);
+            ga('send', 'pageview', 'Zoom In');
         }
     }
 };
@@ -82,6 +83,7 @@ C.System.Events.zoomOutWithAnimation = function () {
         if (zoomLevel - 1 >= 0) {
             var resolutionTarget = C.Helpers.ResolutionHelper.Resolutions[zoomLevel - 1];
             C.System.Events.zoomToWithAnimation(resolutionTarget, 0, 0);
+            ga('send', 'pageview', 'Zoom Out');
         }
     }
 };
