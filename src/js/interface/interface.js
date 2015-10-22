@@ -133,7 +133,7 @@ C.Interface.prototype.init = function (root, map) {
         if (!velib_loaded) {
             velib_loaded = true;
             C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: './src/modules/velib/'
+                baseUrl: '/src/modules/velib/'
             }), function (err, ext) {
                 velib_ext = ext;
                 velib_ext._module.ui.on('destroy', function () {
@@ -151,7 +151,7 @@ C.Interface.prototype.init = function (root, map) {
         if (!w3w_loaded) {
             w3w_loaded = true;
             C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: './src/modules/what3words/'
+                baseUrl: '/src/modules/what3words/'
             }), function (err, ext) {
                 w3w_ext = ext;
                 w3w_ext._module.ui.on('destroy', function () {
@@ -169,7 +169,7 @@ C.Interface.prototype.init = function (root, map) {
         if (!distance_loaded) {
             distance_loaded = true;
             C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: './src/modules/distance/'
+                baseUrl: '/src/modules/distance/'
             }), function (err, ext) {
                 distance_ext = ext;
                 distance_ext._module.ui.on('destroy', function () {
@@ -187,7 +187,7 @@ C.Interface.prototype.init = function (root, map) {
         if (!csv_loaded) {
             csv_loaded = true;
             C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: './src/modules/csv/'
+                baseUrl: '/src/modules/csv/'
             }), function (err, ext) {
                 csv_ext = ext;
                 csv_ext._module.ui.on('destroy', function () {
@@ -205,7 +205,7 @@ C.Interface.prototype.init = function (root, map) {
         if (!editor_loaded) {
             editor_loaded = true;
             C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: './src/modules/editor/'
+                baseUrl: '/src/modules/editor/'
             }), function (err, ext) {
                 editor_ext = ext;
                 editor_ext._module.ui.on('destroy', function () {

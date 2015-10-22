@@ -19,6 +19,7 @@ var Cluster = C.Utils.Inherit(function (base, options) {
         zoom: -1,
         type: ClusterNodeType.CLUSTER
     });
+    this._refreshCallback = this._refresh.bind(this);
     this._initialize();
 
 }, C.Layer_class);
@@ -34,13 +35,13 @@ Cluster.prototype._initialize = function () {
 };
 
 Cluster.prototype.__added = function () {
-    C.Events.on('zoomend', this._refresh.bind(this));
+    C.Events.on('zoomend', this._refreshCallback);
     C.Layer_class.prototype.__added.apply(this, arguments);
     this._refresh();
 };
 
 Cluster.prototype.__removed = function () {
-    C.Events.off('zoomend', this._refresh.bind(this));
+    C.Events.off('zoomend', this._refreshCallback);
     C.Layer_class.prototype.__removed.apply(this, arguments);
 };
 
