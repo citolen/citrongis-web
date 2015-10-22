@@ -139,11 +139,13 @@ C.Interface.prototype.init = function (root, map) {
                 velib_ext._module.ui.on('destroy', function () {
                     velib_loaded = false;
                 });
+                velib_ext.on('stopped', function () {
+                    ga('send', 'pageview', 'Velib/Destroy');
+                });
             });
             ga('send', 'pageview', 'Velib/Open');
         } else {
             velib_ext.destroy();
-            ga('send', 'pageview', 'Velib/Destroy');
         }
     });
 
@@ -159,11 +161,13 @@ C.Interface.prototype.init = function (root, map) {
                 w3w_ext._module.ui.on('destroy', function () {
                     w3w_loaded = false;
                 });
+                w3w_ext.on('stopped', function () {
+                    ga('send', 'pageview', 'W3W/Destroy');
+                });
             });
             ga('send', 'pageview', 'W3W/Open');
         } else {
             w3w_ext.destroy();
-            ga('send', 'pageview', 'W3W/Destroy');
         }
     });
 
@@ -179,11 +183,13 @@ C.Interface.prototype.init = function (root, map) {
                 distance_ext._module.ui.on('destroy', function () {
                     distance_loaded = false;
                 });
+                distance_ext.on('stopped', function () {
+                    ga('send', 'pageview', 'Distance/Destroy');
+                });
             });
             ga('send', 'pageview', 'Distance/Open');
         } else {
             distance_ext.destroy();
-            ga('send', 'pageview', 'Distance/Destroy');
         }
     });
 
@@ -199,11 +205,13 @@ C.Interface.prototype.init = function (root, map) {
                 csv_ext._module.ui.on('destroy', function () {
                     csv_loaded = false;
                 });
+                csv_ext.on('stopped', function () {
+                    ga('send', 'pageview', 'CSV/Destroy');
+                });
             });
             ga('send', 'pageview', 'CSV/Open');
         } else {
             csv_ext.destroy();
-            ga('send', 'pageview', 'CSV/Destroy');
         }
     });
 
@@ -219,11 +227,13 @@ C.Interface.prototype.init = function (root, map) {
                 editor_ext._module.ui.on('destroy', function () {
                     editor_loaded = false;
                 });
+                editor_ext.on('stopped', function () {
+                    ga('send', 'pageview', 'Editor/Destroy');
+                });
             });
             ga('send', 'pageview', 'Editor/Open');
         } else {
             editor_ext.destroy();
-            ga('send', 'pageview', 'Editor/Destroy');
         }
     });
 
@@ -344,11 +354,9 @@ C.Interface.prototype.init = function (root, map) {
     //
     blocktest.on('click', function () {
         C.System.Events.zoomInWithAnimation();
-        ga('send', 'pageview', 'Zoom In');
     });
     blocktest1.on('click', function () {
         C.System.Events.zoomOutWithAnimation();
-        ga('send', 'pageview', 'Zoom Out');
     });
     //    blocklogIn.on('click', function () {
     //        if (windowUserLogin.isVisible() == false) {
