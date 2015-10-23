@@ -32,6 +32,14 @@ C.Interface.TileLayerBlock.prototype.addTileLayer = function (image_url, name, i
         this.emit('select', id);
     }.bind(this, id);
 
+    $(cont).mouseover(function (c) {
+        $(this._list).children().not(c).addClass('tilelayerblock-overlay');
+        $(c).removeClass('tilelayerblock-overlay')
+    }.bind(this, cont));
+    $(cont).mouseout(function (c) {
+        $(this._list).children().removeClass('tilelayerblock-overlay');
+    }.bind(this, cont));
+
     title.style.position = 'absolute';
     title.style.lineHeight = '50px';
     title.style.paddingLeft = '10px';

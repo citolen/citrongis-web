@@ -1,4 +1,4 @@
-#editor_code, #editor_interface, #editor_style {
+#examples, #editor_code, #editor_interface, #editor_style {
     width: 500px;
     height: 300px;
 }
@@ -14,7 +14,6 @@
     color: white;
     font-size: 16px;
     text-align: center;
-    padding: 6px 10px;
     cursor: pointer;
     margin-top: 1px;
     -webkit-touch-callout: none;
@@ -23,4 +22,76 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    position: relative;
+    perspective: 800px;
+    height: 30px;
+}
+
+#card {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    transform-style: preserve-3d;
+    transition: transform 1s;
+}
+
+#card figure {
+    margin: 0;
+    display: block;
+    position: absolute;
+    width: 80%;
+    height: 100%;
+    backface-visibility: hidden;
+    padding: 6px;
+    margin-left: 10%;
+}
+
+#card .front {
+    background-color: #EF4836;
+}
+#card .back {
+    background-color: #EF4836;
+    transform: rotateX( 180deg );
+}
+
+#card.flipped {
+    transform: rotateX( 180deg );
+}
+
+#examples {
+    padding-left: 10px;
+}
+
+.example {
+    margin: 20px;
+    border-radius: 6px;
+    background-color: #eee;
+    width: 200px;
+    padding: 10px;
+    color: black;
+    font-family: 'Nexa-light';
+    text-align: center;
+    float: left;
+    position: relative;
+}
+
+.example button {
+    width: 200px;
+    margin: -10px;
+    padding: 5px;
+    border-radius: 0px 0px 6px 6px;
+    border: none;
+    background-color: #9C706B;
+    color: white;
+}
+
+.cover {
+    width: 200px;
+    position: absolute;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    border-radius: 6px;
+    pointer-events: none;
+    box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.12) inset;
 }

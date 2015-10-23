@@ -68,13 +68,17 @@ require(['lib/ace/ace.js',
 
             E.$('.tabular.menu .item').tab();
 
+            var canRun = true;
             E.$('.launch_btn').click(function () {
 
+                if (!canRun) { return; }
+                canRun = false;
                 ga('send', 'pageview', 'Editor/Run');
                 if (extension) {
                     extension.destroy();
                 }
 
+                E.$('#card').addClass('flipped');
                 C.Extension(new EditorHandler({
                     code: editor_code.getValue(),
                     tmpl: editor_interface.getValue(),
@@ -84,8 +88,18 @@ require(['lib/ace/ace.js',
                     extension.on('stopped', function () {
                         ga('send', 'pageview', 'Editor/RunnableStopped');
                     });
+                    setTimeout(function () {
+                        if (extension._module.ui._isLoaded) {
+                            canRun = true;
+                            E.$('#card').removeClass('flipped');
+                        } else {
+                            extension._module.ui.on('display', function () {
+                                canRun = true;
+                                E.$('#card').removeClass('flipped');
+                            });
+                        }
+                    }, 1000);
                 });
-
             });
         });
     });

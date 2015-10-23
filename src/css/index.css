@@ -60,6 +60,10 @@
     border-left: 1px dashed black;
 }
 
+.tilelayerblock-overlay {
+    opacity: 0.3;
+}
+
 .extensions-container, .citrongis-interface {
     position: absolute;
     top: 0;
