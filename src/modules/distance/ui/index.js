@@ -69,7 +69,7 @@ require('lib/citrongis.editable.js', function (err, editable) {
         editableLine.done();
         editablePolygon.done();
         editing = false;
-        E.$('.edit').text('editer');
+        E.$('.edit').text('edit');
         E.$('.edit').hide();
         if (aire) {
             E.$('.info').text('0 m²');
@@ -248,11 +248,11 @@ require('lib/citrongis.editable.js', function (err, editable) {
     function measureAction() {
         if (!measuring) {
             resetStart();
-            E.$('.measure').text('terminer la mesure');
+            E.$('.measure').text('end measurement');
             E.$('.edit').hide();
             measuring = true;
         } else {
-            E.$('.measure').text('mesurer');
+            E.$('.measure').text('measure');
             E.$('.edit').show();
             measuring = false;
             emptyLayers();
@@ -273,12 +273,12 @@ require('lib/citrongis.editable.js', function (err, editable) {
                     editableLine.edit();
                 }
                 editing = true;
-                E.$('.edit').text("terminer l'edition");
+                E.$('.edit').text("complete editing");
             } else {
                 editablePolygon.done();
                 editableLine.done();
                 editing = false;
-                E.$('.edit').text("editer");
+                E.$('.edit').text("edit");
             }
         });
 
