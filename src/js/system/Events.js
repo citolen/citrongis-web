@@ -313,10 +313,19 @@ function easeOutQuad(t, b, c, d) {
 C.System.Events.stageUp = function (e) {
     if (!this._isDown) { return; }
 
+    var offset = $(this._citronGIS._rootDiv).offset();
+    var px = e.pageX;
+    var py = e.pageY;
+    if ((!px || !py) && e.changedTouches.length > 0) {
+        px = e.changedTouches[0].pageX;
+        py = e.changedTouches[0].pageY;
+    }
+    e.X = px - offset.left;
+    e.Y = py - offset.top;
     this.emit('mouseUp', e);
     this._isDown = false;
     if (!this._hasMoved) {
-        this.emit('mapClicked', e);
+        this.emit('mapClicked', new C.System.MouseEvent(e));
     }
 
     if (this._velocityX > 0.3 || this._velocityX < -0.3 || this._velocityY > 0.3 || this._velocityY < -0.3) {

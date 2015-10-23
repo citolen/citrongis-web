@@ -69,6 +69,7 @@ var files = [
     'citrongis-core/src/extension/LayerHelper.js',
     'citrongis-core/src/schema/SchemaBase.js',
     'citrongis-core/src/schema/SphericalMercator.js',
+    'src/js/system/MouseEvent.js',
     'src/js/system/Events.js',
     'citrongis-core/src/system/TileSchemaManager.js',
     'src/js/CitronGISDebugger.js',

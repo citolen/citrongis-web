@@ -79,6 +79,7 @@ C.Renderer.PIXIRenderer.prototype.featureAdded = function (feature, layer) {
     feature.__graphics.mousemove = function (event) { feature.__mousemove(event); }
     feature.__graphics.mouseup = function (event) { feature.__mouseup(event); }
     feature.__graphics.click = function (event) { feature.__click(event); }
+    feature.__graphics.tap = function (event) { feature.__click(event); }
     //
     //    } else {
     //        this.updateFeaturePosition(feature);
