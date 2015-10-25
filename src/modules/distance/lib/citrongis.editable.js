@@ -17,7 +17,7 @@ var Pivot = C.Utils.Inherit(function (base, location, idx) {
         radius: 7,
         location: location,
         outlineColor: 0xF2676B,
-        backgroundColor: 0xffffff,
+        color: 0xffffff,
         outlineWidth: 3
     });
 

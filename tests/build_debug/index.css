@@ -5,6 +5,41 @@ html, body {
     overflow: hidden;
 }
 
+.ribbon {
+    background: #ff6549;
+    background: -moz-linear-gradient(top, #ff6549 0%, #e0513a 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ff6549), color-stop(100%,#e0513a));
+    background: -webkit-linear-gradient(top, #ff6549 0%,#e0513a 100%);
+    background: -o-linear-gradient(top, #ff6549 0%,#e0513a 100%);
+    background: -ms-linear-gradient(top, #ff6549 0%,#e0513a 100%);
+    background: linear-gradient(to bottom, #ff6549 0%,#e0513a 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff6549', endColorstr='#e0513a',GradientType=0 );
+    overflow: hidden;
+    white-space: nowrap;
+    position: absolute;
+    right: -42px;
+    top: 8px;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+    -webkit-box-shadow: 0 0 3px #888;
+    -moz-box-shadow: 0 0 3px #888;
+    box-shadow: 0 0 3px #888;
+}
+.ribbon span {
+    border: 1px dashed rgba(95, 8, 8, 0.35);
+    color: #fff;
+    display: block;
+    font: bold 81.25% 'Nexa-light', Helvetica, Arial, sans-serif;
+    margin: 2px 0;
+    padding: 10px 50px;
+    text-align: center;
+    text-decoration: none;
+    text-shadow: 0 0 1px rgb(68, 68, 68);
+}
+
 #citrongis, .main {
     position: relative;
     height: 100%;

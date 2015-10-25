@@ -22,7 +22,7 @@ C.Interface.prototype.init = function (root, map) {
     this._grid = new C.Interface.Grid(this._container);
 
     var layerButton = new C.Interface.ButtonBlock({
-        x: 1,
+        x: 2,
         y: 1,
         width: 5,
         height: 1,

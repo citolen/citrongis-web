@@ -14,20 +14,20 @@ require('lib/citrongis.editable.js', function (err, editable) {
         location: C.LatLng(0, 0),
         opacity: 0,
         outlineColor: 0xF2676B,
-        backgroundColor: 0xffffff,
+        color: 0xffffff,
         outlineWidth: 3
     });
 
     var infoLine = C.Line({
         locations: [],
-        lineColor: 0xF2676B,
-        lineWidth: 8,
+        color: 0xF2676B,
+        width: 8,
         opacity: 0
     });
 
     var InfoPolygon = C.Polygon({
         locations: [],
-        fillColor: 0xF2676B,
+        color: 0xF2676B,
         outlineWidth: 3,
         outlineColor: 0xBF4E6C,
         opacity: 0
@@ -35,14 +35,14 @@ require('lib/citrongis.editable.js', function (err, editable) {
 
     var measuredLine = C.Line({
         locations: [],
-        lineColor: 0xBF4E6C,
-        lineWidth: 8,
+        color: 0xBF4E6C,
+        width: 8,
         opacity: 0
     });
 
     var measuredPolygon = C.Polygon({
         locations: [],
-        fillColor: 0xF2676B,
+        color: 0xF2676B,
         outlineWidth: 3,
         outlineColor: 0xBF4E6C,
         opacity: 0
@@ -112,17 +112,13 @@ require('lib/citrongis.editable.js', function (err, editable) {
     }
 
     function mapClicked(evt) {
-        var x = evt.offsetX;
-        var y = evt.offsetY;
-
-        var world = C.Viewport.screenToWorld(x, y);
-        var clickedPoint = C.Point(world.X, world.Y, 0, C.Viewport._schema._crs);
+        var clickedPoint = evt.getWorldPosition();
 
         var measurePoint = C.Circle({
             radius: 5,
             location: clickedPoint,
             outlineColor: 0xBF4E6C,
-            backgroundColor: 0xffffff,
+            color: 0xffffff,
             outlineWidth: 3
         });
 

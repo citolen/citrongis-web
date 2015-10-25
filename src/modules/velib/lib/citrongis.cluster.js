@@ -344,7 +344,7 @@ var ClusterGroup = C.Utils.Inherit(function (base, options) {
 
     this._icon = C.Circle({
         location: C.LatLng(0,0),
-        backgroundColor: 0xe67e22,
+        color: 0xe67e22,
         outlineColor: 0xf39c12,
         outlineWidth: 4,
         radius: 22,
@@ -353,7 +353,7 @@ var ClusterGroup = C.Utils.Inherit(function (base, options) {
 
     //    this._icon = C.Circle({
     //        location: C.LatLng(0,0),
-    //        backgroundColor: 0x27ae60,
+    //        color: 0x27ae60,
     //        outlineColor: 0x2ecc71,
     //        outlineWidth: 4,
     //        radius: 22,

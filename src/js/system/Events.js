@@ -7,6 +7,13 @@
 
 //TODO make an interface out of it so that each plateform can use their own events
 
+/**
+ * Manage all the map events
+ *
+ * @class Events
+ * @namespace C
+ * @extends EventEmitter
+ */
 C.System.Events = new (C.Utils.Inherit(function () {
 
     this._isDown = false;
@@ -64,6 +71,12 @@ C.System.Events.attach = function (citronGIS) {
     this._citronGIS._viewport.on('move', C.System.Events.internalUpdate.bind(this));
 };
 
+/**
+ * Zoom in with an animation
+ *
+ * @method zoomInWithAnimation
+ * @public
+ */
 C.System.Events.zoomInWithAnimation = function () {
     var zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(C.Helpers.viewport._resolution);
     if (this._currentAnimation) {
@@ -76,6 +89,12 @@ C.System.Events.zoomInWithAnimation = function () {
     }
 };
 
+/**
+ * Zoom out with an animation
+ *
+ * @method zoomOutWithAnimation
+ * @public
+ */
 C.System.Events.zoomOutWithAnimation = function () {
     var zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(C.Helpers.viewport._resolution);
     if (this._currentAnimation) {
@@ -88,6 +107,13 @@ C.System.Events.zoomOutWithAnimation = function () {
     }
 };
 
+/**
+ * Zoom to bounds
+ *
+ * @method zoomToBounds
+ * @public
+ * @param {C.Bounds} bounds Bounds to zoom to.
+ */
 C.System.Events.zoomToBounds = function (bounds) {
 
     var crsBounds = bounds.transformTo(C.Helpers.viewport._schema._crs);
@@ -119,6 +145,11 @@ C.System.Events.zoomToBounds = function (bounds) {
     C.System.Events.zoomToWithAnimation(res, centerScreen.X - (width / 2), centerScreen.Y - (height / 2));
 };
 
+/**
+ * A zoom animation reach its end
+ * @event zoomend
+ * @param {C.Viewport} viewport
+ */
 C.System.Events.zoomToWithAnimation = function (targetResolution, offsetX, offsetY) {
     var resolution = C.Helpers.viewport._resolution;
     var deltaResolution = targetResolution - C.Helpers.viewport._resolution;
@@ -283,18 +314,43 @@ C.System.Events.keyDown = function (evt) {
 
 //TODO EVENT object to add prevent function to it
 //TODO Zoom on double click
+/**
+ * Map got double clicked
+ * @event mapDblClicked
+ * @param {C.MouseEvent} e
+ */
 C.System.Events.stageDblClick = function (e) {
     if (e.target == this._citronGIS._renderer.view) {
         var offset = $(this._citronGIS._rootDiv).offset();
-        e.X = e.pageX - offset.left;
-        e.Y = e.pageY - offset.top;
-        var ret = this.emit('mapDblClicked', e);
+        var px = e.pageX;
+        var py = e.pageY;
+        if ((!px || !py) && e.changedTouches.length > 0) {
+            px = e.changedTouches[0].pageX;
+            py = e.changedTouches[0].pageY;
+        }
+        e.X = px - offset.left;
+        e.Y = py - offset.top;
+        var ret = this.emit('mapDblClicked', new C.System.MouseEvent(e));
     }
 };
 
+/**
+ * Map mousedown
+ * @event mouseDown
+ * @param {C.MouseEvent} e
+ */
 C.System.Events.stageDown = function (e) {
     if (e.target == this._citronGIS._renderer.view) {
-        this.emit('mouseDown', e);
+        var offset = $(this._citronGIS._rootDiv).offset();
+        var px = e.pageX;
+        var py = e.pageY;
+        if ((!px || !py) && e.changedTouches.length > 0) {
+            px = e.changedTouches[0].pageX;
+            py = e.changedTouches[0].pageY;
+        }
+        e.X = px - offset.left;
+        e.Y = py - offset.top;
+        this.emit('mouseDown', new C.System.MouseEvent(e));
         this._isDown = true;
         this._hasMoved = false;
         this._lastX = e.clientX || e.touches[0].pageX;
@@ -310,6 +366,16 @@ function easeOutQuad(t, b, c, d) {
     return -c *(t/=d)*(t-2) + b;
 }
 
+/**
+ * Map mouseup
+ * @event mouseUp
+ * @param {C.MouseEvent} e
+ */
+/**
+ * Map got clicked
+ * @event mapClicked
+ * @param {C.MouseEvent} e
+ */
 C.System.Events.stageUp = function (e) {
     if (!this._isDown) { return; }
 
@@ -322,7 +388,7 @@ C.System.Events.stageUp = function (e) {
     }
     e.X = px - offset.left;
     e.Y = py - offset.top;
-    this.emit('mouseUp', e);
+    this.emit('mouseUp', new C.System.MouseEvent(e));
     this._isDown = false;
     if (!this._hasMoved) {
         this.emit('mapClicked', new C.System.MouseEvent(e));
@@ -352,13 +418,18 @@ C.System.Events.stageUp = function (e) {
     }
 };
 
+/**
+ * Map mousemove
+ * @event mouseMove
+ * @param {C.MouseEvent} e
+ */
 C.System.Events.stageMove = function (e) {
 
     var offset = $(this._citronGIS._rootDiv).offset();
     e.X = e.pageX - offset.left;
     e.Y = e.pageY - offset.top;
 
-    this.emit('mouseMove', e);
+    this.emit('mouseMove', new C.System.MouseEvent(e));
     if (!this._isDown) { return; }
 
 

@@ -7,7 +7,7 @@ require('lib/papaparse.min.js', function (err, Papa) {
 
         function processCSV(csv) {
             var data = Papa.parse(csv.target.result, {
-                newline: '\n'
+//                newline: '\n'
             });
             var headers = data.data[0];
             for (var i = 0; i < headers.length; ++i) {
@@ -76,7 +76,7 @@ require('lib/papaparse.min.js', function (err, Papa) {
                 var marker = C.Circle({
                     location: C.LatLng(lat, lng),
                     radius: 6,
-                    backgroundColor: 0xffffff,
+                    color: 0xffffff,
                     outlineColor: 0xeb444e,
                     outlineWidth: 3
                 });

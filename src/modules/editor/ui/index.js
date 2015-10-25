@@ -13,7 +13,7 @@ require(['lib/ace/ace.js',
         var extension;
 
         var snippets = [
-            'var my_data_layer = C.Layer();\nmy_data_layer.addTo(E.map);\n\nE.onload(function () {\n\tE.$(\'#my_button\').click(function () {\n\t\tvar lat = Math.random() * 80 - 40;\n\t\tvar lon = Math.random() * 80 - 40;\n\n\t\tvar random_location = C.Circle({\n\t\t\tlocation: C.LatLng(lat, lon),\n\t\t\tradius: 10,\n\t\t\tbackgroundColor: 0x0000ff,\n\t\t\toutlineColor: 0xffffff,\n\t\t\toutlineWidth: 3\n\t\t});\n\t\trandom_location.addTo(my_data_layer);\n\t});\n});',
+            'var my_data_layer = C.Layer();\nmy_data_layer.addTo(E.map);\n\nE.onload(function () {\n\tE.$(\'#my_button\').click(function () {\n\t\tvar lat = Math.random() * 80 - 40;\n\t\tvar lon = Math.random() * 80 - 40;\n\n\t\tvar random_location = C.Circle({\n\t\t\tlocation: C.LatLng(lat, lon),\n\t\t\tradius: 10,\n\t\t\tcolor: 0x0000ff,\n\t\t\toutlineColor: 0xffffff,\n\t\t\toutlineWidth: 3\n\t\t});\n\t\trandom_location.addTo(my_data_layer);\n\t});\n});',
             '<div id="container">\n\t<button id="my_button">action</button>\n</div>',
             '#container {\n\ttext-align: center;\n}\n\n#my_button {\n\tborder: 1px solid red;\n\tmargin: 20px;\n}'
         ];

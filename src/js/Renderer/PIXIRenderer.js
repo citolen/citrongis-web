@@ -133,7 +133,7 @@ C.Renderer.PIXIRenderer.prototype.renderCircle = function (feature, layer) {
 
     g.clear();
     g.lineStyle(feature._outlineWidth, feature._outlineColor);
-    g.beginFill(feature._backgroundColor);
+    g.beginFill(feature._color);
     g.drawCircle(0, 0, feature._radius);
     g.endFill();
 
@@ -200,8 +200,7 @@ C.Renderer.PIXIRenderer.prototype.renderLine = function (feature, layer) {
     var g = feature.__graphics = feature.__graphics || new PIXI.Graphics();
 
     g.clear();
-    g.lineStyle(feature._lineWidth, feature._lineColor);
-    //    g.beginFill(/*feature._lineColor*/0xffffff);
+    g.lineStyle(feature._width, feature._color);
 
     var origin;
 
@@ -246,7 +245,7 @@ C.Renderer.PIXIRenderer.prototype.renderPolygon = function (feature) {
 
     g.clear();
     g.lineStyle(feature._outlineWidth, feature._outlineColor);
-    g.beginFill(feature._fillColor);
+    g.beginFill(feature._color);
 
     var origin;
     var points = [];
