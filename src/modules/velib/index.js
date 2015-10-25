@@ -98,7 +98,7 @@ require('lib/citrongis.cluster.js', function (err, Cluster) {
 						if (contentString["status"] != "OPEN")
 							colorStatus = "danger";
 
-						contentString = '<h1>Station ' + contentString["name"] + '</h1><table class="table table-bordered text-center"><thead><tr><th>#</th><th>vélos libres</th><th>places libres</th></tr></thead><tbody><tr><th><img src="/src/modules/velib/assets/parking3.png"></img></th><td class="' + colorBikes + '">' + contentString["available_bikes"] + '</td><td class="' + colorStands + '">' + contentString["available_bike_stands"] + '</td></tr><tr><th><img src="/src/modules/velib/assets/clock104.png"></img></th><td colspan="2" class="' + colorStatus + '">' + contentString["status"] + '</td></tr></tbody></table>Dernière mise à jour: ' + timeConverter(contentString["last_update"]) + '';
+						contentString = '<h1>Station ' + contentString["name"] + '</h1><table class="table table-bordered text-center"><thead><tr><th>#</th><th>Vélos libres</th><th>Places libres</th></tr></thead><tbody><tr><th><img src="/src/modules/velib/assets/parking3.png"></img></th><td class="' + colorBikes + '">' + contentString["available_bikes"] + '</td><td class="' + colorStands + '">' + contentString["available_bike_stands"] + '</td></tr><tr><th><img src="/src/modules/velib/assets/clock104.png"></img></th><td colspan="2" class="' + colorStatus + '">' + contentString["status"] + '</td></tr></tbody></table>Dernière mise à jour: ' + timeConverter(contentString["last_update"]) + '';
 
                     var p = C.Popup(this, {
                         content: contentString,

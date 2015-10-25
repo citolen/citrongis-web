@@ -218,13 +218,30 @@ C.Interface.prototype.init = function (root, map) {
         float: C.Interface.BlockFloat.topLeft,
         content: 'editor',
         css: {
-            borderRadius: '0px 4px 4px 0px',
+            borderRadius: '0px 0px 0px 0px',
             fontWeight: 'normal',
             fontSize: '15px',
             boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 5px -3px rgba(0,0,0,0.65)'
         }
     });
     this._grid.addBlock(editor);
+
+    var welcome = new C.Interface.ButtonBlock({
+        x: 18,
+        y: 1,
+        width: 3,
+        height: 1,
+        float: C.Interface.BlockFloat.topLeft,
+        content: 'welcome',
+        css: {
+            borderRadius: '0px 4px 4px 0px',
+            fontWeight: 'normal',
+            fontSize: '15px',
+            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 5px -3px rgba(0,0,0,0.65)'
+        }
+    });
+    this._grid.addBlock(welcome);
+
 
     var self = this;
 
@@ -335,6 +352,28 @@ C.Interface.prototype.init = function (root, map) {
             ga('send', 'pageview', 'Editor/Open');
         } else {
             editor_ext.destroy();
+        }
+    });
+
+    var welcome_loaded = false;
+    var welcome_ext;
+    welcome.on('click', function () {
+        if (!welcome_loaded) {
+            welcome_loaded = true;
+            C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
+                baseUrl: '/src/modules/welcome/'
+            }), function (err, ext) {
+                welcome_ext = ext;
+                welcome_ext._module.ui.on('destroy', function () {
+                    welcome_loaded = false;
+                });
+                welcome_ext.on('stopped', function () {
+                    ga('send', 'pageview', 'Welcome/Destroy');
+                });
+            });
+            ga('send', 'pageview', 'Welcome/Open');
+        } else {
+            welcome_ext.destroy();
         }
     });
 
