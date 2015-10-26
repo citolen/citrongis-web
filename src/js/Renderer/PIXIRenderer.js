@@ -675,7 +675,14 @@ C.Helpers.RendererHelper.Image.crop = function (feature, crop) {
         anchorX: feature._anchorX,
         anchorY: feature._anchorY
     });
-
+    if (crop.x >= 0.0 && crop.width <= 1.0) {
+        crop.x = crop.x * feature.__texture._frame.width;
+        crop.width = crop.width * feature.__texture._frame.width;
+    }
+    if (crop.y >= 0.0 && crop.height <= 1.0) {
+        crop.y = crop.y * feature.__texture._frame.height;
+        crop.height = crop.height * feature.__texture._frame.height;
+    }
     img.__texture = new PIXI.Texture(feature.__texture, crop);
     return img;
 };

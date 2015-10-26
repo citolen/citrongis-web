@@ -4,6 +4,20 @@
 
 var C = C || {};
 
+window.getDevicePixelRatio = function () {
+    var ratio = 1;
+    // To account for zoom, change to use deviceXDPI instead of systemXDPI
+    if (window.screen.systemXDPI !== undefined && window.screen.logicalXDPI !== undefined &&
+        window.screen.systemXDPI > window.screen.logicalXDPI) {
+        // Only allow for values > 1
+        ratio = window.screen.systemXDPI / window.screen.logicalXDPI;
+    }
+    else if (window.devicePixelRatio !== undefined) {
+        ratio = window.devicePixelRatio;
+    }
+    return ratio;
+};
+
 C.Interface = function () {
 
     this._root;
@@ -58,13 +72,14 @@ C.Interface.prototype.init = function (root, map) {
     layerWindow.addTileLayer('img/preview_osm.jpg', 'OpenStreetMap', 3);
     layerWindow.addTileLayer('img/preview_stamen.jpg', 'Toner', 4);
     layerWindow.addTileLayer('img/preview_google.jpg', 'Google', 5);
+    var ratio = window.getDevicePixelRatio() || 1;
     var tilelayers =[
         new C.Layer.Tile.TileLayer({
             name: 'Mapbox',
             source: new C.Layer.Tile.Source.TMSSource({
                 url: 'https://b.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}@2x.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q'
             }),
-            schema: C.Layer.Tile.Schema.SphericalMercatorRetina}),
+            schema: (ratio == 1) ? (C.Layer.Tile.Schema.SphericalMercatorRetina) : (C.Layer.Tile.Schema.SphericalMercator)}),
         new C.Layer.Tile.TileLayer({
             name: 'Satellite',
             source: new C.Layer.Tile.Source.TMSSource({
@@ -95,7 +110,7 @@ C.Interface.prototype.init = function (root, map) {
             source: new C.Layer.Tile.Source.TMSSource({
                 url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga&scale=2'
             }),
-            schema: C.Layer.Tile.Schema.SphericalMercatorRetina})
+            schema: (ratio == 1) ? (C.Layer.Tile.Schema.SphericalMercatorRetina) : (C.Layer.Tile.Schema.SphericalMercator)})
     ];
     var layer = new C.Geo.Layer();
     map._layerManager.addLayer(layer);

@@ -86,69 +86,69 @@ C.CitrongGISDebug = function (citronGIS) {
     //
     //    });
 
-//    var tilelayers =[
-//        new C.Layer.Tile.TileLayer({
-//            name: 'MB sketchy',
-//            source: new C.Layer.Tile.Source.TMSSource({
-//                url: 'https://b.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}@2x.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q'
-//            }),
-//            schema: C.Layer.Tile.Schema.SphericalMercatorRetina}),
-//        new C.Layer.Tile.TileLayer({
-//            name: 'Google satellite',
-//            source: new C.Layer.Tile.Source.TMSSource({
-//                url: 'http://mt3.google.com/vt/lyrs=s,h&z={z}&x={x}&y={y}'
-//            }),
-//            schema: C.Layer.Tile.Schema.SphericalMercator}),
-//        new C.Layer.Tile.TileLayer({
-//            name: 'ArcGIS',
-//            source: new C.Layer.Tile.Source.TMSSource({
-//                url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png'
-//            }),
-//            schema: C.Layer.Tile.Schema.SphericalMercator}),
-//        new C.Layer.Tile.TileLayer({
-//            name: 'Osm',
-//            source: new C.Layer.Tile.Source.TMSSource({
-//                url: 'http://{server}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-//                server: ['a', 'b', 'c']
-//            }),
-//            schema: C.Layer.Tile.Schema.SphericalMercator}),
-//        new C.Layer.Tile.TileLayer({
-//            name: 'Stamen',
-//            source: new C.Layer.Tile.Source.TMSSource({
-//                url: 'http://a.tile.stamen.com/toner/{z}/{x}/{y}.png'
-//            }),
-//            schema: C.Layer.Tile.Schema.SphericalMercator}),
-//        new C.Layer.Tile.TileLayer({
-//            name: 'Google maps',
-//            source: new C.Layer.Tile.Source.TMSSource({
-//                url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga&scale=2'
-//            }),
-//            schema: C.Layer.Tile.Schema.SphericalMercatorRetina}),
-        //        new C.Layer.Tile.TileLayer({
-        //            name: 'Open Weather Map',
-        //            source: new C.Layer.Tile.Source.TMSSource({
-        //                url: 'http://undefined.tile.openweathermap.org/map/pressure_cntr/{z}/{x}/{y}.png'
-        //            }),
-        //            schema: C.Layer.Tile.Schema.SphericalMercator}),
+    //    var tilelayers =[
+    //        new C.Layer.Tile.TileLayer({
+    //            name: 'MB sketchy',
+    //            source: new C.Layer.Tile.Source.TMSSource({
+    //                url: 'https://b.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}@2x.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q'
+    //            }),
+    //            schema: C.Layer.Tile.Schema.SphericalMercatorRetina}),
+    //        new C.Layer.Tile.TileLayer({
+    //            name: 'Google satellite',
+    //            source: new C.Layer.Tile.Source.TMSSource({
+    //                url: 'http://mt3.google.com/vt/lyrs=s,h&z={z}&x={x}&y={y}'
+    //            }),
+    //            schema: C.Layer.Tile.Schema.SphericalMercator}),
+    //        new C.Layer.Tile.TileLayer({
+    //            name: 'ArcGIS',
+    //            source: new C.Layer.Tile.Source.TMSSource({
+    //                url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png'
+    //            }),
+    //            schema: C.Layer.Tile.Schema.SphericalMercator}),
+    //        new C.Layer.Tile.TileLayer({
+    //            name: 'Osm',
+    //            source: new C.Layer.Tile.Source.TMSSource({
+    //                url: 'http://{server}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    //                server: ['a', 'b', 'c']
+    //            }),
+    //            schema: C.Layer.Tile.Schema.SphericalMercator}),
+    //        new C.Layer.Tile.TileLayer({
+    //            name: 'Stamen',
+    //            source: new C.Layer.Tile.Source.TMSSource({
+    //                url: 'http://a.tile.stamen.com/toner/{z}/{x}/{y}.png'
+    //            }),
+    //            schema: C.Layer.Tile.Schema.SphericalMercator}),
+    //        new C.Layer.Tile.TileLayer({
+    //            name: 'Google maps',
+    //            source: new C.Layer.Tile.Source.TMSSource({
+    //                url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga&scale=2'
+    //            }),
+    //            schema: C.Layer.Tile.Schema.SphericalMercatorRetina}),
+    //        new C.Layer.Tile.TileLayer({
+    //            name: 'Open Weather Map',
+    //            source: new C.Layer.Tile.Source.TMSSource({
+    //                url: 'http://undefined.tile.openweathermap.org/map/pressure_cntr/{z}/{x}/{y}.png'
+    //            }),
+    //            schema: C.Layer.Tile.Schema.SphericalMercator}),
 
 
-//    ];
+    //    ];
     //
     //    var layerGroup = citronGIS._layerManager.createGroup(owner, {
     //        name: 'Simple Group'
     //    });
     //
-//    $('#select_tilelayer_drop').on('change', function (e) {
-//        var optionSelected = $("option:selected", this);
-//        var valueSelected = parseInt(this.value);
-//
-//        for (var i = 0; i < tilelayers.length; ++i) {
-//            layer.remove(tilelayers[i]);
-//        }
-//        layer.add(tilelayers[valueSelected]);
-//    });
-//
-//    tilelayers[0].addTo(layer);
+    //    $('#select_tilelayer_drop').on('change', function (e) {
+    //        var optionSelected = $("option:selected", this);
+    //        var valueSelected = parseInt(this.value);
+    //
+    //        for (var i = 0; i < tilelayers.length; ++i) {
+    //            layer.remove(tilelayers[i]);
+    //        }
+    //        layer.add(tilelayers[valueSelected]);
+    //    });
+    //
+    //    tilelayers[0].addTo(layer);
 
     //    var l1 = new C.Geo.Layer();
     //
@@ -330,11 +330,11 @@ C.CitrongGISDebug = function (citronGIS) {
     }*/
 
     debugExtensionLoader(citronGIS, '/src/modules/scale/');
-//    debugExtensionLoader(citronGIS, '/src/modules/welcome/');
+    //    debugExtensionLoader(citronGIS, '/src/modules/welcome/');
     //        debugExtensionLoader(citronGIS, '/src/modules/distance/');
     //    debugExtensionLoader(citronGIS, '/src/modules/layer-manager/');
     //    debugExtensionLoader(citronGIS, '/src/modules/velib/');
-//    debugExtensionLoader(citronGIS, '/src/modules/editor/');
+    //    debugExtensionLoader(citronGIS, '/src/modules/editor/');
     //    debugExtensionLoader(citronGIS, '/src/modules/flight/');
     //                debugExtensionLoader(citronGIS, '/src/modules/what3words/');
     //    debugExtensionLoader(citronGIS, '/src/modules/extensionTest/');

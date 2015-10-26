@@ -72,6 +72,7 @@ module.exports = function(grunt) {
                     'citrongis-core/src/extension/LayerHelper.js',
                     'citrongis-core/src/schema/SchemaBase.js',
                     'citrongis-core/src/schema/SphericalMercator.js',
+                    'src/js/system/MouseEvent.js',
                     'src/js/system/Events.js',
                     'citrongis-core/src/system/TileSchemaManager.js',
                     'src/js/CitronGISDebugger.js',
@@ -84,6 +85,7 @@ module.exports = function(grunt) {
                     'src/js/interface/block.js',
                     'src/js/interface/buttonblock.js',
                     'src/js/interface/windowblock.js',
+                    'src/js/interface/tilelayerblock.js',
                     'src/js/interface/utilsLogin.js',
                     'src/js/CitronGIS.js'
                 ],
