@@ -36,6 +36,12 @@ EditorHandler.prototype.file = function (path, callback) {
         } else {
             return callback(true);
         }
+    } else if (path == 'lib/citrongis.cluster.js') {
+        var handle = this._fileHandles[path] = new fileHandle('/src/modules/csv/lib/citrongis.cluster.js', function (err) {
+            if (err) { return callback(true); }
+            callback(null, handle);
+        });
+        return;
     } else {
         callback(true);
     }

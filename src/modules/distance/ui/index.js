@@ -165,12 +165,7 @@ require('lib/citrongis.editable.js', function (err, editable) {
     }
 
     function mouseMove(evt) {
-        var x = evt.X;
-        var y = evt.Y;
-
-        var world = C.Viewport.screenToWorld(x, y);
-
-        var cursorWorldPosition = C.Point(world.X, world.Y, 0, C.Viewport._schema._crs);
+        var cursorWorldPosition = evt.getWorldPosition();
         distanceDot.location(cursorWorldPosition);
 
         if (!aire && measurePoints.length > 0) {

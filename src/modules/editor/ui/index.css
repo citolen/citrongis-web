@@ -1,6 +1,22 @@
-#examples, #editor_code, #editor_interface, #editor_style {
+#documentation, #examples, #editor_code, #editor_interface, #editor_style {
     width: 700px;
     height: 400px;
+}
+
+#documentation {
+    border: none;
+}
+
+#tab-doc {
+    position: relative;
+}
+
+#tab-doc a {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding: 5px;
+    background-color: white;
 }
 
 .ui.menu {
@@ -60,38 +76,44 @@
 
 #examples {
     padding-left: 10px;
+    background-color: white;
 }
 
 .example {
-    margin: 20px;
+    margin-left: 60px;
+    margin-top: 40px;
     border-radius: 6px;
-    background-color: #eee;
-    width: 200px;
+    background-color: #FEFEFE;
+    width: 250px;
     padding: 10px;
     color: black;
     font-family: 'Nexa-light';
-    text-align: center;
+    text-align: left;
     float: left;
+    display: inline-block;
     position: relative;
+    height: 120px;
 }
 
 .example button {
-    width: 200px;
-    margin: -10px;
+    width: 250px;
     padding: 5px;
     border-radius: 0px 0px 6px 6px;
     border: none;
     background-color: #9C706B;
     color: white;
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
 }
 
 .cover {
-    width: 200px;
+    width: 250px;
     position: absolute;
     height: 100%;
     top: 0px;
     left: 0px;
     border-radius: 6px;
     pointer-events: none;
-    box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.12) inset;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.21);
 }

@@ -617,6 +617,9 @@ C.Helpers.RendererHelper.Image.load = function (feature) {
 
             feature._loader.once('complete', function (loader, resources) {
 
+                if (resources.image.error) {
+                    return;
+                }
                 feature.__texture = resources.image.texture;
 
                 feature.emit('loaded', self);

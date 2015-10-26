@@ -161,7 +161,7 @@ C.Interface.prototype.init = function (root, map) {
             borderRadius: '4px 0px 0px 4px',
             fontWeight: 'normal',
             fontSize: '15px',
-            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 5px -3px rgba(0,0,0,0.65)'
+            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 3px -3px rgba(0,0,0,0.65)'
         }
     });
     this._grid.addBlock(velibbtn);
@@ -176,7 +176,7 @@ C.Interface.prototype.init = function (root, map) {
             borderRadius: '0px 0px 0px 0px',
             fontWeight: 'normal',
             fontSize: '15px',
-            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 5px -3px rgba(0,0,0,0.65)'
+            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 3px -3px rgba(0,0,0,0.65)'
         }
     });
     this._grid.addBlock(w3w);
@@ -191,7 +191,7 @@ C.Interface.prototype.init = function (root, map) {
             borderRadius: '0px 0px 0px 0px',
             fontWeight: 'normal',
             fontSize: '15px',
-            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 5px -3px rgba(0,0,0,0.65)'
+            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 3px -3px rgba(0,0,0,0.65)'
         }
     });
     this._grid.addBlock(distance);
@@ -206,7 +206,7 @@ C.Interface.prototype.init = function (root, map) {
             borderRadius: '0px 0px 0px 0px',
             fontWeight: 'normal',
             fontSize: '15px',
-            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 5px -3px rgba(0,0,0,0.65)'
+            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 3px -3px rgba(0,0,0,0.65)'
         }
     });
     this._grid.addBlock(csv);
@@ -221,7 +221,7 @@ C.Interface.prototype.init = function (root, map) {
             borderRadius: '0px 0px 0px 0px',
             fontWeight: 'normal',
             fontSize: '15px',
-            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 5px -3px rgba(0,0,0,0.65)'
+            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 3px -3px rgba(0,0,0,0.65)'
         }
     });
     this._grid.addBlock(editor);
@@ -237,7 +237,7 @@ C.Interface.prototype.init = function (root, map) {
             borderRadius: '0px 4px 4px 0px',
             fontWeight: 'normal',
             fontSize: '15px',
-            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 5px -3px rgba(0,0,0,0.65)'
+            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 3px -3px rgba(0,0,0,0.65)'
         }
     });
     this._grid.addBlock(welcome);
@@ -357,7 +357,7 @@ C.Interface.prototype.init = function (root, map) {
 
     var welcome_loaded = false;
     var welcome_ext;
-    welcome.on('click', function () {
+    function welcome_click() {
         if (!welcome_loaded) {
             welcome_loaded = true;
             C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
@@ -375,7 +375,9 @@ C.Interface.prototype.init = function (root, map) {
         } else {
             welcome_ext.destroy();
         }
-    });
+    }
+    welcome_click();
+    welcome.on('click', welcome_click);
 
     //menu btn
     //    var blocklogIn = new C.Interface.ButtonBlock({

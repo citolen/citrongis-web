@@ -45,100 +45,94 @@ require('lib/citrongis.cluster.js', function (err, Cluster) {
     }
 
     function loadContract(contract) {
-        var req = new XMLHttpRequest();
-        req.open('GET', 'https://api.jcdecaux.com/vls/v1/stations?contract=' + contract + '&apiKey=e05c3a4db316832c1abf904b999ed42fc7088e21', false);
-        req.send(null);
         if (contracts[contract]) {
             var currentContract = contracts[contract];
+            var toAdd = [];
             for (var i = 0; i < currentContract.length; ++i) {
-                baseLayer.addFeature(currentContract[i]["station"]);
+                toAdd.push(currentContract[i]["station"]);
             }
+            baseLayer.add(toAdd);
         } else {
-            contracts[contract] = [];
-            var markers = [];
-            var oldContract = contract;
-            var currentContract = contracts[contract];
-            var contract = JSON.parse(req.responseText);
-            for (var i = 0; i < contract.length; ++i) {
-
-
-                var station = C.Image({
-                    location: C.LatLng(contract[i]["position"]["lat"], contract[i]["position"]["lng"]),
-                    source:"assets/marker-icon.png"/*"http://leafletjs.com/dist/images/marker-icon.png"/*"https://mt0.google.com/vt/icon/name=icons/spotlight/spotlight-poi.png&scale=2"*/,
-                    anchorY:1,
-                    anchorX:0.5,
-                    width:25,
-                    height:41,
-                    scaleMode: C.ImageScaleMode.NEAREST
-                });
-
-                station.load();
-
-                station.set("number", contract[i]["number"]);
-                station.set("contract", contract[i]["contract_name"]);
-
-                station.on("click", function(feature, event) {
-
-
-//                    if (C.Viewport._resolution >= 100) {
-//                        return ;
-//                    }
-                    if (this.get("popup")) {
-                        this.get("popup").close();
-                    }
-                    var contentString = loadStation(this.get("contract"), this.get("number"));
-
-						var colorBikes = "success";
-						var colorStands = "success";
-						var colorStatus = "success";
-						if (contentString["available_bikes"] == 0)
-							colorBikes = "danger";
-						if (contentString["available_bike_stands"] == 0)
-							colorStands = "danger";
-						if (contentString["status"] != "OPEN")
-							colorStatus = "danger";
-
-						contentString = '<h1>Station ' + contentString["name"] + '</h1><table class="table table-bordered text-center"><thead><tr><th>#</th><th>Vélos libres</th><th>Places libres</th></tr></thead><tbody><tr><th><img src="/src/modules/velib/assets/parking3.png"></img></th><td class="' + colorBikes + '">' + contentString["available_bikes"] + '</td><td class="' + colorStands + '">' + contentString["available_bike_stands"] + '</td></tr><tr><th><img src="/src/modules/velib/assets/clock104.png"></img></th><td colspan="2" class="' + colorStatus + '">' + contentString["status"] + '</td></tr></tbody></table>Dernière mise à jour: ' + timeConverter(contentString["last_update"]) + '';
-
-                    var p = C.Popup(this, {
-                        content: contentString,
-                        auto: false
+            $.get('https://api.jcdecaux.com/vls/v1/stations?contract=' + contract + '&apiKey=e05c3a4db316832c1abf904b999ed42fc7088e21', function (contract, velib_stations) {
+                contracts[contract] = [];
+                var markers = [];
+                var oldContract = contract;
+                var currentContract = contracts[contract];
+                var contract = velib_stations;
+                for (var i = 0; i < contract.length; ++i) {
+                    var station = C.Image({
+                        location: C.LatLng(contract[i]["position"]["lat"], contract[i]["position"]["lng"]),
+                        source:"assets/marker-icon.png"/*"http://leafletjs.com/dist/images/marker-icon.png"/*"https://mt0.google.com/vt/icon/name=icons/spotlight/spotlight-poi.png&scale=2"*/,
+                        anchorY:1,
+                        anchorX:0.5,
+                        width:25,
+                        height:41,
+                        scaleMode: C.ImageScaleMode.NEAREST
                     });
-                    p.open(event);
-                    this.set("popup", p);
-                });
 
-                markers.push(station);
-                currentContract.push({"name" : contract[i]["name"], "station" : station});
-            }
+                    station.load();
 
-            baseLayer.add(markers);
+                    station.set("number", contract[i]["number"]);
+                    station.set("contract", contract[i]["contract_name"]);
+
+                    station.on("click", function(feature, event) {
+                        if (this.get("popup")) {
+                            this.get("popup").close();
+                        }
+                        var contentString = loadStation(this.get("contract"), this.get("number"));
+
+                        var colorBikes = "success";
+                        var colorStands = "success";
+                        var colorStatus = "success";
+                        if (contentString["available_bikes"] == 0)
+                            colorBikes = "danger";
+                        if (contentString["available_bike_stands"] == 0)
+                            colorStands = "danger";
+                        if (contentString["status"] != "OPEN")
+                            colorStatus = "danger";
+
+                        contentString = '<h1>Station ' + contentString["name"] + '</h1><table class="table table-bordered text-center"><thead><tr><th>#</th><th>Vélos libres</th><th>Places libres</th></tr></thead><tbody><tr><th><img src="/src/modules/velib/assets/parking3.png"></img></th><td class="' + colorBikes + '">' + contentString["available_bikes"] + '</td><td class="' + colorStands + '">' + contentString["available_bike_stands"] + '</td></tr><tr><th><img src="/src/modules/velib/assets/clock104.png"></img></th><td colspan="2" class="' + colorStatus + '">' + contentString["status"] + '</td></tr></tbody></table>Dernière mise à jour: ' + timeConverter(contentString["last_update"]) + '';
+
+                        var p = C.Popup(this, {
+                            content: contentString,
+                            auto: false
+                        });
+                        p.open(event);
+                        this.set("popup", p);
+                    });
+
+                    markers.push(station);
+                    currentContract.push({"name" : contract[i]["name"], "station" : station});
+                }
+
+                baseLayer.add(markers);
+            }.bind(null, contract));
         }
     }
 
-    function loadContracts() {
-        var req = new XMLHttpRequest();
-        req.open('GET', 'https://api.jcdecaux.com/vls/v1/contracts?apiKey=e05c3a4db316832c1abf904b999ed42fc7088e21', false);
-        req.send(null);
-        var contract = JSON.parse(req.responseText);
-        var area = document.getElementById('velib_list');
-        for (var i = 0; i < contract.length; ++i) {
-            area.innerHTML = area.innerHTML + '<div class="velib-ui-cat"><i class="fa fa-square-o"></i><span>' + contract[i]["name"] + '</span></div>';
-        }
+    function loadContracts(callback) {
+        $.get('https://api.jcdecaux.com/vls/v1/contracts?apiKey=e05c3a4db316832c1abf904b999ed42fc7088e21', function (contract) {
+            var area = E.$('#velib_list');
+            for (var i = 0; i < contract.length; ++i) {
+                area.html(area.html() + '<div class="velib-ui-cat"><i class="fa fa-square-o"></i><span>' + contract[i]["name"] + '</span></div>');
+            }
+            callback();
+        })
     }
 
     E.onload(function() {
-        loadContracts();
-        $('.velib-ui-cat').on('click', function (e) {
-            if (!$(this).find('i').hasClass('fa-check-square-o')) {
-                $(this).find('i').addClass('fa-check-square-o');
-                $(this).find('i').removeClass('fa-square-o');
-                loadContract($(this).children('span').text());
-            } else {
-                $(this).find('i').removeClass('fa-check-square-o');
-                $(this).find('i').addClass('fa-square-o');
-                removeContract($(this).children('span').text());
-            }
+        loadContracts(function () {
+            $('.velib-ui-cat').on('click', function (e) {
+                if (!$(this).find('i').hasClass('fa-check-square-o')) {
+                    $(this).find('i').addClass('fa-check-square-o');
+                    $(this).find('i').removeClass('fa-square-o');
+                    loadContract($(this).children('span').text());
+                } else {
+                    $(this).find('i').removeClass('fa-check-square-o');
+                    $(this).find('i').addClass('fa-square-o');
+                    removeContract($(this).children('span').text());
+                }
+            });
         });
     });
 

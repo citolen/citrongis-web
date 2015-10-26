@@ -39,9 +39,9 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     this._viewport = new C.System.Viewport({
         width: this._renderer.width,
         height: this._renderer.height,
-        resolution: C.Helpers.ResolutionHelper.Resolutions[9],
+        resolution: C.Helpers.ResolutionHelper.Resolutions[3],
         schema: new C.Schema.SphericalMercator(),
-        origin: C.Helpers.CoordinatesHelper.TransformTo(new C.Geometry.LatLng(48.860051, 2.342438), C.Helpers.ProjectionsHelper.EPSG3857),
+        origin: C.Helpers.CoordinatesHelper.TransformTo(new C.Geometry.LatLng(0, 0), C.Helpers.ProjectionsHelper.EPSG3857),
         rotation: 0 * Math.PI / 180
     });
     C.Helpers.viewport = this._viewport;

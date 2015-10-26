@@ -40,6 +40,17 @@ html, body {
     text-shadow: 0 0 1px rgb(68, 68, 68);
 }
 
+#citrongis-logo {
+    position: absolute;
+    right: 0;
+    bottom: -70;
+    pointer-events: none;
+}
+
+#citrongis-logo img {
+    width: 400px;
+}
+
 #citrongis, .main {
     position: relative;
     height: 100%;

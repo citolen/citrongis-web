@@ -153,8 +153,8 @@ require('lib/simplify.js', function (err, simplify) {
                 var npts = simplify(pts, 0.0001);
                 var line = C.Line({
                     locations: npts,
-                    lineColor: 0xF2676B,
-                    lineWidth: 8
+                    color: 0xF2676B,
+                    width: 8
                 });
                 line.addTo(baseLayer);
                 lines.push(line);
