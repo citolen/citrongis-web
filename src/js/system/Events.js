@@ -28,7 +28,7 @@ C.System.Events = new (C.Utils.Inherit(function () {
 
     this._wheel = 0;
     this._wheelDelta = 0;
-    this._wheelTrigger= 100;
+    this._wheelTrigger= 3;
     this._wheelTimer;
     this._resolutionTarget= 0;
     this._resolutionStep= 0;
@@ -36,7 +36,7 @@ C.System.Events = new (C.Utils.Inherit(function () {
     this._wheeldY= 0;
     this._zoomAnimation= undefined;
     this._zoomStep= 20;
-    this._zoomStepDuration= 25;
+    this._zoomStepDuration= 10;
 
     this._currentAnimation;
 
@@ -117,6 +117,7 @@ C.System.Events.zoomOutWithAnimation = function () {
 C.System.Events.zoomToBounds = function (bounds) {
 
     var crsBounds = bounds.transformTo(C.Helpers.viewport._schema._crs);
+    if (!crsBounds) { return; }
     var center = crsBounds.getCenter();
     var width = C.Helpers.viewport._width;
     var height = C.Helpers.viewport._height;
@@ -135,14 +136,45 @@ C.System.Events.zoomToBounds = function (bounds) {
     if (!res) {
         res = C.Helpers.viewport._schema._resolutions[0];
     }
-    if (C.Utils.Comparison.Equals(res, C.Helpers.viewport._resolution)) {
-        var zl = C.Helpers.viewport.getZoomLevel() + 1;
-        if (zl <= C.Helpers.viewport.getMaxZoomLevel()) {
-            res = C.Helpers.viewport.getResolutionAtZoomLevel(zl);
+    C.System.Events.zoomToCenterWithAnimation(res, center);
+};
+
+/**
+ * A zoom animation reach its end
+ * @event zoomend
+ * @param {C.Viewport} viewport
+ */
+C.System.Events.zoomToCenterWithAnimation = function (targetResolution, center) {
+    var resolution = C.Helpers.viewport._resolution;
+    var deltaResolution = targetResolution - C.Helpers.viewport._resolution;
+    var deltaCenterX = center.X - C.Helpers.viewport._origin.X;
+    var deltaCenterY = center.Y - C.Helpers.viewport._origin.Y;
+    var step = deltaResolution / 20;
+    var stepCenterX = deltaCenterX / 20;
+    var stepCenterY = deltaCenterY / 20;
+    var originalCenter = new C.Geometry.Vector2(C.Helpers.viewport._origin.X, C.Helpers.viewport._origin.Y);
+    var animationSpeed = 5;
+    var self = this;
+
+    if (this._currentAnimation) { clearTimeout(this._currentAnimation); }
+
+    this._currentAnimation = setTimeout(function zoomAnimation() {
+        resolution += step;
+        originalCenter.X += stepCenterX;
+        originalCenter.Y += stepCenterY;
+
+        if (step < 0 && resolution > targetResolution ||
+            step > 0 && resolution < targetResolution) {
+            C.Helpers.viewport.setCenter(originalCenter, true)
+            C.Helpers.viewport.zoom(resolution);
+            self._currentAnimation = setTimeout(zoomAnimation, animationSpeed);
+        } else {
+            self._currentAnimation = undefined;
+            C.Helpers.viewport.setCenter(center, true);
+            C.Helpers.viewport.zoom(targetResolution);
+            self.emit('zoomend', C.Helpers.viewport);
         }
-    }
-    var centerScreen = C.Helpers.viewport.worldToScreen(center.X, center.Y);
-    C.System.Events.zoomToWithAnimation(res, centerScreen.X - (width / 2), centerScreen.Y - (height / 2));
+    }, animationSpeed);
 };
 
 /**
@@ -204,15 +236,12 @@ C.System.Events.performWheelZoom = function () {
 }
 
 C.System.Events.wheel = function (evt) {
-    //    this._wheelDelta += evt.deltaY;
-    //
-    //    if (this._wheelTimer) {
-    //        clearTimeout(this._wheelTimer);
-    //    }
-    //
-    //    this._wheelTimer = setTimeout(this.performWheelZoom.bind(this), 100);
-
-    //        console.log(evt.deltaY, evt);
+    if (this._zoomAnimation) { return; }
+    if (evt.deltaY > 0) {
+        this._wheel += 1;
+    } else if (evt.deltaY < 0) {
+        this._wheel -= 1;
+    }
     this._wheel += evt.deltaY;
     //    console.log(this._wheel);
     if (this._wheel <= -this._wheelTrigger) {

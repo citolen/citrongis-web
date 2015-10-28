@@ -164,6 +164,7 @@ div.citrongisextension-header {
     background-color: white;
     color: #1B1B1B;
     cursor: move;
+    line-height: 24px;
 }
 
 .citrongisextension-header-minimize {

@@ -16,7 +16,16 @@
     top: 0px;
     left: 0px;
     padding: 5px;
-    background-color: white;
+    width: 100%;
+    background-color: rgb(51,122,183);
+    color: white;
+    font-family: 'Nexa-light';
+    text-align: center;
+    text-decoration: underline;
+}
+
+#tab-doc a:hover {
+    font-style: italic;
 }
 
 .ui.menu {

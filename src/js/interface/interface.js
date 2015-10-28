@@ -4,20 +4,6 @@
 
 var C = C || {};
 
-window.getDevicePixelRatio = function () {
-    var ratio = 1;
-    // To account for zoom, change to use deviceXDPI instead of systemXDPI
-    if (window.screen.systemXDPI !== undefined && window.screen.logicalXDPI !== undefined &&
-        window.screen.systemXDPI > window.screen.logicalXDPI) {
-        // Only allow for values > 1
-        ratio = window.screen.systemXDPI / window.screen.logicalXDPI;
-    }
-    else if (window.devicePixelRatio !== undefined) {
-        ratio = window.devicePixelRatio;
-    }
-    return ratio;
-};
-
 C.Interface = function () {
 
     this._root;
@@ -72,14 +58,13 @@ C.Interface.prototype.init = function (root, map) {
     layerWindow.addTileLayer('img/preview_osm.jpg', 'OpenStreetMap', 3);
     layerWindow.addTileLayer('img/preview_stamen.jpg', 'Toner', 4);
     layerWindow.addTileLayer('img/preview_google.jpg', 'Google', 5);
-    var ratio = window.getDevicePixelRatio() || 1;
     var tilelayers =[
         new C.Layer.Tile.TileLayer({
             name: 'Mapbox',
             source: new C.Layer.Tile.Source.TMSSource({
                 url: 'https://b.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}@2x.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q'
             }),
-            schema: (ratio == 1) ? (C.Layer.Tile.Schema.SphericalMercatorRetina) : (C.Layer.Tile.Schema.SphericalMercator)}),
+            schema: C.Layer.Tile.Schema.SphericalMercatorRetina}),
         new C.Layer.Tile.TileLayer({
             name: 'Satellite',
             source: new C.Layer.Tile.Source.TMSSource({
@@ -110,7 +95,7 @@ C.Interface.prototype.init = function (root, map) {
             source: new C.Layer.Tile.Source.TMSSource({
                 url: 'http://mt0.google.com/vt/lyrs=m@169000000&hl=en&x={x}&y={y}&z={z}&s=Ga&scale=2'
             }),
-            schema: (ratio == 1) ? (C.Layer.Tile.Schema.SphericalMercatorRetina) : (C.Layer.Tile.Schema.SphericalMercator)})
+            schema: C.Layer.Tile.Schema.SphericalMercatorRetina})
     ];
     var layer = new C.Geo.Layer();
     map._layerManager.addLayer(layer);
@@ -241,8 +226,24 @@ C.Interface.prototype.init = function (root, map) {
     });
     this._grid.addBlock(editor);
 
-    var welcome = new C.Interface.ButtonBlock({
+    var instagram = new C.Interface.ButtonBlock({
         x: 18,
+        y: 1,
+        width: 3,
+        height: 1,
+        float: C.Interface.BlockFloat.topLeft,
+        content: 'instagram',
+        css: {
+            borderRadius: '0px 0px 0px 0px',
+            fontWeight: 'normal',
+            fontSize: '15px',
+            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 3px -3px rgba(0,0,0,0.65)'
+        }
+    });
+    this._grid.addBlock(instagram);
+
+    var welcome = new C.Interface.ButtonBlock({
+        x: 21,
         y: 1,
         width: 3,
         height: 1,
@@ -367,6 +368,28 @@ C.Interface.prototype.init = function (root, map) {
             ga('send', 'pageview', 'Editor/Open');
         } else {
             editor_ext.destroy();
+        }
+    });
+
+    var instagram_loaded = false;
+    var instagram_ext;
+    instagram.on('click', function () {
+        if (!instagram_loaded) {
+            instagram_loaded = true;
+            C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
+                baseUrl: '/src/modules/instagram/'
+            }), function (err, ext) {
+                instagram_ext = ext;
+                instagram_ext._module.ui.on('destroy', function () {
+                    instagram_loaded = false;
+                });
+                instagram_ext.on('stopped', function () {
+                    ga('send', 'pageview', 'Instagram/Destroy');
+                });
+            });
+            ga('send', 'pageview', 'Instagram/Open');
+        } else {
+            instagram_ext.destroy();
         }
     });
 
