@@ -10,32 +10,9 @@ require('lib/citrongis.cluster.js', function (err, Cluster) {
 
         function login_success() {
             display_ui();
-            $.ajax({
-                url: 'https://api.instagram.com/v1/users/self/feed?access_token=' + access_token,
-                dataType: "jsonp",
-                success: function (instaFeed) {
-                    my_data_layer.clearLayer();
-                    var medias = instaFeed.data;
-                    for (var i = 0; i < medias.length; ++i) {
-                        var media = medias[i];
-                        var pic = C.Circle({
-                            location: C.LatLng(media.location.latitude, media.location.longitude),
-                            radius: 10,
-                            color: 0x4E7BA0,
-                            outlineColor: 0xffffff,
-                            outlineWidth: 4
-                        });
-                        pic.addTo(my_data_layer);
-                        var popup = C.Popup(pic, {
-                            content: '<a class="shadow"><img class="popup-pic" src="' + media.images.standard_resolution.url + '" width="300" /></a><br/><span class="popup-caption">' + ((media.caption && media.caption.text) ? (media.caption.text):('')) + '</span><span class="popup-location">' + media.location.name + '</span>'
-                        });
-                        pic.bindPopup(popup);
-                    }
-                    C.Events.zoomToBounds(my_data_layer.getBounds());
-                    $('#me_btn').html('<i class="fa fa-eye"></i> me');
-                }
+            load_user_feed('self', null, function () {
+                $('#me_btn').html('<i class="fa fa-eye"></i> me');
             });
-
         }
 
         function display_ui() {
@@ -53,33 +30,53 @@ require('lib/citrongis.cluster.js', function (err, Cluster) {
             }
         }
 
-        function load_user_feed(id, elem) {
-            $.ajax({
-                url: 'https://api.instagram.com/v1/users/' + id + '/media/recent?access_token=' + access_token,
-                dataType: "jsonp",
-                success: function (instaRes) {
-                    my_data_layer.clearLayer();
-                    var medias = instaRes.data;
-                    for (var i = 0; i < medias.length; ++i) {
-                        var media = medias[i];
-                        if (!media.location) { continue; }
-                        var pic = C.Circle({
-                            location: C.LatLng(media.location.latitude, media.location.longitude),
-                            radius: 10,
-                            color: 0x4E7BA0,
-                            outlineColor: 0xffffff,
-                            outlineWidth: 4
-                        });
-                        pic.addTo(my_data_layer);
-                        var popup = C.Popup(pic, {
-                            content: '<a class="shadow"><img class="popup-pic" src="' + media.images.standard_resolution.url + '" width="300" /></a><br/><span class="popup-caption">' + ((media.caption && media.caption.text) ? (media.caption.text):('')) + '</span><span class="popup-location">' + media.location.name + '</span>'
-                        });
-                        pic.bindPopup(popup);
+        function load_user_feed(id, elem, callback) {
+            my_data_layer.clearLayer();
+            var url = 'https://api.instagram.com/v1/users/' + id + '/media/recent?count=100&access_token=' + access_token;
+            var count = 0;
+            var refresh = 0;
+            var it = function (url) {
+                ++refresh;
+                $.ajax({
+                    url: url,
+                    dataType: "jsonp",
+                    success: function (instaRes) {
+                        var medias = instaRes.data;
+                        if (medias) {
+                            for (var i = 0; i < medias.length; ++i) {
+                                var media = medias[i];
+                                if (!media.location) { continue; }
+                                var pic = C.Circle({
+                                    location: C.LatLng(media.location.latitude, media.location.longitude),
+                                    radius: 10,
+                                    color: 0x4E7BA0,
+                                    outlineColor: 0xffffff,
+                                    outlineWidth: 4
+                                });
+                                pic.addTo(my_data_layer);
+                                var popup = C.Popup(pic, {
+                                    content: '<a class="shadow"><img class="popup-pic" src="' + media.images.standard_resolution.url + '" width="300" /></a><br/><span class="popup-caption">' + ((media.caption && media.caption.text) ? (media.caption.text):('')) + '</span><span class="popup-location">' + media.location.name + '</span>'
+                                });
+                                pic.bindPopup(popup);
+                                ++count;
+                            }
+                        }
+
+                        if (medias && refresh < 6 && count < 100 && instaRes.pagination && instaRes.pagination.next_url) {
+                            it (instaRes.pagination.next_url);
+                        } else {
+                            C.Events.zoomToBounds(my_data_layer.getBounds());
+                            if (elem) {
+                                $('button', elem).html('<i class="fa fa-eye"></i>');
+                            }
+                            if (callback) {
+                                callback();
+                            }
+                        }
                     }
-                    C.Events.zoomToBounds(my_data_layer.getBounds());
-                    $('button', elem).html('<i class="fa fa-eye"></i>');
-                }
-            });
+                });
+            };
+            it (url);
         }
 
         function search() {

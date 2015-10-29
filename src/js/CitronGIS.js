@@ -26,7 +26,8 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     C.Helpers.layermanager = this._layerManager = new C.Extension.LayerManager();
 
     this._renderer = new PIXI.CanvasRenderer($(this._rootDiv).width(), $(this._rootDiv).height(), {
-        transparent: true,
+        backgroundColor: 0xffffff
+//        transparent: true,
 //        antialias: true
     });
 

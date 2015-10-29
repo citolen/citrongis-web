@@ -646,21 +646,32 @@ C.Helpers.RendererHelper.Image.load = function (feature) {
                         return feature.emit('error', self);
                     }
 
-                    var bytes = handle.asUint8Array();
-                    var binary = '';
-                    for (var i = 0; i < bytes.byteLength; i++) {
-                        binary += String.fromCharCode(bytes[i])
-                    }
-                    var imageb64 = 'data:image/png;base64,' + window.btoa(binary);
-                    var img = new Image();
-                    img.onload = function () {
-                        feature.__texture = new PIXI.Texture(new PIXI.BaseTexture(img, C.Renderer.PIXIRenderer.scaleModeConvert(feature._scaleMode)));
+                    var cache = feature._context._resources.get(feature._source);
+
+                    if (cache) {
+                        feature.__texture = new PIXI.Texture(new PIXI.BaseTexture(cache, C.Renderer.PIXIRenderer.scaleModeConvert(feature._scaleMode)));
                         feature.emit('loaded', self);
                         feature._mask |= C.Geo.Feature.Image.MaskIndex.SOURCE;
                         feature.emit('sourceChanged', self._source);
                         feature.makeDirty();
-                    };
-                    img.src = imageb64;
+                    } else {
+                        var bytes = handle.asUint8Array();
+                        var binary = '';
+                        for (var i = 0; i < bytes.byteLength; i++) {
+                            binary += String.fromCharCode(bytes[i])
+                        }
+                        var imageb64 = 'data:image/png;base64,' + window.btoa(binary);
+                        var img = new Image();
+                        img.onload = function () {
+                            feature.__texture = new PIXI.Texture(new PIXI.BaseTexture(img, C.Renderer.PIXIRenderer.scaleModeConvert(feature._scaleMode)));
+                            feature.emit('loaded', self);
+                            feature._mask |= C.Geo.Feature.Image.MaskIndex.SOURCE;
+                            feature.emit('sourceChanged', self._source);
+                            feature.makeDirty();
+                        };
+                        img.src = imageb64;
+                        feature._context._resources.set(feature._source, img);
+                    }
                 });
             }
             break;

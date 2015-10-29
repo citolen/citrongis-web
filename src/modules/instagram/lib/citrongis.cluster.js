@@ -29,8 +29,8 @@ Cluster.prototype._initialize = function () {
         this._maxZoom = C.Viewport.getMaxZoomLevel();
     }
     for (var i = 0; i <= this._maxZoom; ++i) {
-        this._clusterGrids[i] = new ClusterGrid(150 * C.Viewport.getResolutionAtZoomLevel(i));
-        this._unclusterGrids[i] = new ClusterGrid(150 * C.Viewport.getResolutionAtZoomLevel(i));
+        this._clusterGrids[i] = new ClusterGrid(80 * C.Viewport.getResolutionAtZoomLevel(i));
+        this._unclusterGrids[i] = new ClusterGrid(80 * C.Viewport.getResolutionAtZoomLevel(i));
     }
 };
 

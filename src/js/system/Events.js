@@ -20,7 +20,7 @@ C.System.Events = new (C.Utils.Inherit(function () {
     this._hasMoved= false;
     this._lastX= undefined;
     this._lastY= undefined;
-    this._movedTimeout= 300;
+    this._movedTimeout= 200;
 
     this._velocityX = 0;
     this._velocityY = 0;
@@ -36,7 +36,7 @@ C.System.Events = new (C.Utils.Inherit(function () {
     this._wheeldY= 0;
     this._zoomAnimation= undefined;
     this._zoomStep= 20;
-    this._zoomStepDuration= 10;
+    this._zoomStepDuration= 8;
 
     this._currentAnimation;
 
@@ -126,8 +126,8 @@ C.System.Events.zoomToBounds = function (bounds) {
     var res;
     for (var z = C.Helpers.viewport._schema._resolutions.length-1; z >= 0; --z) {
         var resolution = C.Helpers.viewport._schema._resolutions[z];
-        var tw = width * resolution;
-        var th = height * resolution;
+        var tw = (width - 50) * resolution;
+        var th = (height - 50) * resolution;
         if (tw > boundsWidth && th > boundsHeight) {
             res = resolution;
             break;
@@ -149,11 +149,11 @@ C.System.Events.zoomToCenterWithAnimation = function (targetResolution, center) 
     var deltaResolution = targetResolution - C.Helpers.viewport._resolution;
     var deltaCenterX = center.X - C.Helpers.viewport._origin.X;
     var deltaCenterY = center.Y - C.Helpers.viewport._origin.Y;
-    var step = deltaResolution / 20;
-    var stepCenterX = deltaCenterX / 20;
-    var stepCenterY = deltaCenterY / 20;
+    var step = deltaResolution / 15;
+    var stepCenterX = deltaCenterX / 15;
+    var stepCenterY = deltaCenterY / 15;
     var originalCenter = new C.Geometry.Vector2(C.Helpers.viewport._origin.X, C.Helpers.viewport._origin.Y);
-    var animationSpeed = 5;
+    var animationSpeed = 15;
     var self = this;
 
     if (this._currentAnimation) { clearTimeout(this._currentAnimation); }
@@ -185,8 +185,8 @@ C.System.Events.zoomToCenterWithAnimation = function (targetResolution, center) 
 C.System.Events.zoomToWithAnimation = function (targetResolution, offsetX, offsetY) {
     var resolution = C.Helpers.viewport._resolution;
     var deltaResolution = targetResolution - C.Helpers.viewport._resolution;
-    var step = deltaResolution / 20;
-    var animationSpeed = 5;
+    var step = deltaResolution / 15;
+    var animationSpeed = 15;
     var self = this;
 
     if (this._currentAnimation) { clearTimeout(this._currentAnimation); }
