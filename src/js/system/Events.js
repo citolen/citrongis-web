@@ -18,6 +18,7 @@ C.System.Events = new (C.Utils.Inherit(function () {
 
     this._isDown = false;
     this._hasMoved= false;
+    this._isPrevented = false;
     this._lastX= undefined;
     this._lastY= undefined;
     this._movedTimeout= 200;
@@ -380,9 +381,15 @@ C.System.Events.stageDown = function (e) {
         }
         e.X = px - offset.left;
         e.Y = py - offset.top;
-        this.emit('mouseDown', new C.System.MouseEvent(e));
+        this._isPrevented = false;
+        var evt = new C.System.MouseEvent(e);
+        this.emit('mouseDown', evt);
         this._isDown = true;
         this._hasMoved = false;
+        if (evt._isPrevented) {
+            this._isPrevented = true;
+            return;
+        }
         this._lastX = e.clientX || e.touches[0].pageX;
         this._lastY = e.clientY || e.touches[0].pageY;
 
@@ -423,6 +430,9 @@ C.System.Events.stageUp = function (e) {
     if (!this._hasMoved) {
         this.emit('mapClicked', new C.System.MouseEvent(e));
     }
+    if (this._isPrevented) {
+        return;
+    }
 
     if (this._velocityX > 0.3 || this._velocityX < -0.3 || this._velocityY > 0.3 || this._velocityY < -0.3) {
         var timeConstant = 400; //ms
@@ -461,7 +471,7 @@ C.System.Events.stageMove = function (e) {
 
     this.emit('mouseMove', new C.System.MouseEvent(e));
     if (!this._isDown) { return; }
-
+    if (this._isPrevented) { return; }
 
     var x = e.clientX || e.touches[0].pageX;
     var y = e.clientY || e.touches[0].pageY;

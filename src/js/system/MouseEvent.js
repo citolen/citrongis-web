@@ -12,6 +12,17 @@ C.System.MouseEvent = function (originalEvent) {
 
     this.originalEvent = originalEvent;
 
+    this._isPrevented = false;
+};
+
+/**
+ * Prevent event from going further in CitronGIS
+ *
+ * @method preventDefault
+ * @public
+ */
+C.System.MouseEvent.prototype.preventDefault = function () {
+    this._isPrevented = true;
 };
 
 /**
