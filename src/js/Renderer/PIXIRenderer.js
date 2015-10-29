@@ -194,7 +194,7 @@ C.Renderer.PIXIRenderer.prototype.renderLine = function (feature, layer) {
         for (var i = 0; i < feature._locations.length; ++i) {
             feature.__locations.push(C.Helpers.CoordinatesHelper.TransformTo(feature._locations[i], this._viewport._schema._crs));
         }
-        feature.__locationChanged = false;
+        feature._locationChanged = false;
     }
 
     var g = feature.__graphics = feature.__graphics || new PIXI.Graphics();
