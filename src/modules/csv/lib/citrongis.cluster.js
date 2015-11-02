@@ -29,13 +29,8 @@ Cluster.prototype._initialize = function () {
         this._maxZoom = C.Viewport.getMaxZoomLevel();
     }
     for (var i = 0; i <= this._maxZoom; ++i) {
-        if (i == this._maxZoom) {
-            this._clusterGrids[i] = new ClusterGrid(5 * C.Viewport.getResolutionAtZoomLevel(i));
-            this._unclusterGrids[i] = new ClusterGrid(5 * C.Viewport.getResolutionAtZoomLevel(i));
-        } else {
-            this._clusterGrids[i] = new ClusterGrid(150 * C.Viewport.getResolutionAtZoomLevel(i));
-            this._unclusterGrids[i] = new ClusterGrid(150 * C.Viewport.getResolutionAtZoomLevel(i));
-        }
+        this._clusterGrids[i] = new ClusterGrid(80 * C.Viewport.getResolutionAtZoomLevel(i));
+        this._unclusterGrids[i] = new ClusterGrid(80 * C.Viewport.getResolutionAtZoomLevel(i));
     }
 };
 
@@ -48,6 +43,17 @@ Cluster.prototype.__added = function () {
 Cluster.prototype.__removed = function () {
     C.Events.off('zoomend', this._refreshCallback);
     C.Layer_class.prototype.__removed.apply(this, arguments);
+};
+
+Cluster.prototype.getBounds = function () {
+    var bounds = C.Bounds();
+    for (var i = 0; i < this._nonClusteringFeature.length; ++i) {
+        bounds.extend(this._nonClusteringFeature[i].getBounds());
+    }
+    for (var i = 0; i < this._clusteringFeature.length; ++i) {
+        bounds.extend(this._clusteringFeature[i].getBounds());
+    }
+    return bounds;
 };
 
 Cluster.prototype.add = function (feature) {
@@ -80,6 +86,15 @@ Cluster.prototype.remove = function (feature) {
         this._remove(feature);
     }
     this.refreshAll();
+};
+
+Cluster.prototype.clearLayer = function () {
+    for (; this._nonClusteringFeature.length > 0;) {
+        this.remove(this._nonClusteringFeature[0]);
+    }
+    for (; this._clusteringFeature.length > 0;) {
+        this.remove(this._clusteringFeature[0]);
+    }
 };
 
 Cluster.prototype._remove = function (feature) {
@@ -119,7 +134,7 @@ Cluster.prototype._add = function (feature, refresh) {
 };
 
 Cluster.prototype._refresh = function () {
-    this.clearLayer();
+    C.Layer_class.prototype.clearLayer.apply(this);
 
     var zoom = C.Viewport.getZoomLevel();
 
@@ -187,7 +202,8 @@ Cluster.prototype._addObjectToCluster = function (feature, refresh) {
         feature: feature,
         type: ClusterNodeType.FEATURE,
         location: featureLocation,
-        zoom: this._maxZoom
+        zoom: this._maxZoom,
+        maxZoom: this._maxZoom
     });
 
     for (var zoom = this._maxZoom; zoom >= 0; --zoom) {
@@ -214,7 +230,8 @@ Cluster.prototype._addObjectToCluster = function (feature, refresh) {
             var clusterNode = new ClusterNode({
                 feature: clusterGroup,
                 type: ClusterNodeType.CLUSTER,
-                zoom: zoom
+                zoom: zoom,
+                maxZoom: this._maxZoom
             });
             clusterGroup._node = clusterNode;
             clusterNode.addChild(closestNode, refresh);
@@ -228,7 +245,8 @@ Cluster.prototype._addObjectToCluster = function (feature, refresh) {
                 var clusterNode = new ClusterNode({
                     feature: clusterGroup,
                     type: ClusterNodeType.CLUSTER,
-                    zoom: z
+                    zoom: z,
+                    maxZoom: this._maxZoom
                 });
                 clusterGroup._node = clusterNode;
                 clusterNode.addChild(lastParent, refresh);
@@ -282,6 +300,8 @@ var ClusterNode = function (options) {
     this._location = options.location;
 
     this._zoom = options.zoom;
+
+    this._maxZoom = options.maxZoom;
 
     this._needRefresh = false;
 };
@@ -356,15 +376,6 @@ var ClusterGroup = C.Utils.Inherit(function (base, options) {
         opacity: 1
     });
 
-    //    this._icon = C.Circle({
-    //        location: C.LatLng(0,0),
-    //        color: 0x27ae60,
-    //        outlineColor: 0x2ecc71,
-    //        outlineWidth: 4,
-    //        radius: 22,
-    //        opacity: 1
-    //    });
-
     this._label = C.Text({
         location: C.LatLng(0,0),
         text: '0',
@@ -378,6 +389,8 @@ var ClusterGroup = C.Utils.Inherit(function (base, options) {
 
     this._onclick = this.onclick.bind(this);
 
+    this._spiderified = false;
+    this._spiderifyMaterial;
 
 }, C.FeatureGroup_class);
 
@@ -390,12 +403,85 @@ ClusterGroup.prototype.__added = function () {
 ClusterGroup.prototype.__removed = function () {
     this._icon.off('click', this._onclick);
     this._label.off('click', this._onclick);
+    this.unspiderify();
     C.FeatureGroup_class.prototype.__removed.apply(this, arguments);
 };
 
+ClusterGroup.prototype.unspiderify = function () {
+    if (!this._spiderified) { return; }
+    var children = this._node._children;
+
+    for (var i = 0; i < children.length; ++i) {
+        var child = children[i];
+        child._feature.offset(null);
+        C.Layer_class.prototype.remove.call(this, child._feature);
+    }
+    for (var i = 0; i < this._spiderifyMaterial.length; ++i) {
+        C.Layer_class.prototype.remove.call(this, this._spiderifyMaterial[i]);
+    }
+    C.Layer_class.prototype.add.call(this, this._icon);
+    C.Layer_class.prototype.add.call(this, this._label);
+    this._spiderified = false;
+    this._spiderifyMaterial = undefined;
+};
+
+ClusterGroup.prototype.spiderify = function () {
+    var children = this._node._children;
+    var angleStep = Math.PI * 2 / children.length;
+    var radius = 50 + children.length * 4;
+
+    this._spiderifyMaterial = [];
+    var loc = this._icon.location();
+    var systemLoc = C.CoordinatesHelper.TransformTo(loc, C.Schema._crs);
+    var screen = C.Viewport.worldToScreen(systemLoc.X, systemLoc.Y);
+
+    for (var i = 0; i < children.length; ++i) {
+        var child = children[i];
+        var angle = i * angleStep;
+        var x = - Math.sin(angle) * radius;
+        var y = Math.cos(angle) * radius;
+
+        var childLoc = child._feature.location();
+        var childSystemLoc = C.CoordinatesHelper.TransformTo(childLoc, C.Schema._crs);
+        var childScreen = C.Viewport.worldToScreen(childSystemLoc.X, childSystemLoc.Y);
+
+        child._feature.offset({
+            X: x + (screen.X - childScreen.X),
+            Y: y + (screen.Y - childScreen.Y)
+        });
+
+        var offsetSystemLoc = C.Viewport.screenToWorld(screen.X + x, screen.Y + y);
+        offsetSystemLoc = C.Point(offsetSystemLoc.X, offsetSystemLoc.Y, 0, C.Schema._crs);
+        var line = C.Line({
+            locations: [systemLoc, offsetSystemLoc]
+        });
+        this._spiderifyMaterial.push(line);
+        C.Layer_class.prototype.add.call(this, line);
+        C.Layer_class.prototype.add.call(this, child._feature);
+    }
+    var center = C.Circle({
+        location: this._icon.location(),
+        color: 0xffffff,
+        outlineWidth: 4,
+        outlineColor: 0xAAAAAA,
+        radius: 7
+    });
+    center.on('click', this.unspiderify.bind(this));
+    this._spiderifyMaterial.push(center);
+    C.Layer_class.prototype.add.call(this, center);
+
+    C.Layer_class.prototype.remove.call(this, this._icon);
+    C.Layer_class.prototype.remove.call(this, this._label);
+    this._spiderified = true;
+};
+
 ClusterGroup.prototype.onclick = function () {
-    var bounds = this.getBounds();
-    C.Events.zoomToBounds(bounds);
+    if (this._node._zoom == this._node._maxZoom) { //spiderify
+        this.spiderify();
+    } else {
+        var bounds = this.getBounds();
+        C.Events.zoomToBounds(bounds);
+    }
 };
 
 ClusterGroup.prototype.getCenter = function () {

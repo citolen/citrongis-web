@@ -27,7 +27,7 @@ C.Interface.prototype.init = function (root, map) {
         width: 5,
         height: 1,
         float: C.Interface.BlockFloat.topRight,
-        content: '<i class="fa fa-map-o"></i>&nbsp;Mapbox',
+        content: '<i class="fa fa-map-o"></i>&nbsp;Select map',
         css: {
             borderRadius: '4px',
             fontWeight: 'normal',
@@ -52,12 +52,12 @@ C.Interface.prototype.init = function (root, map) {
             overflow: 'hidden'
         }
     });
-    layerWindow.addTileLayer('img/preview_mapbox.jpg', 'Mapbox', 0);
-    layerWindow.addTileLayer('img/preview_satellite.jpg', 'Satellite', 1);
-    layerWindow.addTileLayer('img/preview_arcgis.jpg', 'Arcgis', 2);
-    layerWindow.addTileLayer('img/preview_osm.jpg', 'OpenStreetMap', 3);
-    layerWindow.addTileLayer('img/preview_stamen.jpg', 'Toner', 4);
-    layerWindow.addTileLayer('img/preview_google.jpg', 'Google', 5);
+    layerWindow.addTileLayer('./img/preview_mapbox.jpg', 'Mapbox', 0);
+    layerWindow.addTileLayer('./img/preview_satellite.jpg', 'Satellite', 1);
+    layerWindow.addTileLayer('./img/preview_arcgis.jpg', 'Arcgis', 2);
+    layerWindow.addTileLayer('./img/preview_osm.jpg', 'OpenStreetMap', 3);
+    layerWindow.addTileLayer('./img/preview_stamen.jpg', 'Toner', 4);
+    layerWindow.addTileLayer('./img/preview_google.jpg', 'Google', 5);
     var tilelayers =[
         new C.Layer.Tile.TileLayer({
             name: 'Mapbox',
@@ -109,7 +109,7 @@ C.Interface.prototype.init = function (root, map) {
         currentId = id;
         self._grid.removeBlock(layerWindow);
         layerWindowOpen = false;
-        layerButton.setContent('<i class="fa fa-map-o"></i>&nbsp;' + tilelayers[id]._name);
+//        layerButton.setContent('<i class="fa fa-map-o"></i>&nbsp;' + tilelayers[id]._name);
     });
     var layerWindowOpen = false;
     layerButton.on('click', function () {
@@ -267,7 +267,7 @@ C.Interface.prototype.init = function (root, map) {
         if (!velib_loaded) {
             velib_loaded = true;
             C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: '/src/modules/velib/'
+                baseUrl: './src/modules/velib/'
             }), function (err, ext) {
                 velib_ext = ext;
                 velib_ext._module.ui.on('destroy', function () {
@@ -289,7 +289,7 @@ C.Interface.prototype.init = function (root, map) {
         if (!w3w_loaded) {
             w3w_loaded = true;
             C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: '/src/modules/what3words/'
+                baseUrl: './src/modules/what3words/'
             }), function (err, ext) {
                 w3w_ext = ext;
                 w3w_ext._module.ui.on('destroy', function () {
@@ -311,7 +311,7 @@ C.Interface.prototype.init = function (root, map) {
         if (!distance_loaded) {
             distance_loaded = true;
             C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: '/src/modules/distance/'
+                baseUrl: './src/modules/distance/'
             }), function (err, ext) {
                 distance_ext = ext;
                 distance_ext._module.ui.on('destroy', function () {
@@ -333,7 +333,7 @@ C.Interface.prototype.init = function (root, map) {
         if (!csv_loaded) {
             csv_loaded = true;
             C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: '/src/modules/csv/'
+                baseUrl: './src/modules/csv/'
             }), function (err, ext) {
                 csv_ext = ext;
                 csv_ext._module.ui.on('destroy', function () {
@@ -355,7 +355,7 @@ C.Interface.prototype.init = function (root, map) {
         if (!editor_loaded) {
             editor_loaded = true;
             C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: '/src/modules/editor/'
+                baseUrl: './src/modules/editor/'
             }), function (err, ext) {
                 editor_ext = ext;
                 editor_ext._module.ui.on('destroy', function () {
@@ -377,7 +377,7 @@ C.Interface.prototype.init = function (root, map) {
         if (!instagram_loaded) {
             instagram_loaded = true;
             C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: '/src/modules/instagram/'
+                baseUrl: './src/modules/instagram/'
             }), function (err, ext) {
                 instagram_ext = ext;
                 instagram_ext._module.ui.on('destroy', function () {
@@ -399,7 +399,7 @@ C.Interface.prototype.init = function (root, map) {
         if (!welcome_loaded) {
             welcome_loaded = true;
             C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: '/src/modules/welcome/'
+                baseUrl: './src/modules/welcome/'
             }), function (err, ext) {
                 welcome_ext = ext;
                 welcome_ext._module.ui.on('destroy', function () {

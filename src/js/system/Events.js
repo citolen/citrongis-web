@@ -78,13 +78,15 @@ C.System.Events.attach = function (citronGIS) {
  * @method zoomInWithAnimation
  * @public
  */
-C.System.Events.zoomInWithAnimation = function () {
+C.System.Events.zoomInWithAnimation = function (offsetX, offsetY) {
+    offsetX = offsetX || 0;
+    offsetY = offsetY || 0;
     var zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(C.Helpers.viewport._resolution);
     if (this._currentAnimation) {
     } else {
         if (zoomLevel + 1 < C.Helpers.ResolutionHelper.Resolutions.length) {
             var resolutionTarget = C.Helpers.ResolutionHelper.Resolutions[zoomLevel + 1];
-            C.System.Events.zoomToWithAnimation(resolutionTarget, 0, 0);
+            C.System.Events.zoomToWithAnimation(resolutionTarget, offsetX, offsetY);
             ga('send', 'pageview', 'Zoom In');
         }
     }
@@ -188,6 +190,7 @@ C.System.Events.zoomToWithAnimation = function (targetResolution, offsetX, offse
     var deltaResolution = targetResolution - C.Helpers.viewport._resolution;
     var step = deltaResolution / 15;
     var animationSpeed = 15;
+    var self = this;
     var self = this;
 
     if (this._currentAnimation) { clearTimeout(this._currentAnimation); }
@@ -361,7 +364,13 @@ C.System.Events.stageDblClick = function (e) {
         }
         e.X = px - offset.left;
         e.Y = py - offset.top;
-        var ret = this.emit('mapDblClicked', new C.System.MouseEvent(e));
+        var evt = new C.System.MouseEvent(e);
+        var ret = this.emit('mapDblClicked', evt);
+        if (!evt._isPrevented) {
+            var offsetX = e.X - this._citronGIS._viewport._width / 2;
+            var offsetY = e.Y - this._citronGIS._viewport._height / 2;
+            C.System.Events.zoomInWithAnimation(offsetX, offsetY);
+        }
     }
 };
 

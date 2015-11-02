@@ -101,6 +101,7 @@ require('lib/papaparse.min.js', function (err, Papa) {
 
                 marker.addTo(self._csvLayer);
             }
+            C.Events.zoomToBounds(self._csvLayer.getBounds());
         }
 
         E.onload(function () {

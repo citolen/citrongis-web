@@ -182,6 +182,8 @@ require('lib/simplify.js', function (err, simplify) {
                 marker_end.load();
                 points.push(marker_end);
                 marker_end.addTo(baseLayer);
+
+                C.Events.zoomToBounds(line.getBounds());
             }
         });
     }
@@ -225,8 +227,6 @@ require('lib/simplify.js', function (err, simplify) {
                 if (err) { return; }
                 getPositionForWords(w4, function (err, position2) {
                     if (err) { return; }
-
-                    console.log('-itinerary', position1, position2);
 
                     getItinerary(position1, position2, function () {
 

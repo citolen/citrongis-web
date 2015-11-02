@@ -320,17 +320,9 @@ C.CitrongGISDebug = function (citronGIS) {
     //        //p.open();
     //    });
 
-    /*for (var i = 0; i < 40; ++i) {
-        for (var j = 0; j < 50; ++j) {
-            layer.addFeature(new C.Geo.Feature.Circle({
-                location: new C.Geometry.LatLng(j, i),
-                radius: 2
-            }));
-        }
-    }*/
 
-    debugExtensionLoader(citronGIS, '/src/modules/scale/');
-//    debugExtensionLoader(citronGIS, '/src/modules/instagram/');
+    debugExtensionLoader(citronGIS, './src/modules/scale/');
+//    debugExtensionLoader(citronGIS, './src/modules/instagram/');
     //    debugExtensionLoader(citronGIS, '/src/modules/welcome/');
     //        debugExtensionLoader(citronGIS, '/src/modules/distance/');
     //    debugExtensionLoader(citronGIS, '/src/modules/layer-manager/');

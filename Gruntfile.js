@@ -105,8 +105,11 @@ module.exports = function(grunt) {
         copy: {
             main: {
                 files: [
-                    {expand: true, cwd: 'src/css/', src: ['**'], dest: 'build/css/'},
-                    {expand: true, cwd: 'tests/build/', src: ['*'], dest: 'build/'},
+                    {expand: true, cwd: 'src/css/', src: ['**'], dest: 'build/src/css/'},
+                    {expand: true, cwd: 'img/', src: ['**'], dest: 'build/img/'},
+                    {expand: true, cwd: 'apidocs/', src: ['**'], dest: 'build/apidocs/'},
+                    {expand: true, cwd: 'src/modules/', src: ['**'], dest: 'build/src/modules/'},
+                    {expand: true, cwd: 'tests/build/', src: ['*'], dest: 'build/'}
                 ],
             }
         }

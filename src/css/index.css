@@ -115,6 +115,7 @@ div.popup-tip {
 }
 
 div.popup-wrapper {
+    pointer-events: all;
     padding: 15px 13px 15px 13px;
     background-color: white;
     border-radius: 5px;
@@ -122,7 +123,7 @@ div.popup-wrapper {
 }
 
 div.popup-container {
-    pointer-events: all;
+    pointer-events: none;
     max-width: 600px;
     position: absolute;
 }
@@ -137,6 +138,7 @@ a.popup-close {
     font: 16px/14px Tahoma, Verdana, sans-serif;
     text-decoration: none;
     color: black;
+    pointer-events: all;
 }
 
 a.popup-close:hover {

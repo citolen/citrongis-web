@@ -18,12 +18,12 @@ require('lib/citrongis.cluster.js', function (err, Cluster) {
         function display_ui() {
             if (access_token) {
                 E.$('#logout_btn').show();
-                E.$('#login_btn').hide();
+                E.$('#welcome').hide();
                 E.$('#me_btn').show();
                 E.$('#auth_features').show();
             } else {
                 E.$('#logout_btn').hide();
-                E.$('#login_btn').show();
+                E.$('#welcome').show();
                 E.$('#me_btn').hide();
                 E.$('.results').empty();
                 E.$('#auth_features').hide();
@@ -60,6 +60,11 @@ require('lib/citrongis.cluster.js', function (err, Cluster) {
                                 pic.bindPopup(popup);
                                 ++count;
                             }
+                        } else {
+                            if (elem) {
+                                $('button', elem).html('<i class="fa fa-exclamation-circle"></i>');
+                            }
+                            return;
                         }
 
                         if (medias && refresh < 6 && count < 100 && instaRes.pagination && instaRes.pagination.next_url) {
@@ -67,7 +72,11 @@ require('lib/citrongis.cluster.js', function (err, Cluster) {
                         } else {
                             C.Events.zoomToBounds(my_data_layer.getBounds());
                             if (elem) {
-                                $('button', elem).html('<i class="fa fa-eye"></i>');
+                                if (count == 0) {
+                                    $('button', elem).html('<i class="fa fa-frown-o"></i>');
+                                } else {
+                                    $('button', elem).html('<i class="fa fa-eye"></i>');
+                                }
                             }
                             if (callback) {
                                 callback();
