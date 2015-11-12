@@ -21,19 +21,19 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
 
     this._rootDiv = rootDIV;
 
-    //    $('body').on('contextmenu', this._rootDiv, function(e){ return false; });
-
     C.Helpers.layermanager = this._layerManager = new C.Extension.LayerManager();
 
     this._renderer = new PIXI.CanvasRenderer($(this._rootDiv).width(), $(this._rootDiv).height(), {
         backgroundColor: 0xffffff
-//        transparent: true,
-//        antialias: true
+        //        transparent: true,
+        //        antialias: true
     });
 
 
     this._renderer.view.id = '__citrongisRenderer';
     this._rootDiv.appendChild(this._renderer.view);
+
+    $(this._renderer.view).on('contextmenu', this._rootDiv, function(e){ return false; });
 
     this._rendererStage = new PIXI.Container();
 

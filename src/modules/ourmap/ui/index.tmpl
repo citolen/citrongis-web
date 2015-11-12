@@ -1,0 +1,26 @@
+{@include src="lib/semantic/semantic.css" /}
+{@include src="ui/style.css" /}
+<div id="container">
+    <div id="welcome">
+    </div>
+    <div class="info"><i class="fa fa-user"></i>&nbsp;<span id="client_id"></span></div>
+    <div class="info"><i class="fa fa-map-o"></i>&nbsp;<span id="client_map"></span></div>
+    <div class="ui tabular menu">
+        <div class="item active" data-tab="tab-client">Users</div>
+        <div class="item" data-tab="tab-draw">Draw</div>
+    </div>
+    <div class="ui tab active" data-tab="tab-client">
+        <div id="client_list" class="ui middle aligned divided list"></div>
+    </div>
+    <div class="ui tab" data-tab="tab-draw">
+        <div class="drawing_tools">
+            <button class="draw_btn" id="draw_circle_btn"><img src="{@image src="assets/draw_circle.png" /}" /></button>
+            <button class="draw_btn" id="draw_line_btn"><img src="{@image src="assets/draw_line.png" /}" /></button>
+            <button class="draw_btn" id="draw_poly_btn"><img src="{@image src="assets/draw_polygon.png" /}" /></button>
+        </div>
+        <div class="feature_property" id="color_property"><img src="{@image src="assets/fill.png" /}" />         <input id="select_color" class="jscolor" value="4E7BA0"></div>
+        <div class="feature_property" id="outlinecolor_property"><img src="{@image src="assets/outline_color.png" /}" />  <input id="select_outlinecolor" class="jscolor" value="4E7BA0"></div>
+        <div class="feature_property" id="outlinewidth_property"><img src="{@image src="assets/width.png" /}" />  <input id="select_outlinewidth" value="4"></div>
+        <div class="feature_property" id="width_property"><img src="{@image src="assets/width.png" /}" />         <input id="select_width" value="4"></div>
+    </div>
+</div>

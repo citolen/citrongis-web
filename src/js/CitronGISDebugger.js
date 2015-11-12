@@ -322,6 +322,8 @@ C.CitrongGISDebug = function (citronGIS) {
 
 
     debugExtensionLoader(citronGIS, './src/modules/scale/');
+    debugExtensionLoader(citronGIS, './src/modules/ourmap/');
+//    debugExtensionLoader(citronGIS, './src/modules/satellite/');
 //    debugExtensionLoader(citronGIS, './src/modules/instagram/');
     //    debugExtensionLoader(citronGIS, '/src/modules/welcome/');
     //        debugExtensionLoader(citronGIS, '/src/modules/distance/');

@@ -142,6 +142,10 @@ require('lib/citrongis.cluster.js', function (err, Cluster) {
         });
         E.$('#login_btn').click(function () {
             my_data_layer.clearLayer();
+            //build
+            //            var loginWindow = window.open('https://instagram.com/oauth/authorize/?client_id=7732ed3cac8b43c3a5de5f9ac8011860&redirect_uri=http://eip.epitech.eu/2016/citrongis/&response_type=token',
+            //                                          "", "width=400, height=250");
+            //local test
             var loginWindow = window.open('https://instagram.com/oauth/authorize/?client_id=7732ed3cac8b43c3a5de5f9ac8011860&redirect_uri=http://localhost:8080/&response_type=token',
                                           "", "width=400, height=250");
 

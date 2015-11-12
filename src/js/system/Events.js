@@ -436,12 +436,14 @@ C.System.Events.stageUp = function (e) {
     e.Y = py - offset.top;
     this.emit('mouseUp', new C.System.MouseEvent(e));
     this._isDown = false;
+
     if (!this._hasMoved) {
         this.emit('mapClicked', new C.System.MouseEvent(e));
     }
     if (this._isPrevented) {
         return;
     }
+
 
     if (this._velocityX > 0.3 || this._velocityX < -0.3 || this._velocityY > 0.3 || this._velocityY < -0.3) {
         var timeConstant = 400; //ms
