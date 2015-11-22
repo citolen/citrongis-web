@@ -1,9 +1,26 @@
+.content {
+    font-family: 'Nexa-light';
+}
+
+.fix_btn {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.fix_btn span {
+    margin-left: 10px;
+}
+
 h1 {
-	text-align: center;
-	margin-left : 50px;
-	margin-right: 50px;
+    text-align: center;
+    margin-left : 50px;
+    margin-right: 50px;
 }
 
 h5 {
-	text-align: center;
+    text-align: center;
+}
+
+th {
+    text-align: center !important;
 }

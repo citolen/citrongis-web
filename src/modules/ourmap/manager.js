@@ -11,6 +11,8 @@ var Manager = C.Utils.Inherit(function (base, options) {
     options = options || {};
 
     this._layer = options.layer;
+    this._clientOverlayLayer = options.clientOverlay;
+    this._clientOverlayEnabled = true;
 
     this._idgen = 0;
     this._features = {};
@@ -20,6 +22,15 @@ var Manager = C.Utils.Inherit(function (base, options) {
     this.featureEdit = this._featureEdit.bind(this);
     this.featureEditDone = this._featureEditDone.bind(this);
 }, EventEmitter);
+
+Manager.prototype.disconnect = function () {
+    for (var id in this._clients) {
+        this.unregisterClient(id);
+    }
+    this._layer.clearLayer();
+    this._features = {};
+    this._clients = {};
+};
 
 Manager.prototype._featureEditDone = function (f) {
     this.emit('featureEditDone', f);
@@ -97,8 +108,8 @@ Manager.prototype.unregisterClient = function (id) {
 
     delete this._clients[id];
 
-    this._layer.remove(client._viewportFeature);
-    this._layer.remove(client._viewportText);
+    this._clientOverlayLayer.remove(client._viewportFeature);
+    this._clientOverlayLayer.remove(client._viewportText);
 
     this.uiRemoveClient(id);
 };
@@ -171,8 +182,8 @@ Manager.prototype.displayClientViewport = function (client) {
             font: 'Arial 14px',
             offset: C.Vector2(0, -14)
         });
-        this._layer.add(client._viewportFeature);
-        this._layer.add(client._viewportText);
+        this._clientOverlayLayer.add(client._viewportFeature);
+        this._clientOverlayLayer.add(client._viewportText);
     } else {
         client._viewportText.location(locations[1]);
         client._viewportFeature.locations(locations);

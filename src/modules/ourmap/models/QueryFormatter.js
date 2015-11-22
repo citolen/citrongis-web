@@ -55,6 +55,19 @@ function formatPolygon(feature) {
     };
 }
 
+function formatImage(feature) {
+    return {
+        location: [feature._location.X, feature._location.Y],
+        crs: C.ProjectionsHelper.getProjectionName(feature._location.CRS),
+        source: feature._source,
+        width: feature._width,
+        height: feature._height,
+        anchorX: feature._anchorX,
+        anchorY: feature._anchorY,
+        type: feature._type
+    };
+}
+
 function formatFeature(feature) {
     switch (feature._type) {
         case C.FeatureType.CIRCLE:
@@ -65,6 +78,9 @@ function formatFeature(feature) {
             break;
         case C.FeatureType.POLYGON:
             return formatPolygon(feature);
+            break;
+        case C.FeatureType.IMAGE:
+            return formatImage(feature);
             break;
     }
 }
@@ -118,6 +134,24 @@ function polygonFromData(data) {
     });
 }
 
+function imageFromData(data) {
+
+    var crs = C.ProjectionsHelper.getProjectionFromName(data.crs);
+    var location = C.Point(data.location[0], data.location[1], 0, crs);
+
+    var img = C.Image({
+        location: location,
+        source: data.source,
+        width: data.width,
+        height: data.height,
+        anchorX: data.anchorX,
+        anchorY: data.anchorY,
+        scaleMode: C.ImageScaleMode.NEAREST
+    });
+    img.load();
+    return img;
+}
+
 function featureFromData(data) {
     switch (data.type) {
         case C.FeatureType.CIRCLE:
@@ -128,6 +162,9 @@ function featureFromData(data) {
             break;
         case C.FeatureType.POLYGON:
             return polygonFromData(data);
+            break;
+        case C.FeatureType.IMAGE:
+            return imageFromData(data);
             break;
     }
 }
@@ -175,6 +212,14 @@ function updatePolygonWithData(feature, data) {
     if (data.outlineWidth) { feature.outlineWidth(data.outlineWidth); }
 }
 
+function updateImageWithData(feature, data) {
+    if (data.location && data.crs) {
+        var crs = C.ProjectionsHelper.getProjectionFromName(data.crs);
+        var location = C.Point(data.location[0], data.location[1], 0, crs);
+        feature.location(location);
+    }
+}
+
 function updateWithData(feature, data) {
     switch (feature._type) {
         case C.FeatureType.CIRCLE:
@@ -185,6 +230,9 @@ function updateWithData(feature, data) {
             break;
         case C.FeatureType.POLYGON:
             updatePolygonWithData(feature, data);
+            break;
+        case C.FeatureType.IMAGE:
+            updateImageWithData(feature, data);
             break;
     }
 }

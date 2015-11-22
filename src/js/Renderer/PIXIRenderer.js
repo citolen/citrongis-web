@@ -611,7 +611,7 @@ C.Renderer.PIXIRenderer.prototype.updateImage = function (feature) {
     }
 };
 
-C.Renderer.PIXIRenderer.prototype.updateFeaturePosition = function (feature) {
+C.Renderer.PIXIRenderer.prototype.updateFeaturePosition = function (feature, direction) {
 
     'use strict';
 
@@ -636,7 +636,17 @@ C.Renderer.PIXIRenderer.prototype.updateFeaturePosition = function (feature) {
                 this.renderLine(feature);
                 break;
             case C.Geo.Feature.Feature.FeatureType.POLYGON:
-                this.renderPolygon(feature);
+                if (direction == C.System.Viewport.zoomDirection.NONE && !feature._locationChanged) {
+                    var loc = feature.__locations[0];
+                    var pt = this._viewport.worldToScreen(loc.X, loc.Y);
+                    feature.__graphics.position = new PIXI.Point(pt.X, pt.Y);
+                    if (feature._offset) {
+                        feature.__graphics.position.x += feature._offset.X;
+                        feature.__graphics.position.y += feature._offset.Y;
+                    }
+                } else {
+                    this.renderPolygon(feature);
+                }
                 break;
         }
     }
@@ -752,7 +762,7 @@ C.Renderer.PIXIRenderer.prototype.layerMoved = function (layer) {
 ///////////////////////
 //  UPDATE POSITIONS //
 ///////////////////////
-C.Renderer.PIXIRenderer.prototype.updatePositions = function () {
+C.Renderer.PIXIRenderer.prototype.updatePositions = function (direction) {
 
     'use strict';
 
@@ -765,7 +775,7 @@ C.Renderer.PIXIRenderer.prototype.updatePositions = function () {
             if (feature._features) {
                 it_layer(feature);
             } else {
-                self.updateFeaturePosition(feature);
+                self.updateFeaturePosition(feature, direction);
             }
         }
     }

@@ -37,20 +37,21 @@ Feature.prototype._mapClicked = function () {
 
 Feature.prototype._click = function (f, evt) {
     if (!this._popup) {
-        this._popup = C.Popup(this._feature._feature, {
-            content: '<button class="edit">edit</button><button class="delete">delete</button>'
-        });
-
         var self = this;
-        $('.edit', this._popup.dom).click(function () {
-            self._feature.edit();
-            self._popup.close();
-            C.Events.on('mapClicked', self._mapClickedFct);
-            self.emit('edit', self);
-        });
+        this._popup = C.Popup(this._feature._feature, {
+            content: '<button class="edit"><i class="fa fa-pencil"></i></button><button class="delete"><i class="fa fa-trash-o"></i></button>',
+            initialized: function (popup) {
+                popup.$('.edit').click(function () {
+                    self._feature.edit();
+                    self._popup.close();
+                    C.Events.on('mapClicked', self._mapClickedFct);
+                    self.emit('edit', self);
+                });
 
-        $('.delete', this._popup.dom).click(function () {
-            root.manager.removeFeature(self._id);
+                popup.$('.delete').click(function () {
+                    root.manager.removeFeature(self._id);
+                });
+            }
         });
     }
     if (!this._feature._isEditing) {

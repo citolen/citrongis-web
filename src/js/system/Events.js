@@ -36,8 +36,8 @@ C.System.Events = new (C.Utils.Inherit(function () {
     this._wheeldX= 0;
     this._wheeldY= 0;
     this._zoomAnimation= undefined;
-    this._zoomStep= 20;
-    this._zoomStepDuration= 8;
+    this._zoomStep= 10;
+    this._zoomStepDuration= 16;
 
     this._currentAnimation;
 
@@ -161,13 +161,28 @@ C.System.Events.zoomToCenterWithAnimation = function (targetResolution, center) 
 
     if (this._currentAnimation) { clearTimeout(this._currentAnimation); }
 
+    var steps = 0;
     this._currentAnimation = setTimeout(function zoomAnimation() {
+        ++steps;
+        //        var actionTaken = 0;
+        //        if (step < 0 && resolution > targetResolution ||
+        //            step > 0 && resolution < targetResolution) {
         resolution += step;
+        //            ++actionTaken;
+        //        }
+        //        if (stepCenterX < 0 && originalCenter.X > center.X ||
+        //            stepCenterX > 0 && originalCenter.X < center.X) {
         originalCenter.X += stepCenterX;
+        //            ++actionTaken;
+        //        }
+        //        if (stepCenterY < 0 && originalCenter.Y > center.Y ||
+        //            stepCenterY > 0 && originalCenter.Y < center.Y) {
         originalCenter.Y += stepCenterY;
+        //            ++actionTaken;
+        //        }
 
-        if (step < 0 && resolution > targetResolution ||
-            step > 0 && resolution < targetResolution) {
+
+        if (steps <= 15) {
             C.Helpers.viewport.setCenter(originalCenter, true)
             C.Helpers.viewport.zoom(resolution);
             self._currentAnimation = setTimeout(zoomAnimation, animationSpeed);
@@ -505,6 +520,98 @@ C.System.Events.stageMove = function (e) {
 };
 
 C.System.Events.internalUpdate = function () {
-    this._citronGIS._customRenderer.updatePositions();
+    this._citronGIS._customRenderer.updatePositions(this._citronGIS._viewport._zoomDirection);
     this._citronGIS._viewport._zoomDirection = C.System.Viewport.zoomDirection.NONE;
 };
+
+//-------------GAMEPAD-------------
+
+var haveEvents = 'ongamepadconnected' in window;
+var controllers = {};
+
+function connecthandler(e) {
+    addgamepad(e.gamepad);
+}
+
+function addgamepad(gamepad) {
+    controllers[gamepad.index] = gamepad;
+    console.log(gamepad);
+    requestAnimationFrame(updateStatus);
+}
+
+function disconnecthandler(e) {
+    removegamepad(e.gamepad);
+}
+
+function removegamepad(gamepad) {
+    delete controllers[gamepad.index];
+}
+
+var axesThresold = 0.2;
+
+function updateStatus() {
+    if (!haveEvents) {
+        scangamepads();
+    }
+
+    var i = 0;
+    var j;
+
+    for (j in controllers) {
+        var controller = controllers[j];
+
+        var rightTrigger = controller.buttons[7];
+        var leftTrigger = controller.buttons[6];
+
+        if (rightTrigger.pressed) {
+            var res = C.Helpers.viewport._resolution;
+            var zoomLevel = C.Helpers.viewport.getZoomLevel();
+            var maxZoomLevel = C.Helpers.viewport.getMaxZoomLevel();
+            if (zoomLevel < maxZoomLevel) {
+                var diff = C.Helpers.viewport.getResolutionAtZoomLevel(zoomLevel + 1) - C.Helpers.viewport.getResolutionAtZoomLevel(zoomLevel);
+                C.Helpers.viewport.zoom(res + diff / 10 * rightTrigger.value);
+            }
+        }
+        if (leftTrigger.pressed) {
+            var res = C.Helpers.viewport._resolution;
+            var zoomLevel = C.Helpers.viewport.getZoomLevel();
+            var minZoomLevel = 0;
+            if (zoomLevel > minZoomLevel) {
+                var diff = C.Helpers.viewport.getResolutionAtZoomLevel(zoomLevel - 1) - C.Helpers.viewport.getResolutionAtZoomLevel(zoomLevel);
+                C.Helpers.viewport.zoom(res + diff / 10 * leftTrigger.value);
+            }
+        }
+
+        var axeLeft = new C.Geometry.Vector2(controller.axes[0], controller.axes[1]);
+        var axeRight = new C.Geometry.Vector2(controller.axes[2], controller.axes[3]);
+
+        if (Math.abs(axeLeft.X) > axesThresold || Math.abs(axeLeft.Y) > axesThresold) {
+            var tx = axeLeft.X * -20;
+            var ty = axeLeft.Y * -20;
+            C.Helpers.viewport.translate(tx, ty);
+        }
+    }
+
+    requestAnimationFrame(updateStatus);
+}
+
+function scangamepads() {
+    var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
+    for (var i = 0; i < gamepads.length; i++) {
+        if (gamepads[i]) {
+            if (gamepads[i].index in controllers) {
+                controllers[gamepads[i].index] = gamepads[i];
+            } else {
+                addgamepad(gamepads[i]);
+            }
+        }
+    }
+}
+
+
+window.addEventListener("gamepadconnected", connecthandler);
+window.addEventListener("gamepaddisconnected", disconnecthandler);
+
+if (!haveEvents) {
+    setInterval(scangamepads, 500);
+}

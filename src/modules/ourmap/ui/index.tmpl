@@ -8,8 +8,14 @@
     <div class="ui tabular menu">
         <div class="item active" data-tab="tab-client">Users</div>
         <div class="item" data-tab="tab-draw">Draw</div>
+        <div class="item" data-tab="tab-picto">Picto</div>
+        <div class="item" data-tab="tab-map">Map</div>
     </div>
     <div class="ui tab active" data-tab="tab-client">
+        <div class="display_viewport_btn">
+            <i class="fa fa-check-square-o"></i>
+            <span>Display user's viewport</span>
+        </div>
         <div id="client_list" class="ui middle aligned divided list"></div>
     </div>
     <div class="ui tab" data-tab="tab-draw">
@@ -22,5 +28,21 @@
         <div class="feature_property" id="outlinecolor_property"><img src="{@image src="assets/outline_color.png" /}" />  <input id="select_outlinecolor" class="jscolor" value="4E7BA0"></div>
         <div class="feature_property" id="outlinewidth_property"><img src="{@image src="assets/width.png" /}" />  <input id="select_outlinewidth" value="4"></div>
         <div class="feature_property" id="width_property"><img src="{@image src="assets/width.png" /}" />         <input id="select_width" value="4"></div>
+    </div>
+    <div class="ui tab" data-tab="tab-picto">
+        <div class="picto_list">
+            {#picto_list}
+                <img src="{@image src="{picto_list[$idx]}" /}" idx="{$idx}"/>
+            {/picto_list}
+        </div>
+    </div>
+    <div class="ui tab" data-tab="tab-map">
+        <div class="map_form">
+            <p>Map name:
+            <input id="map_name_input" type="text" value=""/></p>
+            <p>Map password:
+            <input id="map_pass_input" type="password" value="" /></p>
+        </div>
+        <button id="map_connect">Connect</button>
     </div>
 </div>

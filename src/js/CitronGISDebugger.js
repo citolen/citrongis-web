@@ -313,18 +313,20 @@ C.CitrongGISDebug = function (citronGIS) {
     //    //
     //
     //    c.bindPopup(p);
-    //    c1.bindPopup(p1);
-
-    //    c.on('click', function () {
-    //        console.log(arguments);
-    //        //p.open();
-    //    });
+    //        c1.bindPopup(p1);
+    //
+    //        c.on('click', function () {
+    //            console.log(arguments);
+    //            //p.open();
+    //        });
 
 
     debugExtensionLoader(citronGIS, './src/modules/scale/');
-    debugExtensionLoader(citronGIS, './src/modules/ourmap/');
-//    debugExtensionLoader(citronGIS, './src/modules/satellite/');
-//    debugExtensionLoader(citronGIS, './src/modules/instagram/');
+    //    debugExtensionLoader(citronGIS, './src/modules/search/');
+    //    debugExtensionLoader(citronGIS, './src/modules/ourmap/');
+    //    debugExtensionLoader(citronGIS, './src/modules/game/');
+    //    debugExtensionLoader(citronGIS, './src/modules/satellite/');
+    //    debugExtensionLoader(citronGIS, './src/modules/instagram/');
     //    debugExtensionLoader(citronGIS, '/src/modules/welcome/');
     //        debugExtensionLoader(citronGIS, '/src/modules/distance/');
     //    debugExtensionLoader(citronGIS, '/src/modules/layer-manager/');

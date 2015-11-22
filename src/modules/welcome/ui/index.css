@@ -1,5 +1,13 @@
-.content {
+.content when (@mobile = false) {
     width: 550px;
+    text-align: justify;
+    font-family: 'nexa-light';
+    background-color: white;
+    height: 100%;
+}
+
+.content when (@mobile = true) {
+    width: 100%;
     text-align: justify;
     font-family: 'nexa-light';
     background-color: white;

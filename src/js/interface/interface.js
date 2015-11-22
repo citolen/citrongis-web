@@ -12,6 +12,43 @@ C.Interface = function () {
 
 };
 
+C.Interface.prototype.bindExtensionLauncher = function (button, extension, autostart) {
+    var self = this;
+    var loaded = false;
+    var loading = false;
+    var ext;
+
+    function click() {
+        if (!loaded) {
+            loaded = true;
+            loading = true;
+            button.setContent('<i class="fa fa-spinner fa-spin"></i>');
+            C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
+                baseUrl: './src/modules/' + extension + '/'
+            }), function (err, ext) {
+                ext = ext;
+                ext._module.ui.on('display', function () {
+                    loading = false;
+                    button.setContent(extension);
+                });
+                ext._module.ui.on('destroy', function () {
+                    loaded = false;
+                });
+                ext.on('stopped', function () {
+                    ga('send', 'pageview', extension + '/Destroy');
+                });
+            });
+            ga('send', 'pageview', extension + '/Open');
+        } else if (!loading) {
+            ext.destroy();
+        }
+    }
+    button.on('click', click);
+    if (autostart) {
+        click();
+    }
+};
+
 C.Interface.prototype.init = function (root, map) {
     this._root = root;
     this._map = map;
@@ -109,7 +146,7 @@ C.Interface.prototype.init = function (root, map) {
         currentId = id;
         self._grid.removeBlock(layerWindow);
         layerWindowOpen = false;
-//        layerButton.setContent('<i class="fa fa-map-o"></i>&nbsp;' + tilelayers[id]._name);
+        //        layerButton.setContent('<i class="fa fa-map-o"></i>&nbsp;' + tilelayers[id]._name);
     });
     var layerWindowOpen = false;
     layerButton.on('click', function () {
@@ -150,6 +187,25 @@ C.Interface.prototype.init = function (root, map) {
     });
     this._grid.addBlock(zoomOutButton);
 
+    var cssBarLeft = {
+        borderRadius: '4px 0px 0px 4px',
+        fontWeight: 'normal',
+        fontSize: '15px',
+        boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 3px -3px rgba(0,0,0,0.65)'
+    };
+    var cssBarMiddle = {
+        borderRadius: '0px 0px 0px 0px',
+        fontWeight: 'normal',
+        fontSize: '15px',
+        boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 3px -3px rgba(0,0,0,0.65)'
+    };
+    var cssBarRight = {
+        borderRadius: '0px 4px 4px 0px',
+        fontWeight: 'normal',
+        fontSize: '15px',
+        boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 3px -3px rgba(0,0,0,0.65)'
+    };
+
     var velibbtn = new C.Interface.ButtonBlock({
         x: 5,
         y: 1,
@@ -157,14 +213,10 @@ C.Interface.prototype.init = function (root, map) {
         height: 1,
         float: C.Interface.BlockFloat.topLeft,
         content: 'velib',
-        css: {
-            borderRadius: '4px 0px 0px 4px',
-            fontWeight: 'normal',
-            fontSize: '15px',
-            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 3px -3px rgba(0,0,0,0.65)'
-        }
+        css: cssBarLeft
     });
     this._grid.addBlock(velibbtn);
+
     var w3w = new C.Interface.ButtonBlock({
         x: 7,
         y: 1,
@@ -172,12 +224,7 @@ C.Interface.prototype.init = function (root, map) {
         height: 1,
         float: C.Interface.BlockFloat.topLeft,
         content: 'what3words',
-        css: {
-            borderRadius: '0px 0px 0px 0px',
-            fontWeight: 'normal',
-            fontSize: '15px',
-            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 3px -3px rgba(0,0,0,0.65)'
-        }
+        css: cssBarMiddle
     });
     this._grid.addBlock(w3w);
     var distance = new C.Interface.ButtonBlock({
@@ -187,12 +234,7 @@ C.Interface.prototype.init = function (root, map) {
         height: 1,
         float: C.Interface.BlockFloat.topLeft,
         content: 'distance',
-        css: {
-            borderRadius: '0px 0px 0px 0px',
-            fontWeight: 'normal',
-            fontSize: '15px',
-            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 3px -3px rgba(0,0,0,0.65)'
-        }
+        css: cssBarMiddle
     });
     this._grid.addBlock(distance);
     var csv = new C.Interface.ButtonBlock({
@@ -202,12 +244,7 @@ C.Interface.prototype.init = function (root, map) {
         height: 1,
         float: C.Interface.BlockFloat.topLeft,
         content: 'csv',
-        css: {
-            borderRadius: '0px 0px 0px 0px',
-            fontWeight: 'normal',
-            fontSize: '15px',
-            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 3px -3px rgba(0,0,0,0.65)'
-        }
+        css: cssBarMiddle
     });
     this._grid.addBlock(csv);
     var editor = new C.Interface.ButtonBlock({
@@ -217,15 +254,9 @@ C.Interface.prototype.init = function (root, map) {
         height: 1,
         float: C.Interface.BlockFloat.topLeft,
         content: 'editor',
-        css: {
-            borderRadius: '0px 0px 0px 0px',
-            fontWeight: 'normal',
-            fontSize: '15px',
-            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 3px -3px rgba(0,0,0,0.65)'
-        }
+        css: cssBarMiddle
     });
     this._grid.addBlock(editor);
-
     var instagram = new C.Interface.ButtonBlock({
         x: 18,
         y: 1,
@@ -233,189 +264,63 @@ C.Interface.prototype.init = function (root, map) {
         height: 1,
         float: C.Interface.BlockFloat.topLeft,
         content: 'instagram',
-        css: {
-            borderRadius: '0px 0px 0px 0px',
-            fontWeight: 'normal',
-            fontSize: '15px',
-            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 3px -3px rgba(0,0,0,0.65)'
-        }
+        css: cssBarMiddle
     });
     this._grid.addBlock(instagram);
-
-    var welcome = new C.Interface.ButtonBlock({
+    var satellite = new C.Interface.ButtonBlock({
         x: 21,
         y: 1,
         width: 3,
         height: 1,
         float: C.Interface.BlockFloat.topLeft,
+        content: 'satellite',
+        css: cssBarMiddle
+    });
+    this._grid.addBlock(satellite);
+    var ourmap = new C.Interface.ButtonBlock({
+        x: 24,
+        y: 1,
+        width: 3,
+        height: 1,
+        float: C.Interface.BlockFloat.topLeft,
+        content: 'ourmap',
+        css: cssBarMiddle
+    });
+    this._grid.addBlock(ourmap);
+    var search = new C.Interface.ButtonBlock({
+        x: 27,
+        y: 1,
+        width: 3,
+        height: 1,
+        float: C.Interface.BlockFloat.topLeft,
+        content: 'search',
+        css: cssBarMiddle
+    });
+    this._grid.addBlock(search);
+    var welcome = new C.Interface.ButtonBlock({
+        x: 30,
+        y: 1,
+        width: 3,
+        height: 1,
+        float: C.Interface.BlockFloat.topLeft,
         content: 'welcome',
-        css: {
-            borderRadius: '0px 4px 4px 0px',
-            fontWeight: 'normal',
-            fontSize: '15px',
-            boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 3px -3px rgba(0,0,0,0.65)'
-        }
+        css: cssBarRight
     });
     this._grid.addBlock(welcome);
 
 
     var self = this;
 
-    var velib_loaded = false;
-    var velib_ext;
-    velibbtn.on('click', function () {
-        if (!velib_loaded) {
-            velib_loaded = true;
-            C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: './src/modules/velib/'
-            }), function (err, ext) {
-                velib_ext = ext;
-                velib_ext._module.ui.on('destroy', function () {
-                    velib_loaded = false;
-                });
-                velib_ext.on('stopped', function () {
-                    ga('send', 'pageview', 'Velib/Destroy');
-                });
-            });
-            ga('send', 'pageview', 'Velib/Open');
-        } else {
-            velib_ext.destroy();
-        }
-    });
-
-    var w3w_loaded = false;
-    var w3w_ext;
-    w3w.on('click', function () {
-        if (!w3w_loaded) {
-            w3w_loaded = true;
-            C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: './src/modules/what3words/'
-            }), function (err, ext) {
-                w3w_ext = ext;
-                w3w_ext._module.ui.on('destroy', function () {
-                    w3w_loaded = false;
-                });
-                w3w_ext.on('stopped', function () {
-                    ga('send', 'pageview', 'W3W/Destroy');
-                });
-            });
-            ga('send', 'pageview', 'W3W/Open');
-        } else {
-            w3w_ext.destroy();
-        }
-    });
-
-    var distance_loaded = false;
-    var distance_ext;
-    distance.on('click', function () {
-        if (!distance_loaded) {
-            distance_loaded = true;
-            C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: './src/modules/distance/'
-            }), function (err, ext) {
-                distance_ext = ext;
-                distance_ext._module.ui.on('destroy', function () {
-                    distance_loaded = false;
-                });
-                distance_ext.on('stopped', function () {
-                    ga('send', 'pageview', 'Distance/Destroy');
-                });
-            });
-            ga('send', 'pageview', 'Distance/Open');
-        } else {
-            distance_ext.destroy();
-        }
-    });
-
-    var csv_loaded = false;
-    var csv_ext;
-    csv.on('click', function () {
-        if (!csv_loaded) {
-            csv_loaded = true;
-            C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: './src/modules/csv/'
-            }), function (err, ext) {
-                csv_ext = ext;
-                csv_ext._module.ui.on('destroy', function () {
-                    csv_loaded = false;
-                });
-                csv_ext.on('stopped', function () {
-                    ga('send', 'pageview', 'CSV/Destroy');
-                });
-            });
-            ga('send', 'pageview', 'CSV/Open');
-        } else {
-            csv_ext.destroy();
-        }
-    });
-
-    var editor_loaded = false;
-    var editor_ext;
-    editor.on('click', function () {
-        if (!editor_loaded) {
-            editor_loaded = true;
-            C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: './src/modules/editor/'
-            }), function (err, ext) {
-                editor_ext = ext;
-                editor_ext._module.ui.on('destroy', function () {
-                    editor_loaded = false;
-                });
-                editor_ext.on('stopped', function () {
-                    ga('send', 'pageview', 'Editor/Destroy');
-                });
-            });
-            ga('send', 'pageview', 'Editor/Open');
-        } else {
-            editor_ext.destroy();
-        }
-    });
-
-    var instagram_loaded = false;
-    var instagram_ext;
-    instagram.on('click', function () {
-        if (!instagram_loaded) {
-            instagram_loaded = true;
-            C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: './src/modules/instagram/'
-            }), function (err, ext) {
-                instagram_ext = ext;
-                instagram_ext._module.ui.on('destroy', function () {
-                    instagram_loaded = false;
-                });
-                instagram_ext.on('stopped', function () {
-                    ga('send', 'pageview', 'Instagram/Destroy');
-                });
-            });
-            ga('send', 'pageview', 'Instagram/Open');
-        } else {
-            instagram_ext.destroy();
-        }
-    });
-
-    var welcome_loaded = false;
-    var welcome_ext;
-    function welcome_click() {
-        if (!welcome_loaded) {
-            welcome_loaded = true;
-            C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
-                baseUrl: './src/modules/welcome/'
-            }), function (err, ext) {
-                welcome_ext = ext;
-                welcome_ext._module.ui.on('destroy', function () {
-                    welcome_loaded = false;
-                });
-                welcome_ext.on('stopped', function () {
-                    ga('send', 'pageview', 'Welcome/Destroy');
-                });
-            });
-            ga('send', 'pageview', 'Welcome/Open');
-        } else {
-            welcome_ext.destroy();
-        }
-    }
-    welcome_click();
-    welcome.on('click', welcome_click);
+    this.bindExtensionLauncher(velibbtn, 'velib');
+    this.bindExtensionLauncher(w3w, 'what3words');
+    this.bindExtensionLauncher(distance, 'distance');
+    this.bindExtensionLauncher(csv, 'csv');
+    this.bindExtensionLauncher(editor, 'editor');
+    this.bindExtensionLauncher(instagram, 'instagram');
+    this.bindExtensionLauncher(satellite, 'satellite');
+    this.bindExtensionLauncher(ourmap, 'ourmap');
+    this.bindExtensionLauncher(search, 'search');
+    this.bindExtensionLauncher(welcome, 'welcome', true);
 
     //menu btn
     //    var blocklogIn = new C.Interface.ButtonBlock({

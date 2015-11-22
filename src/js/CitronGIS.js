@@ -67,6 +67,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     setTimeout(resize, 100);
 
     C.System.Events.attach(this);
+    C.System.isMobile = false;
 
     C.Utils.Event.__initialized();
 

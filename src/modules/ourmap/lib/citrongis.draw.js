@@ -101,13 +101,15 @@ function mapclicked_line(evt) {
         evt.data.originalEvent.preventDefault();
         evt.data.originalEvent.stopPropagation();
     });
-    pivot.on('click', function (f) {
+    pivot.on('click', function (f, evt) {
         if (f != measuredPoint[measuredPoint.length-1]) {
             var locations = currentfeature.locations();
             locations.push(f.location());
             currentfeature.locations(locations);
         }
         done_editing();
+        evt.data.originalEvent.preventDefault();
+        evt.data.originalEvent.stopPropagation();
     });
     switch (state) {
         case 0:
@@ -170,9 +172,14 @@ function mapclicked_polygon(evt) {
     }
 }
 
+function mapclicked_image(evt) {
+    done_editing();
+}
+
 function mapclicked(evt) {
     if (evt.originalEvent.button == 2 || evt.originalEvent.button == 1) {
-        done_editing();
+        abort();
+//        done_editing();
         evt.originalEvent.preventDefault();
         evt.originalEvent.stopPropagation();
         return;
@@ -188,6 +195,7 @@ function mapclicked(evt) {
             mapclicked_polygon(evt);
             break;
         case DrawingTypes.IMAGE:
+            mapclicked_image(evt);
             break;
     }
 }
@@ -224,6 +232,10 @@ function mousemove_polygon(evt) {
     }
 }
 
+function mousemove_image(evt) {
+    currentfeature.location(evt.getWorldPosition());
+}
+
 function mousemove(evt) {
     if (!is_drawing) { return; }
 
@@ -238,6 +250,9 @@ function mousemove(evt) {
             break;
         case DrawingTypes.POLYGON:
             mousemove_polygon(evt);
+            break;
+        case DrawingTypes.IMAGE:
+            mousemove_image(evt);
             break;
     }
 }
@@ -300,6 +315,35 @@ function drawPolygon(options, callback) {
     E.map.add(mousePolygon);
 }
 
+/*
+ *  Draws a polygon
+ */
+function drawImage(options, callback) {
+
+    if (is_drawing) { return undefined; }
+    currentOptions = options || {};
+    is_drawing = true;
+    drawingtype = DrawingTypes.IMAGE;
+    state = 0;
+    completeCallback = callback;
+    measuredPoint = [];
+
+    C.Events.on('mouseMove', mousemove);
+    C.Events.on('mapClicked', mapclicked);
+
+    currentfeature = C.Image({
+        location: C.LatLng(0,0),
+        source: options.source,
+        width: options.width,
+        height: options.height,
+        anchorX: options.anchorX,
+        anchorY: options.anchorY,
+        scaleMode: C.ImageScaleMode.NEAREST
+    });
+    currentfeature.load();
+    drawingLayer.add(currentfeature);
+}
+
 function updateOptions(options) {
     if (!is_drawing) { return; }
     C.Utils.Object.merge(currentOptions, options);
@@ -328,6 +372,8 @@ function abort() {
     drawingtype = false;
     drawingLayer.remove(currentfeature);
     currentfeature = undefined;
+    mouseLine.locations([]);
+    mousePolygon.locations([]);
     E.map.remove(mousePointer);
     E.map.remove(mouseLine);
     E.map.remove(mousePolygon);
@@ -335,6 +381,10 @@ function abort() {
         E.map.remove(measuredPoint[i]);
     }
     measuredPoint = [];
+    if (completeCallback) {
+        completeCallback(null);
+    }
+    completeCallback = undefined;
 }
 
 E.ondestroy(function () {
@@ -347,6 +397,7 @@ module.exports = {
     drawCircle: drawCircle,
     drawLine: drawLine,
     drawPolygon: drawPolygon,
+    drawImage: drawImage,
     updateOptions: updateOptions,
     abort: abort
 };

@@ -28,8 +28,6 @@ require(['models/queryFormatter.js',
                 feature: feature
             });
             self.manager._addFeature(objFeature);
-//            self.manager._features[featureId] = objFeature;
-//            self.manager._layer.add(feature);
         }
     };
 });
