@@ -160,9 +160,9 @@ require('assets/mapicons/icons.json', function (err, picto_list) {
                                 socket.disconnect();
                             }
                             if (map_name != undefined && map_pass != undefined && map_name.length != 0) {
-                                socket = io('http://127.0.0.1:5000/?map=' + map_name + '&map_credentials=' + map_pass);
+                                socket = io('http://192.168.0.16:5000/?map=' + map_name + '&map_credentials=' + map_pass);
                             } else {
-                                socket = io('http://127.0.0.1:5000/');
+                                socket = io('http://192.168.0.16:5000/');
                             }
 
                             socket.on('connect', function () {

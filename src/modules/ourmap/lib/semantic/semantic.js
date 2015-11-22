@@ -16368,8 +16368,8 @@ $.fn.suitab = function(parameters) {
       var
 
         settings        = ( $.isPlainObject(parameters) )
-          ? $.extend(true, {}, $.fn.tab.settings, parameters)
-          : $.extend({}, $.fn.tab.settings),
+          ? $.extend(true, {}, $.fn.suitab.settings, parameters)
+          : $.extend({}, $.fn.suitab.settings),
 
         className       = settings.className,
         metadata        = settings.metadata,
@@ -16495,7 +16495,7 @@ $.fn.suitab = function(parameters) {
                 delete parameters.onTabInit;
                 module.error(error.legacyInit, parameters.onFirstLoad);
               }
-              settings = $.extend(true, {}, $.fn.tab.settings, parameters);
+              settings = $.extend(true, {}, $.fn.suitab.settings, parameters);
             }
           }
         },
@@ -17161,7 +17161,7 @@ $.tab = function() {
   $(window).tab.apply(this, arguments);
 };
 
-$.fn.tab.settings = {
+$.fn.suitab.settings = {
 
   name            : 'Tab',
   namespace       : 'tab',
