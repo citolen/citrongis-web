@@ -62,6 +62,34 @@ C.System.Events.attach = function (citronGIS) {
 
     this._citronGIS._renderer.view.addEventListener('wheel', C.System.Events.wheel.bind(this));
 
+    document.addEventListener('touchstart', C.System.Events.touchStart.bind(this));
+    this._touchMove = C.System.Events.touchMove.bind(this);
+    this._touchEnd = C.System.Events.touchEnd.bind(this);
+
+    //    var handleTouchyPinch = function (e, $target, data) {
+    //        var val = data.scale;
+    //        if (val < 1) {
+    //            val = 1 + (1 - val);
+    //            var res = C.Helpers.viewport._resolution;
+    //            var zoomLevel = C.Helpers.viewport.getZoomLevel();
+    //            var minZoomLevel = 0;
+    //            if (zoomLevel > minZoomLevel) {
+    //                var diff = C.Helpers.viewport.getResolutionAtZoomLevel(zoomLevel - 1) - C.Helpers.viewport.getResolutionAtZoomLevel(zoomLevel);
+    //                C.Helpers.viewport.zoom(res + diff / 30 * val);
+    //            }
+    //        } else {
+    //            var res = C.Helpers.viewport._resolution;
+    //            var zoomLevel = C.Helpers.viewport.getZoomLevel();
+    //            var maxZoomLevel = C.Helpers.viewport.getMaxZoomLevel();
+    //            if (zoomLevel < maxZoomLevel) {
+    //                var diff = C.Helpers.viewport.getResolutionAtZoomLevel(zoomLevel + 1) - C.Helpers.viewport.getResolutionAtZoomLevel(zoomLevel);
+    //                C.Helpers.viewport.zoom(res + diff / 30 * val);
+    //            }
+    //        }
+    ////        C.Helpers.viewport.zoom(C.Helpers.viewport._resolution + data.scale);
+    ////        data.scale;
+    //    };
+    //    $(this._citronGIS._renderer.view).bind('touchy-pinch', handleTouchyPinch);
     //
     //    this._citronGIS._renderer.view.addEventListener('touchstart', C.System.Events.stageDown.bind(this));
     //    document.addEventListener('touchmove',C.System.Events.stageMove.bind(this));
@@ -70,6 +98,50 @@ C.System.Events.attach = function (citronGIS) {
     //        this._citronGIS._renderer.view.addEventListener('wheel', C.System.Events.wheel.bind(this));
 
     this._citronGIS._viewport.on('move', C.System.Events.internalUpdate.bind(this));
+};
+
+C.System.Events.touchStart = function (e) {
+    if ((!e.touches || e.touches.length !== 2) && (!e.changedTouches || e.changedTouches.length !== 2)) { return; }
+
+    console.log('touchStart', arguments);
+    var touches = (e.touches) ? (e.touches) : (e.changedTouches);
+    var p1 = new C.Geometry.Vector2(touches[0].pageX, touches[0].pageY);
+    var p2 = new C.Geometry.Vector2(touches[1].pageX, touches[1].pageY);
+
+    this._startDist = p1.Distance(p2);
+    this._startZoom = C.Helpers.viewport.getDecimalZoomLevel();
+    console.log(C.Helpers.viewport._resolution, C.Helpers.viewport.getZoomLevel(), this._startZoom);
+    this._isDown = false;
+
+    document.addEventListener('touchmove', this._touchMove);
+    document.addEventListener('touchend', this._touchEnd);
+};
+
+C.System.Events.touchMove = function (e) {
+    if ((!e.touches || e.touches.length !== 2) && (!e.changedTouches || e.changedTouches.length !== 2)) { return; }
+
+    console.log('touchMove', arguments);
+    var touches = (e.touches) ? (e.touches) : (e.changedTouches);
+    var p1 = new C.Geometry.Vector2(touches[0].pageX, touches[0].pageY);
+    var p2 = new C.Geometry.Vector2(touches[1].pageX, touches[1].pageY);
+    var scale = p1.Distance(p2) / this._startDist;
+    var zoom = Math.log((scale * (256 * Math.pow(2, this._startZoom))) / 256) / Math.LN2;
+
+    var px = (p1.X + p2.X) / 2;
+    var py = (p1.Y + p2.Y) / 2;
+    var dx = px - this._citronGIS._viewport._width / 2;
+    var dy = py - this._citronGIS._viewport._height / 2;
+
+    C.Helpers.viewport.translate(-dx, -dy, true);
+    C.Helpers.viewport.zoom(C.Helpers.viewport.getResolutionAtZoomLevel(zoom), true);
+    C.Helpers.viewport.translate(dx, dy);
+};
+
+C.System.Events.touchEnd = function () {
+    console.log('touchEnd', arguments);
+    document.removeEventListener('touchmove', this._touchMove);
+    document.removeEventListener('touchend', this._touchEnd);
+    this.emit('zoomend', C.Helpers.viewport);
 };
 
 /**
@@ -164,22 +236,9 @@ C.System.Events.zoomToCenterWithAnimation = function (targetResolution, center) 
     var steps = 0;
     this._currentAnimation = setTimeout(function zoomAnimation() {
         ++steps;
-        //        var actionTaken = 0;
-        //        if (step < 0 && resolution > targetResolution ||
-        //            step > 0 && resolution < targetResolution) {
         resolution += step;
-        //            ++actionTaken;
-        //        }
-        //        if (stepCenterX < 0 && originalCenter.X > center.X ||
-        //            stepCenterX > 0 && originalCenter.X < center.X) {
         originalCenter.X += stepCenterX;
-        //            ++actionTaken;
-        //        }
-        //        if (stepCenterY < 0 && originalCenter.Y > center.Y ||
-        //            stepCenterY > 0 && originalCenter.Y < center.Y) {
         originalCenter.Y += stepCenterY;
-        //            ++actionTaken;
-        //        }
 
 
         if (steps <= 15) {
@@ -395,6 +454,7 @@ C.System.Events.stageDblClick = function (e) {
  * @param {C.MouseEvent} e
  */
 C.System.Events.stageDown = function (e) {
+    if ((e.touches && e.touches.length !== 1) || (e.changedTouches && e.changedTouches.length !== 1)) { return; }
     if (e.target == this._citronGIS._renderer.view) {
         var offset = $(this._citronGIS._rootDiv).offset();
         var px = e.pageX;
@@ -490,6 +550,7 @@ C.System.Events.stageUp = function (e) {
  * @param {C.MouseEvent} e
  */
 C.System.Events.stageMove = function (e) {
+    if ((e.touches && e.touches.length !== 1) || (e.changedTouches && e.changedTouches.length !== 1)) { return; }
 
     var offset = $(this._citronGIS._rootDiv).offset();
     e.X = e.pageX - offset.left;

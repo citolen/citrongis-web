@@ -75,11 +75,10 @@ C.Renderer.PIXIRenderer.prototype.featureAdded = function (feature, layer) {
     feature.__graphics.interactive = feature._interactive;
     feature.__graphics.alpha = feature._opacity;
 
-    feature.__graphics.mousedown = function (event) { feature.__mousedown(event); }
-    feature.__graphics.mousemove = function (event) { feature.__mousemove(event); }
-    feature.__graphics.mouseup = function (event) { feature.__mouseup(event); }
-    feature.__graphics.click = function (event) { feature.__click(event); }
-    feature.__graphics.tap = function (event) { feature.__click(event); }
+    feature.__graphics.mousedown = feature.__graphics.touchstart = function (event) { feature.__mousedown(event); };
+    feature.__graphics.mousemove = feature.__graphics.touchmove = function (event) { feature.__mousemove(event); };
+    feature.__graphics.mouseup = feature.__graphics.touchend = function (event) { feature.__mouseup(event); };
+    feature.__graphics.click = feature.__graphics.tap = function (event) { feature.__click(event); };
     //
     //    } else {
     //        this.updateFeaturePosition(feature);
@@ -420,7 +419,9 @@ C.Renderer.PIXIRenderer.prototype.renderPolygon = function (feature) {
 
     g.clear();
     g.lineStyle(feature._outlineWidth, feature._outlineColor);
-    g.beginFill(feature._color);
+    if (feature._color >= 0) {
+        g.beginFill(feature._color);
+    }
 
     var origin;
     var points = [];
@@ -429,11 +430,11 @@ C.Renderer.PIXIRenderer.prototype.renderPolygon = function (feature) {
         var pt = this._viewport.worldToScreen(loc.X, loc.Y);
         if (i === 0) {
             origin = pt;
-            points.push(new PIXI.Point(0, 0));
+            points.push(0, 0);
             g.position = new PIXI.Point(origin.X, origin.Y);
             continue;
         }
-        points.push(new PIXI.Point(pt.X - origin.X, pt.Y - origin.Y));
+        points.push(pt.X - origin.X, pt.Y - origin.Y);
     }
     g.drawPolygon(points);
     g.endFill();
@@ -636,7 +637,7 @@ C.Renderer.PIXIRenderer.prototype.updateFeaturePosition = function (feature, dir
                 this.renderLine(feature);
                 break;
             case C.Geo.Feature.Feature.FeatureType.POLYGON:
-                if (direction == C.System.Viewport.zoomDirection.NONE && !feature._locationChanged) {
+                if (direction == C.System.Viewport.zoomDirection.NONE && !feature._locationChanged && feature.__locations.length > 0) {
                     var loc = feature.__locations[0];
                     var pt = this._viewport.worldToScreen(loc.X, loc.Y);
                     feature.__graphics.position = new PIXI.Point(pt.X, pt.Y);
