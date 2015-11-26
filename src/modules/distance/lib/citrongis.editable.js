@@ -14,7 +14,7 @@ var Pivot = C.Utils.Inherit(function (base, location, idx) {
     var self = this;
 
     this._pivot = C.Circle({
-        radius: 7,
+        radius: (C.System.isMobile) ? 30 : 7,
         location: location,
         outlineColor: 0xF2676B,
         color: 0xffffff,
@@ -153,6 +153,10 @@ function moveLayerToTop() {
     map.moveLayer(layer, map.count() - 1);
 }
 
-module.exports = {
-    EditableFeature: EditableFeature
+function ctr(args) {
+    return EditableFeature.apply(this, args);
+}
+ctr.prototype = EditableFeature.prototype;
+module.exports = function () {
+    return new ctr(arguments);
 };

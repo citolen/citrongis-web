@@ -90,7 +90,7 @@ function mapclicked_circle(evt) {
 function mapclicked_line(evt) {
     var pivot = C.Circle({
         location: evt.getWorldPosition(),
-        radius: 8,
+        radius: (C.System.isMobile) ? 20 : 8,
         color: 0x4E7BA0,
         outlineColor: 0xffffff,
         outlineWidth: 2
@@ -133,7 +133,7 @@ function mapclicked_line(evt) {
 function mapclicked_polygon(evt) {
     var pivot = C.Circle({
         location: evt.getWorldPosition(),
-        radius: 8,
+        radius: (C.System.isMobile) ? 20 : 8,
         color: 0x4E7BA0,
         outlineColor: 0xffffff,
         outlineWidth: 2
@@ -173,6 +173,7 @@ function mapclicked_polygon(evt) {
 }
 
 function mapclicked_image(evt) {
+    currentfeature.location(evt.getWorldPosition());
     done_editing();
 }
 

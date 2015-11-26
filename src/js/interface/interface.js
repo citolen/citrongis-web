@@ -322,6 +322,20 @@ C.Interface.prototype.init = function (root, map) {
     this.bindExtensionLauncher(search, 'search');
     this.bindExtensionLauncher(welcome, 'welcome', true);
 
+    var myLocationButton = new C.Interface.ButtonBlock({
+        x: 1,
+        y: 4,
+        width: 1,
+        height: 1,
+        float: C.Interface.BlockFloat.topLeft,
+        content: '<i class="fa fa-location-arrow"></i>',
+        css: {
+            borderRadius: '4px',
+            borderTop: 'none',
+            fontSize: '16px'
+        }
+    });
+    this._grid.addBlock(myLocationButton);
     //menu btn
     //    var blocklogIn = new C.Interface.ButtonBlock({
     //        x: 3,
@@ -442,6 +456,37 @@ C.Interface.prototype.init = function (root, map) {
     });
     zoomOutButton.on('click', function () {
         C.System.Events.zoomOutWithAnimation();
+    });
+
+    var myLocation;
+    var myLocationDisplayed;
+    myLocationButton.on('click', function () {
+        if (!myLocationDisplayed) {
+            C.System.Locator.getUserPosition(function (geocoord) {
+                if (!geocoord) { return; }
+                myLocationDisplayed = true;
+                var location = new C.Geometry.LatLng(geocoord.coords.latitude, geocoord.coords.longitude);
+                if (!myLocation) {
+                    myLocation = new C.Geo.Feature.Circle({
+                        location: location,
+                        radius: 15,
+                        color: 0x1CAADE,
+                        outlineColor: 0x259FC5,
+                        outlineWidth: 0
+                    });
+                } else {
+                    myLocation.location(location);
+                }
+                myLocationButton.setCSS('color', '#1CAADE');
+                layer.add(myLocation);
+                var bounds = new C.Geometry.Bounds(location);
+                C.System.Events.zoomToBounds(bounds);
+            });
+        } else {
+            myLocationDisplayed = false;
+            myLocationButton.setCSS('color', 'black');
+            layer.remove(myLocation);
+        }
     });
     //    blocklogIn.on('click', function () {
     //        if (windowUserLogin.isVisible() == false) {

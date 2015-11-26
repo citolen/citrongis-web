@@ -14,7 +14,7 @@ var Pivot = C.Utils.Inherit(function (base, location, idx) {
     var self = this;
 
     this._pivot = C.Circle({
-        radius: 7,
+        radius: (C.System.isMobile) ? 30 : 7,
         location: location,
         outlineColor: 0xF2676B,
         color: 0xffffff,

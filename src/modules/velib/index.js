@@ -52,6 +52,7 @@ require('lib/citrongis.cluster.js', function (err, Cluster) {
                 toAdd.push(currentContract[i]["station"]);
             }
             baseLayer.add(toAdd);
+            C.Events.zoomToBounds(baseLayer.getBounds());
         } else {
             $.get('https://api.jcdecaux.com/vls/v1/stations?contract=' + contract + '&apiKey=e05c3a4db316832c1abf904b999ed42fc7088e21', function (contract, velib_stations) {
                 contracts[contract] = [];
@@ -106,6 +107,7 @@ require('lib/citrongis.cluster.js', function (err, Cluster) {
                 }
 
                 baseLayer.add(markers);
+                C.Events.zoomToBounds(baseLayer.getBounds());
             }.bind(null, contract));
         }
     }

@@ -322,6 +322,8 @@ C.CitrongGISDebug = function (citronGIS) {
 
 
     debugExtensionLoader(citronGIS, './src/modules/scale/');
+    debugExtensionLoader(citronGIS, './src/modules/find_all_countries/');
+//    debugExtensionLoader(citronGIS, './src/modules/shapefile/');
     //    debugExtensionLoader(citronGIS, './src/modules/search/');
     //    debugExtensionLoader(citronGIS, './src/modules/ourmap/');
     //    debugExtensionLoader(citronGIS, './src/modules/game/');

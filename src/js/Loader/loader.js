@@ -71,6 +71,7 @@ var files = [
     'citrongis-core/src/schema/SphericalMercator.js',
     'src/js/system/MouseEvent.js',
     'src/js/system/Events.js',
+    'src/js/system/Locator.js',
     'citrongis-core/src/system/TileSchemaManager.js',
     'src/js/CitronGISDebugger.js',
     'citrongis-core/src/renderer/RendererBase.js',

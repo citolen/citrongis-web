@@ -112,7 +112,7 @@ function lineFromData(data) {
     return C.Line({
         locations: locations,
         color: data.color,
-        width: data.width
+        width: 15 || data.width
     });
 }
 

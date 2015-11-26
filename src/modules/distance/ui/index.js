@@ -1,4 +1,4 @@
-require('lib/citrongis.editable.js', function (err, editable) {
+require('lib/citrongis.editable.js', function (err, Editable) {
     var measuring = false;
     var editing = false;
     var aire = false;
@@ -48,14 +48,17 @@ require('lib/citrongis.editable.js', function (err, editable) {
         opacity: 0
     });
 
-    InfoPolygon.addTo(baseLayer);
+
+    if (!C.System.isMobile) {
+        InfoPolygon.addTo(baseLayer);
+        infoLine.addTo(baseLayer);
+        distanceDot.addTo(baseLayer);
+    }
     measuredPolygon.addTo(baseLayer);
     measuredLine.addTo(baseLayer);
-    infoLine.addTo(baseLayer);
-    distanceDot.addTo(baseLayer);
 
-    var editablePolygon = new editable.EditableFeature(measuredPolygon);
-    var editableLine = new editable.EditableFeature(measuredLine);
+    var editablePolygon =   Editable(measuredPolygon);
+    var editableLine =      Editable(measuredLine);
 
     editableLine.on('edited', displayInfo);
     editablePolygon.on('edited', displayInfo);
@@ -115,7 +118,7 @@ require('lib/citrongis.editable.js', function (err, editable) {
         var clickedPoint = evt.getWorldPosition();
 
         var measurePoint = C.Circle({
-            radius: 5,
+            radius: (C.System.isMobile) ? 20 : 5,
             location: clickedPoint,
             outlineColor: 0xBF4E6C,
             color: 0xffffff,
