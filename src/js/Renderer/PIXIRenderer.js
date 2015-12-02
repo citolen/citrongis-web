@@ -176,10 +176,10 @@ C.Renderer.PIXIRenderer.prototype.renderImage = function (feature) {
     sprite.anchor.y = feature._anchorY;
 
     var position = this._viewport.worldToScreen(feature.__location.X, feature.__location.Y);
-    sprite.position = new PIXI.Point(position.X, position.Y); //new PIXI.Point(Math.floor(position.X + 0.5), Math.floor(position.Y + 0.5));
+    sprite.position = new PIXI.Point(position.X, position.Y);//new PIXI.Point(Math.floor(position.X + 0.5), Math.floor(position.Y + 0.5));
 
-    sprite.width = feature._width;
-    sprite.height = feature._height;
+    sprite.width = feature._width /*Math.floor(feature._width + 0.5)*/;
+    sprite.height = feature._height /*Math.floor(feature._height + 0.5)*/;
 
     sprite.rotation = feature._rotation;
 
@@ -582,6 +582,9 @@ C.Renderer.PIXIRenderer.prototype.updateImage = function (feature) {
             feature.__graphics.position.x += feature._offset.X;
             feature.__graphics.position.y += feature._offset.Y;
         }
+
+        //        feature.__graphics.position.x = Math.floor(feature.__graphics.position.x + 0.5);
+        //        feature.__graphics.position.y = Math.floor(feature.__graphics.position.y + 0.5);
     }
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.SOURCE) != 0) {
         feature.__graphics.texture = feature.__texture;
@@ -591,9 +594,11 @@ C.Renderer.PIXIRenderer.prototype.updateImage = function (feature) {
     }
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.WIDTH) != 0) {
         feature.__graphics.width = feature._width;
+        //        feature.__graphics.width = Math.floor(feature._width + 0.5);
     }
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.HEIGHT) != 0) {
         feature.__graphics.height = feature._height;
+        //        feature.__graphics.height = Math.floor(feature._height + 0.5);
     }
     if ((feature._mask & C.Geo.Feature.Image.MaskIndex.ANCHORX) != 0) {
         feature.__graphics.anchor.x = feature._anchorX;
@@ -721,81 +726,44 @@ C.Renderer.PIXIRenderer.prototype.layerMoved = function (layer) {
     'use strict';
 };
 
-//////////////////////
-//  GROUP RENDERING //
-//////////////////////
-//C.Renderer.PIXIRenderer.prototype.groupChange = function (eventType, group) {
-//
-//    'use strict';
-//
-//    switch (eventType) {
-//        case C.Extension.LayerGroup.EventType.ADDED:
-//            this.groupAdded(group);
-//            break;
-//        case C.Extension.LayerGroup.EventType.REMOVED:
-//            this.groupRemoved(group);
-//            break;
-//        case C.Extension.LayerGroup.EventType.MOVED:
-//            this.groupMoved(group);
-//            break;
-//    }
-//};
-//
-//C.Renderer.PIXIRenderer.prototype.groupAdded = function (group) {
-//
-//    'use strict';
-//    group.__graphics = new PIXI.Container();
-//    group.__graphics.interactive = true;
-//    this._stage.addChild(group.__graphics);
-//};
-//
-//C.Renderer.PIXIRenderer.prototype.groupRemoved = function (group) {
-//
-//    'use strict';
-//    this._stage.removeChild(group.__graphics);
-//};
-//
-//C.Renderer.PIXIRenderer.prototype.groupMoved = function (group) {
-//
-//    'use strict';
-//};
-
 ///////////////////////
 //  UPDATE POSITIONS //
 ///////////////////////
+C.Renderer.PIXIRenderer.prototype.layerUpdatePositions = function (layer, direction) {
+    var features = layer._features;
+    for (var k = 0; k < features.length; ++k) {
+        var feature = features[k];
+        if (feature._features) {
+            this.layerUpdatePositions(feature, direction);
+        } else {
+            this.updateFeaturePosition(feature, direction);
+        }
+    }
+};
+
 C.Renderer.PIXIRenderer.prototype.updatePositions = function (direction) {
 
     'use strict';
 
     var self = this;
 
-    function it_layer(layer) {
-        var features = layer._features;
-        for (var k = 0; k < features.length; ++k) {
-            var feature = features[k];
-            if (feature._features) {
-                it_layer(feature);
-            } else {
-                self.updateFeaturePosition(feature, direction);
-            }
-        }
-    }
+//    function it_layer(layer) {
+//        var features = layer._features;
+//        for (var k = 0; k < features.length; ++k) {
+//            var feature = features[k];
+//            if (feature._features) {
+//                it_layer(feature);
+//            } else {
+//                self.updateFeaturePosition(feature, direction);
+//            }
+//        }
+//    }
 
     var layers = this._layerManager._layers;
     for (var i = 0; i < layers.length; ++i) {
-        it_layer(layers[i]);
+        this.layerUpdatePositions(layers[i], direction);
+//        it_layer(layers[i]);
     }
-
-    //    var groups = this._layerManager._layerGroups;
-    //    for (var i = 0; i < groups.length; ++i) {
-    //        var layers = groups[i]._layers;
-    //        for (var j = 0; j < layers.length; ++j) {
-    //            var features = layers[j]._features;
-    //            for (var k = 0; k < features.length; ++k) {
-    //                this.updateFeaturePosition(features[k]);
-    //            }
-    //        }
-    //    }
 };
 
 C.Renderer.PIXIRenderer.prototype.renderFrame = function () {

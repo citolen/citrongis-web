@@ -1,0 +1,17 @@
+.container_game {
+	max-width: 400px;
+	opacity: 1;
+	background-color:white;
+}
+
+.game-ui-cat {
+    padding: 6px 10px;
+    font-family: 'nexa-light';
+    color: #646464;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.padded {
+	padding: 45px 15px 15px
+}

@@ -1,0 +1,59 @@
+{@include src="ui/index.css"/}
+{@include src="ui/index.js"/}
+{@include src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css"/}
+
+<div class="container_game">
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#rules" aria-controls="rules" role="tab" data-toggle="tab">Rules</a></li>
+    <li role="presentation"><a href="#Play" aria-controls="Play" role="tab" data-toggle="tab">Play</a></li>
+    <li role="presentation"><a href="#scores" id="hscoresmark" aria-controls="scores" role="tab" data-toggle="tab">High scores</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="rules">
+        <div class="padded game-ui-cat">
+			<p>The rules of the game are simple, you have to write as many countries as possible in a limited time.</p>
+			<p>Each time you write a country name correctly, it will be shown on the map.</p>
+			<p>You can pick 1 minute or 15 minutes. You will earn 1 point per country found!</p>
+		</div>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="Play">
+		<p class="timer game-ui-cat para text-center"></p>
+		<p id="lastcountry" class="para text-center"></p>
+		<div class="padded">
+			<form id="score_name"><input id="name_country" autocomplete="off" type="text"/><input type="submit" id="send"/></form>
+			<p id="score" class="para text-center">Score: 0</p>
+			<div class="btn-group btn-group-justified" data-toggle="buttons" id="difficulty">
+			  <label class="btn btn-primary">
+				<input type="radio" name="options" id="option3" autocomplete="off" value="1">1 minute
+			  </label>
+			  <label class="btn btn-primary active">
+				<input type="radio" name="options" id="option1" autocomplete="off" checked value="15">15 minutes
+			  </label>
+			</div>
+		</div>
+		<div class="padded">
+			<div class=""><button id="play" type="submit" class="btn btn-success btn-block">Play</button></div>
+        </div>
+    </div>
+	
+	<div role="tabpanel" class="tab-pane" id="scores">
+		<div class="padded" id="hscores">
+			<form id="score_name_player"><input id="name_player" type="text"/><input type="submit" id="send"/></form>
+		<table class="table table-bordered table-striped" id="scores_table">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Name</th>
+					<th>Score</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+		</div>
+    </div>
+
+  </div>
+</div>

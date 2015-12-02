@@ -5,7 +5,7 @@
 var self = this;
 var onfeatureadded;
 
-require(['models/queryFormatter.js',
+require(['models/QueryFormatter.js',
          'models/Feature.js'], function (err, models) {
     var Formatter = models[0];
     var Feature = models[1];

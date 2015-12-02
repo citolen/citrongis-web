@@ -17035,9 +17035,9 @@ Sprite.prototype._renderCanvas = function (renderer)
 
         // If the texture is trimmed we offset by the trim x/y, otherwise we use the frame dimensions
 
+
         if(texture.rotate)
         {
-
             // cheeky rotation!
             var a = wt.a;
             var b = wt.b;

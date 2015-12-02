@@ -57,6 +57,7 @@ var files = [
     'citrongis-core/src/geo/Layer.js',
     'citrongis-core/src/geo/BoundedLayer.js',
     'citrongis-core/src/geo/FeatureGroup.js',
+    'citrongis-core/src/geo/PerformanceLayer.js',
     'citrongis-core/src/layer/tile/TileIndex.js',
     'citrongis-core/src/layer/tile/TileSchema.js',
     'citrongis-core/src/layer/tile/schema/SphericalMercator.js',

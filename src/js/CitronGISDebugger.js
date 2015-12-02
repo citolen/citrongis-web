@@ -13,8 +13,10 @@ function debugExtensionLoader(map, baseUrl) {
 
     C.Extension.Extension_ctr.call({_map: map}, new URLHandler({
         baseUrl: baseUrl
-    }), function () {
-
+    }), function (err) {
+        if (err) {
+            console.error(err);
+        }
     });
     //    new C.Extension.Extension(new URLHandler({
     //        baseUrl: baseUrl
@@ -322,7 +324,7 @@ C.CitrongGISDebug = function (citronGIS) {
 
 
     debugExtensionLoader(citronGIS, './src/modules/scale/');
-    debugExtensionLoader(citronGIS, './src/modules/find_all_countries/');
+//    debugExtensionLoader(citronGIS, './src/modules/find_all_countries/');
 //    debugExtensionLoader(citronGIS, './src/modules/shapefile/');
     //    debugExtensionLoader(citronGIS, './src/modules/search/');
     //    debugExtensionLoader(citronGIS, './src/modules/ourmap/');

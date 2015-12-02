@@ -25,8 +25,8 @@ C.Interface.prototype.bindExtensionLauncher = function (button, extension, autos
             button.setContent('<i class="fa fa-spinner fa-spin"></i>');
             C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
                 baseUrl: './src/modules/' + extension + '/'
-            }), function (err, ext) {
-                ext = ext;
+            }), function (err, ex) {
+                ext = ex;
                 ext._module.ui.on('display', function () {
                     loading = false;
                     button.setContent(extension);
@@ -297,8 +297,28 @@ C.Interface.prototype.init = function (root, map) {
         css: cssBarMiddle
     });
     this._grid.addBlock(search);
-    var welcome = new C.Interface.ButtonBlock({
+    var shapefile = new C.Interface.ButtonBlock({
         x: 30,
+        y: 1,
+        width: 3,
+        height: 1,
+        float: C.Interface.BlockFloat.topLeft,
+        content: 'shapefile',
+        css: cssBarMiddle
+    });
+    this._grid.addBlock(shapefile);
+    var findcountries = new C.Interface.ButtonBlock({
+        x: 33,
+        y: 1,
+        width: 3,
+        height: 1,
+        float: C.Interface.BlockFloat.topLeft,
+        content: 'countries',
+        css: cssBarMiddle
+    });
+    this._grid.addBlock(findcountries);
+    var welcome = new C.Interface.ButtonBlock({
+        x: 36,
         y: 1,
         width: 3,
         height: 1,
@@ -320,6 +340,8 @@ C.Interface.prototype.init = function (root, map) {
     this.bindExtensionLauncher(satellite, 'satellite');
     this.bindExtensionLauncher(ourmap, 'ourmap');
     this.bindExtensionLauncher(search, 'search');
+    this.bindExtensionLauncher(shapefile, 'shapefile');
+    this.bindExtensionLauncher(findcountries, 'countries');
     this.bindExtensionLauncher(welcome, 'welcome', true);
 
     var myLocationButton = new C.Interface.ButtonBlock({

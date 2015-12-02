@@ -47,6 +47,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
     });
     C.Helpers.viewport = this._viewport;
     C.Helpers.schema = this._viewport._schema;
+    C.Helpers.renderer = this._renderer;
 
     C.UI.PopupManager.init(this._rootDiv);
     this._extDiv = C.Extension.Extension.init(this._rootDiv);
@@ -71,7 +72,7 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
 
     C.Utils.Event.__initialized();
 
-    this._customRenderer = new C.Renderer.PIXIRenderer(this);
+    C.Helpers.customRenderer = this._customRenderer = new C.Renderer.PIXIRenderer(this);
 
     $(document).ready(function () {
         C.Interface.init(self._rootDiv, self);
@@ -80,9 +81,10 @@ C.CitrongGIS = C.Utils.Inherit(function (base, rootDIV) {
 
     requestAnimationFrame( animate );
     function animate() {
-        self._customRenderer.renderFrame();
-        self._renderer.render(self._rendererStage);
         requestAnimationFrame( animate );
+        self._customRenderer.renderFrame();
+        C.System.Events.renderFrame();
+        self._renderer.render(self._rendererStage);
     }
 }, EventEmitter, 'C.CitronGIS');
 
@@ -141,4 +143,4 @@ C.CitrongGIS.prototype.loadExtension = function (file, citronGIS) {
     reader.readAsArrayBuffer(file);
 };
 
-//(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();stats.domElement.style.cssText='position:fixed;left:0;top:0;z-index:10000';document.body.appendChild(stats.domElement);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//rawgit.com/mrdoob/stats.js/master/build/stats.min.js';document.head.appendChild(script);})()
+(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();stats.domElement.style.cssText='position:fixed;left:0;top:0;z-index:10000';document.body.appendChild(stats.domElement);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//rawgit.com/mrdoob/stats.js/master/build/stats.min.js';document.head.appendChild(script);})()

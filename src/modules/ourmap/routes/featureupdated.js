@@ -5,7 +5,7 @@
 var self = this;
 var onfeatureupdated;
 
-require(['models/queryFormatter.js'], function (err, models) {
+require(['models/QueryFormatter.js'], function (err, models) {
     var Formatter = models[0];
     onfeatureupdated = function (client, data) {
         var id = data.payload.id;

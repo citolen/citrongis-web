@@ -1,0 +1,66 @@
+{@include src="ui/index.css"/}
+{@include src="ui/index.js"/}
+{@include src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css"/}
+
+<div class="container_game">
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#rules" aria-controls="rules" role="tab" data-toggle="tab">Rules</a></li>
+    <li role="presentation"><a href="#Play" aria-controls="Play" role="tab" data-toggle="tab">Play</a></li>
+    <li role="presentation"><a href="#scores" id="hscoresmark" aria-controls="scores" role="tab" data-toggle="tab">High scores</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <!-- English version -->
+    <div role="tabpanel" class="tab-pane active" id="rules">
+        <div class="padded game-ui-cat">
+			<p>The rules of the game are simple, each time you are asked for a <strong>country</strong>, you have to <strong>click</strong> the country on the map.</p>
+			<p>You can choose between 10, 50 and 100 countries to find.</p>
+			<p>You have 50 seconds to find each country and you gain more points if you are fast!</p>
+		</div>
+    </div>
+    <!-- French version -->
+    <div role="tabpanel" class="tab-pane" id="Play">
+    
+		<div class="padded">
+			<div class="btn-group" data-toggle="buttons" id="difficulty">
+			  <label class="btn btn-primary active">
+				<input type="radio" name="options" id="option1" autocomplete="off" checked value="10">10 countries
+			  </label>
+			  <label class="btn btn-primary">
+				<input type="radio" name="options" id="option2" autocomplete="off" value="50"> 50 countries
+			  </label>
+			  <label class="btn btn-primary">
+				<input type="radio" name="options" id="option3" autocomplete="off" value="100"> 100 countries
+			  </label>
+			</div>
+			<div id="score" class="game-ui-cat">Score: 0</div>
+		</div>
+		<div class="padded">
+			<div><button id="play" type="submit" class="btn btn-success">Play</button></div>
+			<div id="country" class="game-ui-cat">Country to find: </div>
+        </div>
+    </div>
+	
+    <!-- French version -->
+    <div role="tabpanel" class="tab-pane" id="scores">
+		<div class="padded" id="hscores">
+			<form id="score_name"><input id="name_player" type="text"/><input type="submit" id="send"/></form>
+		<table class="table table-bordered table-striped" id="scores_table">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Name</th>
+					<th>Score</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+		</div>
+    </div>
+	
+	
+  </div>
+</div>

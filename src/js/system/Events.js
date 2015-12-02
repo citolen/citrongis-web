@@ -391,12 +391,12 @@ C.System.Events.keyDown = function (evt) {
         evt.keyCode == 109)/* '-' key */ {
         this.zoomOutWithAnimation();
     }
-    //    if (evt.keyCode == 106) {
-    //        this._citronGIS._viewport.rotate(-5);
-    //    }
-    //    if (evt.keyCode == 111) {
-    //        this._citronGIS._viewport.rotate(5);
-    //    }
+    if (evt.keyCode == 106) {
+        this._citronGIS._viewport.rotate(-5);
+    }
+    if (evt.keyCode == 111) {
+        this._citronGIS._viewport.rotate(5);
+    }
     //    if (evt.keyCode == 107) {
     //        /*var zoomLevel = C.Helpers.ResolutionHelper.getZoomLevel(this._citronGIS._viewport._resolution);
     //        zoomLevel = C.Helpers.ResolutionHelper.Resolutions[zoomLevel + 2]*1*/
@@ -583,6 +583,10 @@ C.System.Events.stageMove = function (e) {
 C.System.Events.internalUpdate = function () {
     this._citronGIS._customRenderer.updatePositions(this._citronGIS._viewport._zoomDirection);
     this._citronGIS._viewport._zoomDirection = C.System.Viewport.zoomDirection.NONE;
+};
+
+C.System.Events.renderFrame = function () {
+    this.emit('frame');
 };
 
 //-------------GAMEPAD-------------
