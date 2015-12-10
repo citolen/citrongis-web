@@ -17548,10 +17548,16 @@ shp.combine = function(arr) {
 };
 shp.parseZip = function(buffer, whiteList) {
 	var key;
-	var zip = unzip(buffer);
+    console.log('start');
+    var z = new JSZip();
+    z.load(buffer);
+    console.log(z);
+    console.log('done');
+//	var zip = unzip(buffer);
+    var zip = {};
 	var names = [];
 	whiteList = whiteList || [];
-	for (key in zip) {
+	for (key in z.files) {
 		if (key.indexOf('__MACOSX') !== -1) {
 			continue;
 		}
@@ -17559,30 +17565,32 @@ shp.parseZip = function(buffer, whiteList) {
 			names.push(key.slice(0, - 4));
 		}
 		else if (key.slice(-3).toLowerCase() === 'dbf') {
-			zip[key.slice(0, -3) + key.slice(-3).toLowerCase()] = parseDbf(zip[key]);
+			zip[key.slice(0, -3) + key.slice(-3).toLowerCase()] = parseDbf(z.files[key].asArrayBuffer());
 		}
 		else if (key.slice(-3).toLowerCase() === 'prj') {
-			zip[key.slice(0, -3) + key.slice(-3).toLowerCase()] = proj4(zip[key]);
+			zip[key.slice(0, -3) + key.slice(-3).toLowerCase()] = proj4(z.files[key].asText());
 		}
 		else if (key.slice(-4).toLowerCase() === 'json' || whiteList.indexOf(key.split('.').pop()) > -1) {
 			names.push(key.slice(0, -3) + key.slice(-3).toLowerCase());
 		}
 	}
+    console.log(zip, names);
+
 	if (!names.length) {
 		throw new Error('no layers founds');
 	}
 	var geojson = names.map(function(name) {
 		var parsed;
 		if (name.slice(-4).toLowerCase() === 'json') {
-			parsed = JSON.parse(zip[name]);
+			parsed = JSON.parse(z.files[name].asText());
 			parsed.fileName = name.slice(0, name.lastIndexOf('.'));
 		}
 		else if (whiteList.indexOf(name.slice(name.lastIndexOf('.') + 1)) > -1) {
-			parsed = zip[name];
+			parsed = z.files[name];
 			parsed.fileName = name;
 		}
 		else {
-			parsed = shp.combine([parseShp(zip[name + '.shp'], zip[name + '.prj']), zip[name + '.dbf']]);
+			parsed = shp.combine([parseShp(z.files[name + '.shp'].asArrayBuffer(), zip[name + '.prj']), zip[name + '.dbf']]);
 			parsed.fileName = name;
 		}
 		return parsed;

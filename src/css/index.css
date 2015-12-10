@@ -119,7 +119,7 @@ div.popup-wrapper {
     padding: 15px 13px 15px 13px;
     background-color: white;
     border-radius: 10px;
-    box-shadow: 0 2px 0 0 #d4d4d5,0 0 0 1px #d4d4d5, 0px 3px 14px rgba(0,0,0,0.4);
+    box-shadow: 0 2px 0 0 #d4d4d5,/*0 0 0 1px #d4d4d5,*/ 0px 3px 14px rgba(0,0,0,0.4);
 }
 
 div.popup-container {

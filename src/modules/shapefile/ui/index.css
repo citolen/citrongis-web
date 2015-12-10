@@ -30,7 +30,11 @@
     border-color: black !important;
 }
 
-.properties {
+#loading_info, .properties {
     font-family: 'Nexa-light';
     font-size: 15px;
+}
+
+#loading_info {
+    text-align: center;
 }

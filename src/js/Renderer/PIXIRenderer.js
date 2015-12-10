@@ -729,12 +729,12 @@ C.Renderer.PIXIRenderer.prototype.layerMoved = function (layer) {
 ///////////////////////
 //  UPDATE POSITIONS //
 ///////////////////////
-C.Renderer.PIXIRenderer.prototype.layerUpdatePositions = function (layer, direction) {
-    var features = layer._features;
+C.Renderer.PIXIRenderer.prototype.layerUpdatePositions = function (features, direction) {
+//    var features = layer._features;
     for (var k = 0; k < features.length; ++k) {
         var feature = features[k];
         if (feature._features) {
-            this.layerUpdatePositions(feature, direction);
+            this.layerUpdatePositions(feature._features, direction);
         } else {
             this.updateFeaturePosition(feature, direction);
         }
@@ -761,7 +761,7 @@ C.Renderer.PIXIRenderer.prototype.updatePositions = function (direction) {
 
     var layers = this._layerManager._layers;
     for (var i = 0; i < layers.length; ++i) {
-        this.layerUpdatePositions(layers[i], direction);
+        this.layerUpdatePositions(layers[i]._features, direction);
 //        it_layer(layers[i]);
     }
 };

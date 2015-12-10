@@ -36,18 +36,36 @@ require('lib/shp.js', function (err) {
         console.error(err);
     }
 
+    function show_ui_state(state) {
+        switch (state) {
+            case 0:
+                E.$('#drop_zone').show();
+                E.$('#loading_info').hide();
+                break;
+            case 1:
+                E.$('#drop_zone').hide();
+                E.$('#loading_info').show();
+                break;
+        }
+    }
+
     function parsePolygon(geometry) {
         var coordinates = geometry[0];
         var points = [];
+        var x;
+        var y;
         for (var i = 0; i < coordinates.length; ++i) {
-            points.push(C.LatLng(coordinates[i][1], coordinates[i][0]));
+            x = coordinates[i][0];
+            y = coordinates[i][1];
+            if (y <= -86) { continue; }
+            points.push(C.LatLng(y, x));
         }
         return C.Polygon({
             locations: points,
-            color: 0xffffff,
-            outlineColor: 0x00,
-            outlineWidth: 1,
-            opacity: 0.5
+            color: 0xff,
+            outlineColor: 0xff,
+            outlineWidth: 3,
+            opacity: 0.3
         });
     }
 
@@ -85,6 +103,10 @@ require('lib/shp.js', function (err) {
     }
 
     function parseFeatures(features) {
+        var onePercent = features.length / 50;
+        var percentage = 0;
+        var percentage_counter = 0;
+        console.log(percentage, '%');
         for (var i = 0; i < features.length; ++i) {
             var feature = features[i];
 
@@ -98,6 +120,7 @@ require('lib/shp.js', function (err) {
                 layer.add(feature);
                 feature.set('info', entry.featureInfo);
                 feature.on('click', function (feature, event) {
+                    event.stopPropagation();
                     var info = feature.get('info');
                     var popup = feature.get('popup');
                     if (!popup) {
@@ -105,27 +128,35 @@ require('lib/shp.js', function (err) {
                             content: generateContent(info.properties)
                         });
                         popup.on('close', function (feature) {
-                            feature.outlineWidth(1);
-                            feature.outlineColor(0);
+                            feature.outlineWidth(3);
+                            feature.outlineColor(0xff);
+                            feature.color(0xff);
                         }.bind(null, feature));
                         feature.set('popup', popup);
                     }
                     if (!popup._opened) {
                         feature.outlineWidth(4);
                         feature.outlineColor(0xff0000);
+                        feature.color(0xff0000);
                     }
                     popup.toggle(event);
                 });
             }
-
+            ++percentage_counter;
+            if (percentage_counter >= onePercent) {
+                percentage += 2;
+                percentage_counter = 0;
+                console.log(percentage, '%');
+            }
         }
     }
 
     function processShapefile(reader) {
-
-        //        console.log('start parsing')
+        layer.clearLayer();
+        console.log('SHP start parsing')
         shp(reader.result).then(function (result) {
-            //            console.log('done parsing');
+            console.log('SHP done parsing');
+            console.log('GEOJSON start parsing');
             if (!result.length) {
                 parseFeatures(result.features);
             } else {
@@ -133,8 +164,10 @@ require('lib/shp.js', function (err) {
                     parseFeatures(result[i].features);
                 }
             }
+            console.log('GEOJSON stop parsing');
             setTimeout(function () {
                 C.Events.zoomToBounds(layer.getBounds());
+                show_ui_state(0);
             }, 500);
         });
     }
@@ -148,6 +181,7 @@ require('lib/shp.js', function (err) {
         for (var i = 0, f; f = files[i]; i++) {
             var reader = new FileReader();
             reader.onload = processShapefile.bind(null, reader);
+            show_ui_state(1);
             reader.readAsArrayBuffer(f);
         }
     }
@@ -168,8 +202,11 @@ require('lib/shp.js', function (err) {
         E.$('#input_file')[0].onchange = function () {
             var reader = new FileReader();
             reader.onload = processShapefile.bind(null, reader);
+            show_ui_state(1);
             reader.readAsArrayBuffer(this.files[0]);
         };
+
+        show_ui_state(0);
     });
 
     E.Display('ui/index.tmpl');
