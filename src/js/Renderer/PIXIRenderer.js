@@ -75,10 +75,18 @@ C.Renderer.PIXIRenderer.prototype.featureAdded = function (feature, layer) {
     feature.__graphics.interactive = feature._interactive;
     feature.__graphics.alpha = feature._opacity;
 
-    feature.__graphics.mousedown = feature.__graphics.touchstart = function (event) { feature.__mousedown(event); };
-    feature.__graphics.mousemove = feature.__graphics.touchmove = function (event) { feature.__mousemove(event); };
-    feature.__graphics.mouseup = feature.__graphics.touchend = function (event) { feature.__mouseup(event); };
-    feature.__graphics.click = feature.__graphics.tap = function (event) { feature.__click(event); };
+    feature.__graphics.mousedown = feature.__graphics.touchstart = function (event) {
+        feature.__mousedown(new C.System.MouseEvent(event));
+    };
+    feature.__graphics.mousemove = feature.__graphics.touchmove = function (event) {
+        feature.__mousemove(new C.System.MouseEvent(event));
+    };
+    feature.__graphics.mouseup = feature.__graphics.touchend = function (event) {
+        feature.__mouseup(new C.System.MouseEvent(event));
+    };
+    feature.__graphics.click = feature.__graphics.tap = function (event) {
+        feature.__click(new C.System.MouseEvent(event));
+    };
     //
     //    } else {
     //        this.updateFeaturePosition(feature);

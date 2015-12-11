@@ -98,8 +98,8 @@ function mapclicked_line(evt) {
     measuredPoint.push(pivot);
     E.map.add(pivot);
     pivot.on('mousedown', function (f, evt) {
-        evt.data.originalEvent.preventDefault();
-        evt.data.originalEvent.stopPropagation();
+        evt.preventDefault();
+        evt.stopPropagation();
     });
     pivot.on('click', function (f, evt) {
         if (f != measuredPoint[measuredPoint.length-1]) {
@@ -108,8 +108,8 @@ function mapclicked_line(evt) {
             currentfeature.locations(locations);
         }
         done_editing();
-        evt.data.originalEvent.preventDefault();
-        evt.data.originalEvent.stopPropagation();
+        evt.preventDefault();
+        evt.stopPropagation();
     });
     switch (state) {
         case 0:
@@ -141,8 +141,8 @@ function mapclicked_polygon(evt) {
     measuredPoint.push(pivot);
     E.map.add(pivot);
     pivot.on('mousedown', function (f, evt) {
-        evt.data.originalEvent.preventDefault();
-        evt.data.originalEvent.stopPropagation();
+        evt.preventDefault();
+        evt.stopPropagation();
     });
     pivot.on('click', function (f) {
         if (f != measuredPoint[measuredPoint.length-1]) {

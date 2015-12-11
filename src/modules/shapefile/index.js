@@ -120,7 +120,7 @@ require('lib/shp.js', function (err) {
                 layer.add(feature);
                 feature.set('info', entry.featureInfo);
                 feature.on('click', function (feature, event) {
-                    event.stopPropagation();
+//                    event.stopPropagation();
                     var info = feature.get('info');
                     var popup = feature.get('popup');
                     if (!popup) {

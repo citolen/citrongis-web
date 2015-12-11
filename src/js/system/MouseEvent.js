@@ -16,6 +16,21 @@ C.System.MouseEvent = function (originalEvent) {
 };
 
 /**
+ * Stops event from going further (z-index wise)
+ *
+ * @method preventDefault
+ * @public
+ */
+C.System.MouseEvent.prototype.stopPropagation = function () {
+    if (this.originalEvent.stopPropagation) {
+        this.originalEvent.stopPropagation();
+    }
+    if (this.originalEvent.data) {
+        this.originalEvent.data.originalEvent.stopPropagation();
+    }
+};
+
+/**
  * Prevent event from going further in CitronGIS
  *
  * @method preventDefault
@@ -23,6 +38,9 @@ C.System.MouseEvent = function (originalEvent) {
  */
 C.System.MouseEvent.prototype.preventDefault = function () {
     this._isPrevented = true;
+    if (this.originalEvent.data) {
+        this.originalEvent.data.originalEvent.preventDefault();
+    }
 };
 
 /**
@@ -33,8 +51,31 @@ C.System.MouseEvent.prototype.preventDefault = function () {
  * @return {C.Point} Current location at the event.
  */
 C.System.MouseEvent.prototype.getWorldPosition = function () {
-    if (this.worldPosition) { return this.worldPosition; }
-    var worldPt = C.Helpers.viewport.screenToWorld(this.originalEvent.X, this.originalEvent.Y);
-    this.worldPosition = new C.Geometry.Point(worldPt.X, worldPt.Y, 0, C.Helpers.viewport._schema._crs);
+    if (!this.worldPosition) {
+        var x = (this.originalEvent.data && this.originalEvent.data.global) ?
+            (this.originalEvent.data.global.x) : (this.originalEvent.X);
+        var y = (this.originalEvent.data && this.originalEvent.data.global) ?
+            (this.originalEvent.data.global.y) : (this.originalEvent.Y);
+        var worldPt = C.Helpers.viewport.screenToWorld(x, y);
+        this.worldPosition = new C.Geometry.Point(worldPt.X, worldPt.Y, 0, C.Helpers.viewport._schema._crs);
+    }
     return this.worldPosition;
+};
+
+/**
+ * Returns a C.Vector2 at the current mouse/tap position
+ *
+ * @method getScreenPosition
+ * @public
+ * @return {C.Vector2} Current location at the event.
+ */
+C.System.MouseEvent.prototype.getScreenPosition = function () {
+    if (!this.screenPosition) {
+        var x = (this.originalEvent.data && this.originalEvent.data.global) ?
+            (this.originalEvent.data.global.x) : (this.originalEvent.X);
+        var y = (this.originalEvent.data && this.originalEvent.data.global) ?
+            (this.originalEvent.data.global.y) : (this.originalEvent.Y);
+        this.screenPosition = new C.Geometry.Vector2(x, y);
+    }
+    return this.screenPosition;
 };

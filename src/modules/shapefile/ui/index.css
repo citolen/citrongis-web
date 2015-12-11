@@ -30,6 +30,11 @@
     border-color: black !important;
 }
 
+.properties {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
 #loading_info, .properties {
     font-family: 'Nexa-light';
     font-size: 15px;

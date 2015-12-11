@@ -29,14 +29,14 @@ var Pivot = C.Utils.Inherit(function (base, location, idx) {
 
     this._pivot.on('mousedown', function (f, evt) {
         evt.stopPropagation();
-        evt.data.originalEvent.preventDefault();
-        evt.data.originalEvent.stopPropagation();
+        evt.preventDefault();
         self._isMoving = true;
     });
 
     this._pivot.on('mousemove', function (f, evt) {
         if (!self._isMoving) { return; }
-        var w = C.Viewport.screenToWorld(evt.data.global.x, evt.data.global.y);
+        var screenPosition = evt.getScreenPosition();
+        var w = C.Viewport.screenToWorld(screenPosition.X, screenPosition.Y);
         var new_location = C.Point(w.X, w.Y, 0, C.Schema._crs);
         self._pivot.location(new_location);
         self.emit('change', new_location, self._idx);

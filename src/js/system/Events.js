@@ -454,7 +454,8 @@ C.System.Events.stageDblClick = function (e) {
  * @param {C.MouseEvent} e
  */
 C.System.Events.stageDown = function (e) {
-    if ((e.touches && e.touches.length !== 1) || (e.changedTouches && e.changedTouches.length !== 1)) { return; }
+    if ((e.touches && e.touches.length !== 1) ||
+        (e.changedTouches && e.changedTouches.length !== 1)) { return; }
     if (e.target == this._citronGIS._renderer.view) {
         var offset = $(this._citronGIS._rootDiv).offset();
         var px = e.pageX;
