@@ -82,6 +82,10 @@ function mapclicked_circle(evt) {
             state = 1;
             break;
         case 1:
+            var screenPosition = evt.getScreenPosition();
+            var diff = C.Vector2(screenPosition.X, screenPosition.Y).substract(lastMousePoint);
+            var dist = Math.sqrt(Math.pow(diff.X, 2) + Math.pow(diff.Y, 2));
+            currentfeature.radius(dist);
             done_editing();
             break;
     }
