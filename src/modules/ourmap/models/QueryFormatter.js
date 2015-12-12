@@ -6,21 +6,21 @@
 
 function formatCircle(feature) {
     return {
-        location: [feature._location.X, feature._location.Y],
-        crs: C.ProjectionsHelper.getProjectionName(feature._location.CRS),
-        color: feature._color,
-        radius: feature._radius,
-        outlineWidth: feature._outlineWidth,
-        outlineColor: feature._outlineColor,
+        location: [feature.location().X, feature.location().Y],
+        crs: C.ProjectionsHelper.getProjectionName(feature.location().CRS),
+        color: feature.color(),
+        radius: feature.radius(),
+        outlineWidth: feature.outlineWidth(),
+        outlineColor: feature.outlineColor(),
         type: feature._type
     };
 }
 
 function formatLine(feature) {
-    var locations = feature._locations;
+    var locations = feature.locations();
     var crs;
     if (locations.length > 0) {
-        crs = C.ProjectionsHelper.getProjectionName(feature._locations[0].CRS);
+        crs = C.ProjectionsHelper.getProjectionName(locations[0].CRS);
     }
     var locationsOutput = [];
     for (var i = 0; i < locations.length; ++i) {
@@ -29,17 +29,17 @@ function formatLine(feature) {
     return {
         location: locationsOutput,
         crs: crs,
-        color: feature._color,
-        width: feature._width,
+        color: feature.color(),
+        width: feature.width(),
         type: feature._type
     };
 }
 
 function formatPolygon(feature) {
-    var locations = feature._locations;
+    var locations = feature.locations();
     var crs;
     if (locations.length > 0) {
-        crs = C.ProjectionsHelper.getProjectionName(feature._locations[0].CRS);
+        crs = C.ProjectionsHelper.getProjectionName(locations[0].CRS);
     }
     var locationsOutput = [];
     for (var i = 0; i < locations.length; ++i) {
@@ -48,22 +48,22 @@ function formatPolygon(feature) {
     return {
         location: locationsOutput,
         crs: crs,
-        color: feature._color,
-        outlineWidth: feature._outlineWidth,
-        outlineColor: feature._outlineColor,
+        color: feature.color(),
+        outlineWidth: feature.outlineWidth(),
+        outlineColor: feature.outlineColor(),
         type: feature._type
     };
 }
 
 function formatImage(feature) {
     return {
-        location: [feature._location.X, feature._location.Y],
-        crs: C.ProjectionsHelper.getProjectionName(feature._location.CRS),
-        source: feature._source,
-        width: feature._width,
-        height: feature._height,
-        anchorX: feature._anchorX,
-        anchorY: feature._anchorY,
+        location: [feature.location().X, feature.location().Y],
+        crs: C.ProjectionsHelper.getProjectionName(feature.location().CRS),
+        source: feature.source(),
+        width: feature.width(),
+        height: feature.height(),
+        anchorX: feature.anchorX(),
+        anchorY: feature.anchorY(),
         type: feature._type
     };
 }
