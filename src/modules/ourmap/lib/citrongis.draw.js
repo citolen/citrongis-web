@@ -78,7 +78,7 @@ function mapclicked_circle(evt) {
                 outlineWidth: currentOptions.outlineWidth
             });
             drawingLayer.add(currentfeature);
-            lastMousePoint = C.Vector2(evt.originalEvent.X, evt.originalEvent.Y);
+            lastMousePoint = evt.getScreenPosition();
             state = 1;
             break;
         case 1:
@@ -178,11 +178,11 @@ function mapclicked_image(evt) {
 }
 
 function mapclicked(evt) {
-    if (evt.originalEvent.button == 2 || evt.originalEvent.button == 1) {
+    if (evt.originalEvent && (evt.originalEvent.button == 2 || evt.originalEvent.button == 1)) {
         abort();
 //        done_editing();
-        evt.originalEvent.preventDefault();
-        evt.originalEvent.stopPropagation();
+        evt.preventDefault();
+        evt.stopPropagation();
         return;
     }
     switch (drawingtype) {
@@ -204,7 +204,8 @@ function mapclicked(evt) {
 function mousemove_circle(evt) {
     switch (state) {
         case 1:
-            var diff = C.Vector2(evt.originalEvent.X, evt.originalEvent.Y).substract(lastMousePoint);
+            var screenPosition = evt.getScreenPosition();
+            var diff = C.Vector2(screenPosition.X, screenPosition.Y).substract(lastMousePoint);
             var dist = Math.sqrt(Math.pow(diff.X, 2) + Math.pow(diff.Y, 2));
 
             currentfeature.radius(dist);
