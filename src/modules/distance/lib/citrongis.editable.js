@@ -37,7 +37,7 @@ var Pivot = C.Utils.Inherit(function (base, location, idx) {
         if (!self._isMoving) { return; }
         var screenPosition = evt.getScreenPosition();
         var w = C.Viewport.screenToWorld(screenPosition.X, screenPosition.Y);
-        var new_location = C.Point(w.X, w.Y, 0, C.Schema._crs);
+        var new_location = C.Point(w.X, w.Y, 0, C.Viewport.getCRS());
         self._pivot.location(new_location);
         self.emit('change', new_location, self._idx);
     });

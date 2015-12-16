@@ -196,7 +196,7 @@ Cluster.prototype._removeObjectFromCluster = function (feature) {
 
 Cluster.prototype._addObjectToCluster = function (feature, refresh) {
 
-    var featureLocation = C.CoordinatesHelper.TransformTo(feature.location(), C.Schema._crs);
+    var featureLocation = C.CoordinatesHelper.TransformTo(feature.location(), C.Viewport.getCRS());
 
     var node = new ClusterNode({
         feature: feature,
@@ -432,7 +432,7 @@ ClusterGroup.prototype.spiderify = function () {
 
     this._spiderifyMaterial = [];
     var loc = this._icon.location();
-    var systemLoc = C.CoordinatesHelper.TransformTo(loc, C.Schema._crs);
+    var systemLoc = C.CoordinatesHelper.TransformTo(loc, C.Viewport.getCRS());
     var screen = C.Viewport.worldToScreen(systemLoc.X, systemLoc.Y);
 
     for (var i = 0; i < children.length; ++i) {
@@ -442,7 +442,7 @@ ClusterGroup.prototype.spiderify = function () {
         var y = Math.cos(angle) * radius;
 
         var childLoc = child._feature.location();
-        var childSystemLoc = C.CoordinatesHelper.TransformTo(childLoc, C.Schema._crs);
+        var childSystemLoc = C.CoordinatesHelper.TransformTo(childLoc, C.Viewport.getCRS());
         var childScreen = C.Viewport.worldToScreen(childSystemLoc.X, childSystemLoc.Y);
 
         child._feature.offset({
@@ -451,7 +451,7 @@ ClusterGroup.prototype.spiderify = function () {
         });
 
         var offsetSystemLoc = C.Viewport.screenToWorld(screen.X + x, screen.Y + y);
-        offsetSystemLoc = C.Point(offsetSystemLoc.X, offsetSystemLoc.Y, 0, C.Schema._crs);
+        offsetSystemLoc = C.Point(offsetSystemLoc.X, offsetSystemLoc.Y, 0, C.Viewport.getCRS());
         var line = C.Line({
             locations: [systemLoc, offsetSystemLoc]
         });
