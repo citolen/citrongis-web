@@ -25,6 +25,7 @@ module.exports = function(grunt) {
                     'citrongis-core/src/utils/Context.js',
                     'citrongis-core/src/utils/Path.js',
                     'citrongis-core/src/utils/Event.js',
+                    'citrongis-core/src/utils/Quadtree.js',
                     'citrongis-core/src/geometry/Point.js',
                     'citrongis-core/src/geometry/Bounds.js',
                     'citrongis-core/src/geometry/Vector2.js',

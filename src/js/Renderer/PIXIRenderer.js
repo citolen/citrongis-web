@@ -796,11 +796,11 @@ C.Helpers.RendererHelper.Image.load = function (feature) {
             /*
              *  HTTP
              */
-            feature._loader = new PIXI.loaders.Loader().add('image', feature._source, {
+            var _loader = new PIXI.loaders.Loader().add('image', feature._source, {
                 loadType: 2
             });
 
-            feature._loader.once('complete', function (loader, resources) {
+            _loader.once('complete', function (loader, resources) {
 
                 if (resources.image.error) {
                     return;
@@ -814,11 +814,11 @@ C.Helpers.RendererHelper.Image.load = function (feature) {
 
             });
 
-            feature._loader.once('error', function () {
+            _loader.once('error', function () {
                 feature.emit('error', self);
             });
 
-            feature._loader.load();
+            _loader.load();
             break;
         case 1:
             /*

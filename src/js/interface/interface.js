@@ -26,6 +26,9 @@ C.Interface.prototype.bindExtensionLauncher = function (button, extension, autos
             C.Extension.Extension_ctr.call({_map: self._map}, new URLHandler({
                 baseUrl: './src/modules/' + extension + '/'
             }), function (err, ex) {
+                if (err) {
+                    console.error(err);
+                }
                 ext = ex;
                 ext._module.ui.on('display', function () {
                     loading = false;
