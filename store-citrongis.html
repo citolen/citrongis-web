@@ -17,9 +17,25 @@
 <script>
 
 function downloadAndLaunchExtension(name) {
-    $.get('http://52.10.137.45:31337/extension/public/download/' + name, function(data) {
-        console.log(data);
-    });
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://52.10.137.45:31337/extension/public/download/' + name , true);
+    xhr.responseType = 'arraybuffer';
+
+
+    xhr.onload = function(e) {
+        if (this.status == 200) {
+            var tmp = new JSZip();
+
+            tmp.load(new Uint8Array(xhr.response));
+            C.Extension.Extension_ctr.call({_map: window.map}, tmp, function (err) {
+                if (err) {
+                    console.error(err);
+                }
+            });
+        }
+    };
+    xhr.send();
 }
 
 function loadDescriptionSection(name) {
