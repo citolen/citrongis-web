@@ -1,0 +1,20 @@
+.gifts {
+    padding:10px;
+    color:red;
+    font-family: 'Nexa-light';
+    font-size: 20px;
+    margin: 0;
+}
+
+.timer {
+    text-align: center;
+    color: black;
+    font-family: 'Nexa-light';
+    font-size: 16px;
+}
+
+#santa_window {
+    background-color: white;
+    height: 100%;
+    width: 350px;
+}

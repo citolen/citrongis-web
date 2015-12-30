@@ -212,7 +212,7 @@ C.Interface.prototype.init = function (root, map) {
 //    var velibbtn = new C.Interface.ButtonBlock({
 //        x: 5,
 //        y: 1,
-//        width: 2,
+//        width: 3,
 //        height: 1,
 //        float: C.Interface.BlockFloat.topLeft,
 //        content: 'velib',
@@ -221,7 +221,7 @@ C.Interface.prototype.init = function (root, map) {
 //    this._grid.addBlock(velibbtn);
 //
 //    var w3w = new C.Interface.ButtonBlock({
-//        x: 7,
+//        x: 8,
 //        y: 1,
 //        width: 4,
 //        height: 1,
@@ -231,7 +231,7 @@ C.Interface.prototype.init = function (root, map) {
 //    });
 //    this._grid.addBlock(w3w);
 //    var distance = new C.Interface.ButtonBlock({
-//        x: 11,
+//        x: 12,
 //        y: 1,
 //        width: 3,
 //        height: 1,
@@ -241,7 +241,7 @@ C.Interface.prototype.init = function (root, map) {
 //    });
 //    this._grid.addBlock(distance);
 //    var csv = new C.Interface.ButtonBlock({
-//        x: 14,
+//        x: 15,
 //        y: 1,
 //        width: 2,
 //        height: 1,
@@ -251,7 +251,7 @@ C.Interface.prototype.init = function (root, map) {
 //    });
 //    this._grid.addBlock(csv);
 //    var editor = new C.Interface.ButtonBlock({
-//        x: 16,
+//        x: 17,
 //        y: 1,
 //        width: 2,
 //        height: 1,
@@ -261,7 +261,7 @@ C.Interface.prototype.init = function (root, map) {
 //    });
 //    this._grid.addBlock(editor);
 //    var instagram = new C.Interface.ButtonBlock({
-//        x: 18,
+//        x: 19,
 //        y: 1,
 //        width: 3,
 //        height: 1,
@@ -271,29 +271,29 @@ C.Interface.prototype.init = function (root, map) {
 //    });
 //    this._grid.addBlock(instagram);
 //    var satellite = new C.Interface.ButtonBlock({
-//        x: 21,
+//        x: 22,
 //        y: 1,
 //        width: 3,
 //        height: 1,
 //        float: C.Interface.BlockFloat.topLeft,
 //        content: 'satellite',
-//        css: cssBarMiddle
+//        css: cssBarRight
 //    });
 //    this._grid.addBlock(satellite);
 //    var ourmap = new C.Interface.ButtonBlock({
-//        x: 24,
-//        y: 1,
+//        x: 5,
+//        y: 2,
 //        width: 3,
 //        height: 1,
 //        float: C.Interface.BlockFloat.topLeft,
 //        content: 'ourmap',
-//        css: cssBarMiddle
+//        css: cssBarLeft
 //    });
 //    this._grid.addBlock(ourmap);
 //    var search = new C.Interface.ButtonBlock({
-//        x: 27,
-//        y: 1,
-//        width: 3,
+//        x: 8,
+//        y: 2,
+//        width: 4,
 //        height: 1,
 //        float: C.Interface.BlockFloat.topLeft,
 //        content: 'search',
@@ -301,8 +301,8 @@ C.Interface.prototype.init = function (root, map) {
 //    });
 //    this._grid.addBlock(search);
 //    var shapefile = new C.Interface.ButtonBlock({
-//        x: 30,
-//        y: 1,
+//        x: 12,
+//        y: 2,
 //        width: 3,
 //        height: 1,
 //        float: C.Interface.BlockFloat.topLeft,
@@ -311,18 +311,28 @@ C.Interface.prototype.init = function (root, map) {
 //    });
 //    this._grid.addBlock(shapefile);
 //    var findcountries = new C.Interface.ButtonBlock({
-//        x: 33,
-//        y: 1,
-//        width: 3,
+//        x: 15,
+//        y: 2,
+//        width: 4,
 //        height: 1,
 //        float: C.Interface.BlockFloat.topLeft,
 //        content: 'countries',
 //        css: cssBarMiddle
 //    });
 //    this._grid.addBlock(findcountries);
+//    var santa = new C.Interface.ButtonBlock({
+//        x: 19,
+//        y: 2,
+//        width: 3,
+//        height: 1,
+//        float: C.Interface.BlockFloat.topLeft,
+//        content: 'santa',
+//        css: cssBarMiddle
+//    });
+//    this._grid.addBlock(santa);
 //    var welcome = new C.Interface.ButtonBlock({
-//        x: 36,
-//        y: 1,
+//        x: 22,
+//        y: 2,
 //        width: 3,
 //        height: 1,
 //        float: C.Interface.BlockFloat.topLeft,
@@ -345,6 +355,7 @@ C.Interface.prototype.init = function (root, map) {
 //    this.bindExtensionLauncher(search, 'search');
 //    this.bindExtensionLauncher(shapefile, 'shapefile');
 //    this.bindExtensionLauncher(findcountries, 'countries');
+//    this.bindExtensionLauncher(santa, 'santa');
 //    this.bindExtensionLauncher(welcome, 'welcome', true);
 
     var myLocationButton = new C.Interface.ButtonBlock({

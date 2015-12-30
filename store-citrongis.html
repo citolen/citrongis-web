@@ -16,7 +16,18 @@
 
 <script>
 
+var loadedExtension = {};
+
 function downloadAndLaunchExtension(name) {
+
+    if (name in loadedExtension) {
+        loadedExtension[name].destroy();
+        delete loadedExtension[name];
+        $("#description_section_download_button").text('Open');
+        return;
+    }
+
+    $("#description_section_download_button").html('<i class="fa fa-spinner fa-spin"></i>');
 
     var xhr = new XMLHttpRequest();
     xhr.open('GET', 'http://52.10.137.45:31337/extension/public/download/' + name , true);
@@ -28,10 +39,17 @@ function downloadAndLaunchExtension(name) {
             var tmp = new JSZip();
 
             tmp.load(new Uint8Array(xhr.response));
-            C.Extension.Extension_ctr.call({_map: window.map}, tmp, function (err) {
+            C.Extension.Extension_ctr.call({_map: window.map}, tmp, function (err, ext) {
                 if (err) {
                     console.error(err);
+                } else {
+                    loadedExtension[name] = ext;
+                    ext.on('stopped', function (ext) {
+                        delete loadedExtension[ext._package.name];
+                        $("#description_section_download_button").text('Open');
+                    });
                 }
+                $("#description_section_download_button").text((err) ? 'Open' : 'Close');
             });
         }
     };
@@ -51,6 +69,7 @@ function loadDescriptionSection(name) {
         $("#description_section_title").text(data.name.toUpperCase());
         $("#description_section_version").text("Version " + data.versions[0].version);
         $("#description_section_date").text(date.toLocaleString().substring(0, 10));
+        $("#description_section_download_button").text((name in loadedExtension) ? 'Close' : 'Open');
         $("#description_section_download_button").attr("onclick", 'downloadAndLaunchExtension(\'' + data.name + '\')');
 
         if (data.rate) {
@@ -146,7 +165,7 @@ function loadRankingSection() {
                         <td># " + i + "</td>\
                         <td><img src=\"http://52.10.137.45:31337/images/" + data.icon + "\" style=\"height: 64px; width: 64px;\"/></td>\
                         <td>" + name + "</td>\
-                        <td><a class=\"btn\" style=\"background-color: #f2f4f4; text-transform: none; color: #2ecc71;\" onclick=\"loadDescriptionSection(\'" + data.name + "\');\">Gratuit</a></td>\
+                        <td><a class=\"btn\" style=\"background-color: #f2f4f4; text-transform: none; color: #2ecc71;\" onclick=\"loadDescriptionSection(\'" + data.name + "\');\">View</a></td>\
                     </tr>");
             i = i + 1;
         });
@@ -163,7 +182,7 @@ function loadLocationSection() {
                     <tr>\
                         <td><img src=\"http://52.10.137.45:31337/images/" + data.icon + "\" style=\"height: 64px; width: 64px;\"/></td>\
                         <td>" + name + "</td>\
-                        <td><a class=\"btn\" style=\"background-color: #f2f4f4; text-transform: none; color: #2ecc71;\" onclick=\"loadDescriptionSection(\'" + data.name + "\');\">Gratuit</a></td>\
+                        <td><a class=\"btn\" style=\"background-color: #f2f4f4; text-transform: none; color: #2ecc71;\" onclick=\"loadDescriptionSection(\'" + data.name + "\');\">View</a></td>\
                     </tr>");
         });
     });
@@ -188,7 +207,7 @@ function setSearchAction() {
                     <tr>\
                         <td><img src=\"http://52.10.137.45:31337/images/" + data.icon + "\" style=\"height: 64px; width: 64px;\"/></td>\
                         <td>" + data.name + "</td>\
-                        <td><a class=\"btn\" style=\"background-color: #f2f4f4; text-transform: none; color: #2ecc71;\" onclick=\"loadDescriptionSection(\'" + data.name + "\');\">Gratuit</a></td>\
+                        <td><a class=\"btn\" style=\"background-color: #f2f4f4; text-transform: none; color: #2ecc71;\" onclick=\"loadDescriptionSection(\'" + data.name + "\');\">View</a></td>\
                     </tr>");
                  });
             });
@@ -200,79 +219,79 @@ function setSearchAction() {
 
 <dom-module id="store-citrongis">
     <template>
-        <div class="materialize-noconflict" style="width: 100%; height: 100%; overflow-y: scroll; font-family: 'nexa-light';">
+        <div class="materialize-noconflict" style="width: 100%; height: 100%; overflow: hidden; font-family: 'nexa-light';">
             <div id="selection-panel">
                 <div class="row" style="margin-bottom: 0px;">
                     <div class="col s12 m12 l12 center-align">
                         <div class="card-panel" style="background-color: #2ecc71; color: #ffffff;"><h5>Sélection</h5></div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col s12 m12 l12 center-align">
-                        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-                            <!-- Indicators -->
-                            <ol class="carousel-indicators">
-                                <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-                                <li data-target="#carousel-example-generic" data-slide-to="1"></li>
-                                <li data-target="#carousel-example-generic" data-slide-to="2"></li>
-                            </ol>
-                          <!-- Wrapper for slides -->
-                            <div class="carousel-inner" role="listbox">
-                                <div class="item active">
-                                    <img src="../../src/css/img/carousel-exemple-1.png" alt="...">
-                                </div>
-                                <div class="item">
-                                    <img src="../../src/css/img/carousel-exemple-2.png" alt="...">
-                                </div>
-                                <div class="item">
-                                    <img src="../../src/css/img/carousel-exemple-3.png" alt="...">
+                <div class="row" style="height: 76%; overflow-x: hidden; overflow-y: auto; margin-bottom: 2px;">
+                    <div class="row">
+                        <div class="col s12 m12 l12 center-align">
+                            <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                                <ol class="carousel-indicators">
+                                    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                                    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                                    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                                </ol>
+                                <div class="carousel-inner" role="listbox">
+                                    <div class="item">
+                                        <img src="../../src/css/img/carousel-exemple-1.png" alt="">
+                                    </div>
+                                    <div class="item">
+                                        <img src="../../src/css/img/carousel-exemple-2.png" alt="">
+                                    </div>
+                                    <div class="item">
+                                        <img src="../../src/css/img/carousel-exemple-3.png" alt="">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col s9 m9 l9 offset-s1 offset-m1 offset-l1" style="text-align: left;">
-                        <h5>Top classement</h5>
+                    <div class="row">
+                        <div class="col s9 m9 l9 offset-s1 offset-m1 offset-l1" style="text-align: left;">
+                            <h5>Top classement</h5>
+                        </div>
+                        <div class="col s2 m2 l2">
+                            <a class="btn" style="background-color: #2ecc71; text-transform: none;" on-click="handleClickRank">Tout</a>
+                        </div>
                     </div>
-                    <div class="col s2 m2 l2">
-                        <a class="btn" style="background-color: #2ecc71; text-transform: none;" on-click="handleClickRank">Tout</a>
+                    <div class="row" style="margin-bottom: 10px;">
+                        <div id="selection_parent_1" class="col s3 m3 l3" style="cursor: pointer;">
+                            <img id="selection_img_1" class="responsive-img" src="../../src/css/img/icons_extensions/Flower@87w.png" style="margin-left: auto; margin-right: auto; height: 76px; width: 76px;"/>
+                            <div id="selection_name_1">Flower</div>
+                        </div>
+                        <div id="selection_parent_2" class="col s3 m3 l3" style="cursor: pointer;">
+                            <img id="selection_img_2" class="responsive-img" src="../../src/css/img/icons_extensions/Hex@87w.png" style="margin-left: auto; margin-right: auto; height: 76px; width: 76px;"/>
+                            <div id="selection_name_2">Hex</div>
+                        </div>
+                        <div id="selection_parent_3" class="col s3 m3 l3" style="cursor: pointer;">
+                            <img id="selection_img_3" class="responsive-img" src="../../src/css/img/icons_extensions/Lights@87w.png" style="margin-left: auto; margin-right: auto; height: 76px; width: 76px;"/>
+                            <div id="selection_name_3">Lights</div>
+                        </div>
+                        <div id="selection_parent_4" class="col s3 m3 l3" style="cursor: pointer;">
+                            <img id="selection_img_4" class="responsive-img" src="../../src/css/img/icons_extensions/Links@87w.png" style="margin-left: auto; margin-right: auto; height: 76px; width: 76px;"/>
+                            <div id="selection_name_4">Links</div>
+                        </div>
                     </div>
-                </div>
-                <div class="row" style="margin-bottom: 10px;">
-                    <div id="selection_parent_1" class="col s3 m3 l3" style="cursor: pointer;">
-                        <img id="selection_img_1" class="responsive-img" src="../../src/css/img/icons_extensions/Flower@87w.png" style="margin-left: auto; margin-right: auto; height: 76px; width: 76px;"/>
-                        <div id="selection_name_1">Flower</div>
-                    </div>
-                    <div id="selection_parent_2" class="col s3 m3 l3" style="cursor: pointer;">
-                        <img id="selection_img_2" class="responsive-img" src="../../src/css/img/icons_extensions/Hex@87w.png" style="margin-left: auto; margin-right: auto; height: 76px; width: 76px;"/>
-                        <div id="selection_name_2">Hex</div>
-                    </div>
-                    <div id="selection_parent_3" class="col s3 m3 l3" style="cursor: pointer;">
-                        <img id="selection_img_3" class="responsive-img" src="../../src/css/img/icons_extensions/Lights@87w.png" style="margin-left: auto; margin-right: auto; height: 76px; width: 76px;"/>
-                        <div id="selection_name_3">Lights</div>
-                    </div>
-                    <div id="selection_parent_4" class="col s3 m3 l3" style="cursor: pointer;">
-                        <img id="selection_img_4" class="responsive-img" src="../../src/css/img/icons_extensions/Links@87w.png" style="margin-left: auto; margin-right: auto; height: 76px; width: 76px;"/>
-                        <div id="selection_name_4">Links</div>
-                    </div>
-                </div>
-                <div class="row" style="margin-bottom: 6px;">
-                    <div id="selection_parent_5" class="col s2 m2 l2 offset-s2 offset-m2 offset-l2" style="cursor: pointer;">
-                        <img id="selection_img_5" class="responsive-img" src="../../src/css/img/icons_extensions/Money@58w.png" style="margin-left: auto; margin-right: auto; height: 64px; width: 64px;"/>
-                        <div id="selection_name_5">Money</div>
-                    </div>
-                    <div id="selection_parent_6" class="col s2 m2 l2" style="cursor: pointer;">
-                        <img id="selection_img_6" class="responsive-img" src="../../src/css/img/icons_extensions/Payments@58w.png" style="margin-left: auto; margin-right: auto; height: 64px; width: 64px;"/>
-                        <div id="selection_name_6">Payments</div>
-                    </div>
-                    <div id="selection_parent_7" class="col s2 m2 l2" style="cursor: pointer;">
-                        <img id="selection_img_7" class="responsive-img" src="../../src/css/img/icons_extensions/Pieces@58w.png" style="margin-left: auto; margin-right: auto; height: 64px; width: 64px;"/>
-                        <div id="selection_name_7">Pieces</div>
-                    </div>
-                    <div id="selection_parent_8" class="col s2 m2 l2" style="cursor: pointer;">
-                        <img id="selection_img_8" class="responsive-img" src="../../src/css/img/icons_extensions/Player@58w.png" style="margin-left: auto; margin-right: auto; height: 64px; width: 64px;"/>
-                        <div id="selection_name_8">Player</div>
+                    <div class="row" style="margin-bottom: 6px;">
+                        <div id="selection_parent_5" class="col s2 m2 l2 offset-s2 offset-m2 offset-l2" style="cursor: pointer;">
+                            <img id="selection_img_5" class="responsive-img" src="../../src/css/img/icons_extensions/Money@58w.png" style="margin-left: auto; margin-right: auto; height: 64px; width: 64px;"/>
+                            <div id="selection_name_5">Money</div>
+                        </div>
+                        <div id="selection_parent_6" class="col s2 m2 l2" style="cursor: pointer;">
+                            <img id="selection_img_6" class="responsive-img" src="../../src/css/img/icons_extensions/Payments@58w.png" style="margin-left: auto; margin-right: auto; height: 64px; width: 64px;"/>
+                            <div id="selection_name_6">Payments</div>
+                        </div>
+                        <div id="selection_parent_7" class="col s2 m2 l2" style="cursor: pointer;">
+                            <img id="selection_img_7" class="responsive-img" src="../../src/css/img/icons_extensions/Pieces@58w.png" style="margin-left: auto; margin-right: auto; height: 64px; width: 64px;"/>
+                            <div id="selection_name_7">Pieces</div>
+                        </div>
+                        <div id="selection_parent_8" class="col s2 m2 l2" style="cursor: pointer;">
+                            <img id="selection_img_8" class="responsive-img" src="../../src/css/img/icons_extensions/Player@58w.png" style="margin-left: auto; margin-right: auto; height: 64px; width: 64px;"/>
+                            <div id="selection_name_8">Player</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -282,7 +301,7 @@ function setSearchAction() {
                         <div class="card-panel" style="background-color: #2ecc71; color: #ffffff;"><h5>Classement</h5></div>
                     </div>
                 </div>
-                <div class="row" style="height: 76%; overflow: scroll; margin-bottom: 2px;">
+                <div class="row" style="height: 76%; overflow-x: hidden; overflow-y: auto; margin-bottom: 2px;">
                     <div class="col s10 m10 l10 offset-s1 offset-m1 offset-l1">
                         <table class="highlight">
                             <tbody id="tbody_ranking">
@@ -298,7 +317,7 @@ function setSearchAction() {
                         <div class="card-panel" style="background-color: #2ecc71; color: #ffffff;"><h5>À proximité</h5></div>
                     </div>
                 </div>
-                <div class="row" style="height: 76%; overflow: scroll; margin-bottom: 2px;">
+                <div class="row" style="height: 76%; overflow-x: hidden; overflow-y: auto; margin-bottom: 2px;">
                     <div class="col s10 m10 l10 offset-s2 offset-m2 offset-l2">
                         <table class="highlight">
                             <tbody id="tbody_location">
@@ -321,7 +340,7 @@ function setSearchAction() {
                         <input id="search_input" placeholder="Rechercher" type="text" style="font-size: 14px;">
                     </div>
                 </div>
-                <div class="row" style="height: 62%; margin-bottom: 19px; overflow: scroll;">
+                <div class="row" style="height: 62%; margin-bottom: 19px; overflow-x: hidden; overflow-y: auto;">
                     <div id="search_result" class="col s10 m10 l10 offset-s2 offset-m2 offset-l2">
                         <table class="highlight">
                             <tbody id="tbody_search">
@@ -337,7 +356,7 @@ function setSearchAction() {
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col s12 m12 l12" style="text-align: left; height:73%; overflow:scroll;"  align="justified">
+                    <div class="col s12 m12 l12" style="text-align: left; height:73%; overflow-x: hidden; overflow-y: auto;"  align="justified">
                         <div class="row" style="height: 80%;">
                             <div class="col s12 m12 l12" style="text-align: center; font-size: 25px; color: #D6D6D6; margin-top: 35%;" align="justified">
                                 <i>Pas de mise à jour</i>
@@ -366,11 +385,11 @@ function setSearchAction() {
                         </div>
                     </div>
                     <div class="col s4 m4 l4" style="margin-top: 30px;">
-                        <a id="description_section_download_button" class="btn style-scope store-citrongis" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71; width:100%">Gratuit</a>
+                        <a id="description_section_download_button" class="btn style-scope store-citrongis" style="background-color: #f2f4f4; text-transform: none; color: #2ecc71; width:100%"></a>
                     </div>
                 </div>
                 <hr>
-                <div style="height:55.7%; overflow:scroll;">
+                <div style="height:55.7%; overflow-x: hidden; overflow-y: auto;">
                     <div class="row">
                         <div class="col s12 m12 l12" style="text-align: left;">
                             <h4>Description :</h4>
