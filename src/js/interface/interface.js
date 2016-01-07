@@ -149,7 +149,6 @@ C.Interface.prototype.init = function (root, map) {
         currentId = id;
         self._grid.removeBlock(layerWindow);
         layerWindowOpen = false;
-        //        layerButton.setContent('<i class="fa fa-map-o"></i>&nbsp;' + tilelayers[id]._name);
     });
     var layerWindowOpen = false;
     layerButton.on('click', function () {
@@ -209,155 +208,6 @@ C.Interface.prototype.init = function (root, map) {
         boxShadow: '0 2px 5px -2px rgba(0,0,0,0.65), 0 -1px 3px -3px rgba(0,0,0,0.65)'
     };
 
-//    var velibbtn = new C.Interface.ButtonBlock({
-//        x: 5,
-//        y: 1,
-//        width: 3,
-//        height: 1,
-//        float: C.Interface.BlockFloat.topLeft,
-//        content: 'velib',
-//        css: cssBarLeft
-//    });
-//    this._grid.addBlock(velibbtn);
-//
-//    var w3w = new C.Interface.ButtonBlock({
-//        x: 8,
-//        y: 1,
-//        width: 4,
-//        height: 1,
-//        float: C.Interface.BlockFloat.topLeft,
-//        content: 'what3words',
-//        css: cssBarMiddle
-//    });
-//    this._grid.addBlock(w3w);
-//    var distance = new C.Interface.ButtonBlock({
-//        x: 12,
-//        y: 1,
-//        width: 3,
-//        height: 1,
-//        float: C.Interface.BlockFloat.topLeft,
-//        content: 'distance',
-//        css: cssBarMiddle
-//    });
-//    this._grid.addBlock(distance);
-//    var csv = new C.Interface.ButtonBlock({
-//        x: 15,
-//        y: 1,
-//        width: 2,
-//        height: 1,
-//        float: C.Interface.BlockFloat.topLeft,
-//        content: 'csv',
-//        css: cssBarMiddle
-//    });
-//    this._grid.addBlock(csv);
-//    var editor = new C.Interface.ButtonBlock({
-//        x: 17,
-//        y: 1,
-//        width: 2,
-//        height: 1,
-//        float: C.Interface.BlockFloat.topLeft,
-//        content: 'editor',
-//        css: cssBarMiddle
-//    });
-//    this._grid.addBlock(editor);
-//    var instagram = new C.Interface.ButtonBlock({
-//        x: 19,
-//        y: 1,
-//        width: 3,
-//        height: 1,
-//        float: C.Interface.BlockFloat.topLeft,
-//        content: 'instagram',
-//        css: cssBarMiddle
-//    });
-//    this._grid.addBlock(instagram);
-//    var satellite = new C.Interface.ButtonBlock({
-//        x: 22,
-//        y: 1,
-//        width: 3,
-//        height: 1,
-//        float: C.Interface.BlockFloat.topLeft,
-//        content: 'satellite',
-//        css: cssBarRight
-//    });
-//    this._grid.addBlock(satellite);
-//    var ourmap = new C.Interface.ButtonBlock({
-//        x: 5,
-//        y: 2,
-//        width: 3,
-//        height: 1,
-//        float: C.Interface.BlockFloat.topLeft,
-//        content: 'ourmap',
-//        css: cssBarLeft
-//    });
-//    this._grid.addBlock(ourmap);
-//    var search = new C.Interface.ButtonBlock({
-//        x: 8,
-//        y: 2,
-//        width: 4,
-//        height: 1,
-//        float: C.Interface.BlockFloat.topLeft,
-//        content: 'search',
-//        css: cssBarMiddle
-//    });
-//    this._grid.addBlock(search);
-//    var shapefile = new C.Interface.ButtonBlock({
-//        x: 12,
-//        y: 2,
-//        width: 3,
-//        height: 1,
-//        float: C.Interface.BlockFloat.topLeft,
-//        content: 'shapefile',
-//        css: cssBarMiddle
-//    });
-//    this._grid.addBlock(shapefile);
-//    var findcountries = new C.Interface.ButtonBlock({
-//        x: 15,
-//        y: 2,
-//        width: 4,
-//        height: 1,
-//        float: C.Interface.BlockFloat.topLeft,
-//        content: 'countries',
-//        css: cssBarMiddle
-//    });
-//    this._grid.addBlock(findcountries);
-//    var santa = new C.Interface.ButtonBlock({
-//        x: 19,
-//        y: 2,
-//        width: 3,
-//        height: 1,
-//        float: C.Interface.BlockFloat.topLeft,
-//        content: 'santa',
-//        css: cssBarMiddle
-//    });
-//    this._grid.addBlock(santa);
-//    var welcome = new C.Interface.ButtonBlock({
-//        x: 22,
-//        y: 2,
-//        width: 3,
-//        height: 1,
-//        float: C.Interface.BlockFloat.topLeft,
-//        content: 'welcome',
-//        css: cssBarRight
-//    });
-//    this._grid.addBlock(welcome);
-
-
-//    var self = this;
-
-//    this.bindExtensionLauncher(velibbtn, 'velib');
-//    this.bindExtensionLauncher(w3w, 'what3words');
-//    this.bindExtensionLauncher(distance, 'distance');
-//    this.bindExtensionLauncher(csv, 'csv');
-//    this.bindExtensionLauncher(editor, 'editor');
-//    this.bindExtensionLauncher(instagram, 'instagram');
-//    this.bindExtensionLauncher(satellite, 'satellite');
-//    this.bindExtensionLauncher(ourmap, 'ourmap');
-//    this.bindExtensionLauncher(search, 'search');
-//    this.bindExtensionLauncher(shapefile, 'shapefile');
-//    this.bindExtensionLauncher(findcountries, 'countries');
-//    this.bindExtensionLauncher(santa, 'santa');
-//    this.bindExtensionLauncher(welcome, 'welcome', true);
-
     var myLocationButton = new C.Interface.ButtonBlock({
         x: 1,
         y: 4,
@@ -373,7 +223,10 @@ C.Interface.prototype.init = function (root, map) {
     });
     this._grid.addBlock(myLocationButton);
 
-    //menu btn
+    /*
+    ** Store Button
+    */
+
     var blockStore = new C.Interface.ButtonBlock({
         x: 3,
         y: 1,
@@ -390,8 +243,9 @@ C.Interface.prototype.init = function (root, map) {
     });
     this._grid.addBlock(blockStore);
 
-    //menu windows
-
+    /*
+    ** Store Window
+    */
     var windowStore = new C.Interface.WindowBlock({
         x: blockStore.getX(),
         y: blockStore.getY() + 2,
@@ -410,7 +264,6 @@ C.Interface.prototype.init = function (root, map) {
     this._grid.addBlock(windowStore);
 
 
-    //PAS LA
     zoomInButton.on('click', function () {
         C.System.Events.zoomInWithAnimation();
     });
